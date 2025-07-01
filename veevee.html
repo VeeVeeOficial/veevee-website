@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeeVee - แผ่นแปะกันยุงจากธรรมชาติ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #3E422E;
+            background: linear-gradient(135deg, #F5E6C5 0%, #ffffff 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(245, 230, 197, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(62, 66, 46, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #75914C;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #3E422E;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #75914C;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #D78B30;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #75914C 0%, #9E886F 50%, #F5E6C5 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-20px) rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #D78B30, #F5E6C5);
+            color: #3E422E;
+            box-shadow: 0 4px 15px rgba(215, 139, 48, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #F5E6C5, #D78B30);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #3E422E;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #3E422E;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #75914C, #D78B30);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #F5E6C5, #ffffff);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(117, 145, 76, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #75914C, #9E886F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            box-shadow: 0 5px 15px rgba(117, 145, 76, 0.3);
+        }
+
+        .feature-card h3 {
+            color: #3E422E;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Product Section */
+        .product {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #F5E6C5 0%, rgba(245, 230, 197, 0.5) 100%);
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .product-info h2 {
+            font-size: 2.5rem;
+            color: #3E422E;
+            margin-bottom: 2rem;
+        }
+
+        .product-features {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .product-features li {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .product-features li:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateX(10px);
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: #75914C;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            width: 25px;
+            height: 25px;
+            background: rgba(117, 145, 76, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price-tag {
+            background: linear-gradient(45deg, #D78B30, #F5E6C5);
+            color: #3E422E;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: inline-block;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(215, 139, 48, 0.3);
+        }
+
+        .product-image {
+            text-align: center;
+            position: relative;
+        }
+
+        .product-mockup {
+            width: 100%;
+            max-width: 400px;
+            min-height: 500px;
+            background: linear-gradient(145deg, #ffffff, #F5E6C5);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .product-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-mockup.placeholder::before {
+            content: 'VeeVee';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: #75914C;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 60px 0;
+            background: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .gallery-item {
+            background: #F5E6C5;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .gallery-item-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .gallery-item h3 {
+            color: #3E422E;
+            margin-bottom: 0.5rem;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(117, 145, 76, 0.3);
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
+
+        /* Contact Section */
+        .contact {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #3E422E 0%, #75914C 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .contact-card h3 {
+            margin-bottom: 1rem;
+            color: #F5E6C5;
+        }
+
+        /* Footer */
+        footer {
+            background: #3E422E;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .product-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-animation {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-animation.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">VeeVee</div>
+            <ul class="nav-links">
+                <li><a href="#home">หน้าแรก</a></li>
+                <li><a href="#features">คุณสมบัติ</a></li>
+                <li><a href="#product">ผลิตภัณฑ์</a></li>
+                <li><a href="#gallery">แกลเลอรี่</a></li>
+                <li><a href="#contact">ติดต่อ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>VeeVee</h1>
+            <p>แผ่นแปะกันยุงจากธรรมชาติ • ปกป้องคุณได้ทุกที่ ทุกเวลา</p>
+            <div class="cta-buttons">
+                <a href="https://shopee.co.th/search?keyword=VEEVEE%20%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A2%E0%B8%B8%E0%B8%87" target="_blank" class="btn btn-primary">
+                    🛒 สั่งซื้อ Shopee
+                </a>
+                <a href="https://www.tiktok.com/search?q=VEE%20VEE%20%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A2%E0%B8%B8%E0%B8%87%20%E0%B8%A7%E0%B8%B5%20%E0%B8%A7%E0%B8%B5" target="_blank" class="btn btn-secondary">
+                    📱 TikTok Shop
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title scroll-animation">ทำไมต้อง VeeVee?</h2>
+            <div class="features-grid">
+                <div class="feature-card scroll-animation">
+                    <div class="feature-icon">🌿</div>
+                    <h3>จากธรรมชาติ 100%</h3>
+                    <p>ผสานพลังสารสกัดธรรมชาติ 5 ชนิด: ตะไคร้หอม เจอเรเนี่ยม เลมอนยูคาลิปตัส ลาเวนเดอร์ และเปปเปอร์มินต์</p>
+                </div>
+                <div class="feature-card scroll-animation">
+                    <div class="feature-icon">⏰</div>
+                    <h3>ป้องกันนาน 24 ชั่วโมง</h3>
+                    <p>เทคโนโลยี Microencapsulation ช่วยปล่อยกลิ่นแบบ Slow Release ปกป้องยาวนานตลอดวัน</p>
+                </div>
+                <div class="feature-card scroll-animation">
+                    <div class="feature-icon">🎯</div>
+                    <h3>ใช้งานง่าย พกพาสะดวก</h3>
+                    <p>แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ กระเป๋า เสื้อผ้า น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
+                </div>
+                <div class="feature-card scroll-animation">
+                    <div class="feature-icon">💪</div>
+                    <h3>สารระเหยมากกว่า 40 เท่า</h3>
+                    <p>ปริมาณสารระเหยมากกว่าแผ่นแปะกันยุงทั่วไปถึง 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="product" class="product">
+        <div class="container">
+            <div class="product-container">
+                <div class="product-info scroll-animation">
+                    <h2>VeeVee Anti Mosquito Patch</h2>
+                    <p>แผ่นแปะกันยุงรูปแบบใหม่ ที่ใช้เทคโนโลยีขั้นสูงผสานกับธรรมชาติ</p>
+                    
+                    <ul class="product-features">
+                        <li>แบบกดปุ่ม 4 เม็ด กดได้ตามต้องการ</li>
+                        <li>วัสดุ PU คุณภาพสูง มีโฟมด้านใน</li>
+                        <li>12 ชิ้นต่อซอง ใช้ได้นาน</li>
+                        <li>กลิ่นตะไคร้หอม หอมนุ่ม ไม่แสบคอ</li>
+                        <li>เหมาะกับทุกวัย แม้แต่เด็กเล็ก</li>
+                        <li>แปะได้ทุกที่ ไม่เปื้อนเสื้อผ้า</li>
+                    </ul>
+                    
+                    <div class="price-tag">฿69 / ซอง</div>
+                    
+                    <div class="cta-buttons">
+                        <a href="https://shopee.co.th/search?keyword=VEEVEE%20%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A2%E0%B8%B8%E0%B8%87" target="_blank" class="btn btn-primary">
+                            สั่งซื้อเลย
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-image scroll-animation">
+                    <div class="product-mockup placeholder" id="productImage">
+                        <!-- แทนที่ URL ด้านล่างด้วยลิงค์รูป infographic ของคุณ -->
+                        <div class="product-image-container">
+                            <!-- <img src="URL_รูป_INFOGRAPHIC_ของคุณ" alt="VeeVee Infographic" /> -->
+                        </div>
+                        <div class="floating-elements">
+                            <div class="floating-element"></div>
+                            <div class="floating-element"></div>
+                            <div class="floating-element"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title scroll-animation">ภาพผลิตภัณฑ์ & Infographic</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item scroll-animation">
+                    <!-- แทนที่ URL ด้วยลิงค์รูป infographic ของคุณ -->
+                    <!-- <img src="URL_INFOGRAPHIC_1" alt="VeeVee Infographic 1" /> -->
+                    <div style="height: 250px; background: linear-gradient(135deg, #F5E6C5, #75914C); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        Infographic 1<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
+                    </div>
+                    <div class="gallery-item-content">
+                        <h3>วิธีการใช้งาน</h3>
+                        <p>แสดงขั้นตอนการใช้งาน VeeVee</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item scroll-animation">
+                    <!-- <img src="URL_INFOGRAPHIC_2" alt="VeeVee Infographic 2" /> -->
+                    <div style="height: 250px; background: linear-gradient(135deg, #D78B30, #9E886F); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        Infographic 2<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
+                    </div>
+                    <div class="gallery-item-content">
+                        <h3>ส่วนผสมธรรมชาติ</h3>
+                        <p>รายละเอียดสารสกัด 5 ชนิด</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item scroll-animation">
+                    <!-- <img src="URL_PRODUCT_IMAGE" alt="VeeVee Product" /> -->
+                    <div style="height: 250px; background: linear-gradient(135deg, #75914C, #3E422E); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                        รูปผลิตภัณฑ์<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
+                    </div>
+                    <div class="gallery-item-content">
+                        <h3>บรรจุภัณฑ์</h3>
+                        <p>ดีไซน์บรรจุภัณฑ์ VeeVee</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title scroll-animation">ติดต่อเรา</h2>
+            <div class="contact-info">
+                <div class="contact-card scroll-animation">
+                    <h3>📞 โทรสั่งซื้อ</h3>
+                    <p>097-996-5556</p>
+                </div>
+                <div class="contact-card scroll-animation">
+                    <h3>💬 Line Official</h3>
+                    <p>วีวี วี ไลน์ช้อปปิ้ง line</p>
+                </div>
+                <div class="contact-card scroll-animation">
+                    <h3>🛍️ ช่องทางสั่งซื้อ</h3>
+                    <p>Shopee • TikTok Shop</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 VeeVee. แผ่นแปะกันยุงจากธรรมชาติ. สงวนลิขสิทธิ์.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-animation').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header background change on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(245, 230, 197, 0.98)';
+            } else {
+                header.style.background = 'rgba(245, 230, 197, 0.95)';
+            }
+        });
+
+        // Add floating animation to elements
+        document.querySelectorAll('.floating-element').forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+        });
+    </script>
+</body>
+</html>
