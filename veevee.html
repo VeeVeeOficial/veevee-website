@@ -47,6 +47,14 @@
             font-weight: bold;
             color: #75914C;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
         }
 
         .nav-links {
@@ -85,7 +93,11 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #75914C 0%, #9E886F 50%, #F5E6C5 100%);
+            background: linear-gradient(135deg, rgba(117, 145, 76, 0.9) 0%, rgba(158, 136, 111, 0.8) 50%, rgba(245, 230, 197, 0.9) 100%), 
+                        url('https://i.postimg.cc/bwfnP4Sg/S-18800647-0.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             padding: 120px 0 80px;
             text-align: center;
             color: white;
@@ -508,7 +520,10 @@
 <body>
     <header>
         <nav class="container">
-            <div class="logo">VeeVee</div>
+            <div class="logo">
+                <img src="https://i.postimg.cc/Xvyt5GY4/AR-10.png" alt="VeeVee Logo" />
+                VeeVee
+            </div>
             <ul class="nav-links">
                 <li><a href="#home">หน้าแรก</a></li>
                 <li><a href="#features">คุณสมบัติ</a></li>
@@ -588,10 +603,9 @@
                 </div>
                 
                 <div class="product-image scroll-animation">
-                    <div class="product-mockup placeholder" id="productImage">
-                        <!-- แทนที่ URL ด้านล่างด้วยลิงค์รูป infographic ของคุณ -->
+                    <div class="product-mockup" id="productImage">
                         <div class="product-image-container">
-                            <!-- <img src="URL_รูป_INFOGRAPHIC_ของคุณ" alt="VeeVee Infographic" /> -->
+                            <img src="https://i.postimg.cc/C5WqzQPF/S-18800655-0.jpg" alt="VeeVee Infographic" style="width: 100%; max-width: 350px; height: auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" />
                         </div>
                         <div class="floating-elements">
                             <div class="floating-element"></div>
@@ -609,36 +623,34 @@
             <h2 class="section-title scroll-animation">ภาพผลิตภัณฑ์ & Infographic</h2>
             <div class="gallery-grid">
                 <div class="gallery-item scroll-animation">
-                    <!-- แทนที่ URL ด้วยลิงค์รูป infographic ของคุณ -->
-                    <!-- <img src="URL_INFOGRAPHIC_1" alt="VeeVee Infographic 1" /> -->
-                    <div style="height: 250px; background: linear-gradient(135deg, #F5E6C5, #75914C); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        Infographic 1<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
-                    </div>
+                    <img src="https://i.postimg.cc/C5WqzQPF/S-18800655-0.jpg" alt="VeeVee อินโฟกราฟิก" style="width: 100%; height: 250px; object-fit: cover;" />
                     <div class="gallery-item-content">
                         <h3>วิธีการใช้งาน</h3>
-                        <p>แสดงขั้นตอนการใช้งาน VeeVee</p>
+                        <p>แสดงขั้นตอนการใช้งาน VeeVee อย่างละเอียด</p>
                     </div>
                 </div>
                 
                 <div class="gallery-item scroll-animation">
-                    <!-- <img src="URL_INFOGRAPHIC_2" alt="VeeVee Infographic 2" /> -->
-                    <div style="height: 250px; background: linear-gradient(135deg, #D78B30, #9E886F); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        Infographic 2<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
-                    </div>
-                    <div class="gallery-item-content">
-                        <h3>ส่วนผสมธรรมชาติ</h3>
-                        <p>รายละเอียดสารสกัด 5 ชนิด</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item scroll-animation">
-                    <!-- <img src="URL_PRODUCT_IMAGE" alt="VeeVee Product" /> -->
-                    <div style="height: 250px; background: linear-gradient(135deg, #75914C, #3E422E); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
-                        รูปผลิตภัณฑ์<br>อัปโหลดรูปแล้วใส่ URL ที่นี่
-                    </div>
+                    <img src="https://i.postimg.cc/tg5W2DT5/S-18800653-0.jpg" alt="VeeVee ผลิตภัณฑ์" style="width: 100%; height: 250px; object-fit: cover;" />
                     <div class="gallery-item-content">
                         <h3>บรรจุภัณฑ์</h3>
-                        <p>ดีไซน์บรรจุภัณฑ์ VeeVee</p>
+                        <p>ดีไซน์บรรจุภัณฑ์ VeeVee ที่สวยงาม</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item scroll-animation">
+                    <img src="https://i.postimg.cc/rwGrwgSk/S-18800654-0.jpg" alt="VeeVee การใช้งาน" style="width: 100%; height: 250px; object-fit: cover;" />
+                    <div class="gallery-item-content">
+                        <h3>การใช้งานจริง</h3>
+                        <p>ตัวอย่างการแปะและใช้งาน VeeVee</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item scroll-animation">
+                    <img src="https://i.postimg.cc/QtC9S3v8/S-18800649-0.jpg" alt="VeeVee รูปสินค้า" style="width: 100%; height: 250px; object-fit: cover;" />
+                    <div class="gallery-item-content">
+                        <h3>รายละเอียดสินค้า</h3>
+                        <p>ส่วนผสมธรรมชาติและคุณสมบัติ</p>
                     </div>
                 </div>
             </div>
