@@ -946,141 +946,143 @@
         </div>
     </div>
 
-    <!-- Quote Modal -->
-    <div id="quoteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📋 ขอใบเสนอราคา - บริษัท วีวี จำกัด</h2>
-                <span class="close" onclick="closeModal('quoteModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="quoteForm">
-                    <div class="section-title" style="font-size: 1.2rem; margin: 0 0 20px 0;">📋 ข้อมูลลูกค้า</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">ชื่อบริษัท/ร้าน</label>
-                            <input type="text" name="companyName" required placeholder="ระบุชื่อบริษัท ห้างร้าน หรือชื่อย่อ">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">ชื่อผู้ติดต่อ</label>
-                            <input type="text" name="contactName" required placeholder="ชื่อ-นามสกุล ผู้ประสานงาน">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">เบอร์โทรศัพท์</label>
-                            <input type="tel" name="phone" required placeholder="เบอร์ที่สามารถติดต่อได้ทันที">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">อีเมล</label>
-                            <input type="email" name="email" required placeholder="อีเมลสำหรับส่งใบเสนอราคา">
-                        </div>
-                    </div>
-                    
+   <!-- แทนที่ส่วน Quote Modal ในไฟล์ index.html -->
+<!-- Quote Modal -->
+<div id="quoteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📋 ขอใบเสนอราคา - บริษัท วีวี จำกัด</h2>
+            <span class="close" onclick="closeModal('quoteModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="quoteForm">
+                <div class="section-title" style="font-size: 1.2rem; margin: 0 0 20px 0;">📋 ข้อมูลลูกค้า</div>
+                
+                <div class="form-row">
                     <div class="form-group">
-                        <label>ที่อยู่จัดส่ง/ที่อยู่บิล</label>
-                        <textarea name="address" placeholder="ที่อยู่สำหรับจัดส่งสินค้าหรือออกใบกำกับภาษี (ถ้ามี)"></textarea>
+                        <label class="required">ชื่อบริษัท/ร้าน</label>
+                        <input type="text" name="companyName" required placeholder="ระบุชื่อบริษัท ห้างร้าน หรือชื่อย่อ">
                     </div>
-                    
                     <div class="form-group">
-                        <label class="required">ท่านเป็นลูกค้าประเภทใด</label>
-                        <select name="customerType" required>
-                            <option value="">เลือกประเภทลูกค้า</option>
-                            <option value="new">🆕 ลูกค้าใหม่ (ครั้งแรกที่สั่ง)</option>
-                            <option value="regular">🤝 ลูกค้าประจำ (เคยสั่งแล้ว 2-5 ครั้ง)</option>
-                            <option value="vip">👑 ลูกค้า VIP (สั่งประจำ/ปริมาณเยอะ)</option>
-                            <option value="retail">🏪 ร้านค้าปลีก (ซื้อไปขายต่อ)</option>
-                            <option value="wholesale">🏭 ผู้ประกอบการรายใหญ่</option>
-                        </select>
+                        <label class="required">ชื่อผู้ติดต่อ</label>
+                        <input type="text" name="contactName" required placeholder="ชื่อ-นามสกุล ผู้ประสานงาน">
                     </div>
-                    
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">🛍️ ข้อมูลสินค้า</div>
-                    
+                </div>
+                
+                <div class="form-row">
                     <div class="form-group">
-                        <label class="required">รายการสินค้าที่สนใจ</label>
-                        <textarea name="productList" required placeholder="โปรดระบุ:&#10;• ชื่อสินค้า/รุ่น/ขนาด&#10;• จำนวนที่ต้องการ&#10;• specification (ถ้ามี)&#10;&#10;ตัวอย่าง:&#10;- VeeVee แผ่นแปะกันยุง 100 ซอง&#10;- VeeVee รุ่น Premium 50 ซอง"></textarea>
-                        <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">กรุณาระบุรายละเอียดให้ชัดเจนเพื่อใบเสนอราคาที่ถูกต้อง</div>
+                        <label class="required">เบอร์โทรศัพท์</label>
+                        <input type="tel" name="phone" required placeholder="เบอร์ที่สามารถติดต่อได้ทันที">
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>ปริมาณโดยประมาณ</label>
-                            <select name="quantity">
-                                <option value="">เลือกปริมาณ</option>
-                                <option value="small">น้อยกว่า 50 ซอง</option>
-                                <option value="medium">50-100 ซอง</option>
-                                <option value="large">101-500 ซอง</option>
-                                <option value="bulk">501-1,000 ซอง</option>
-                                <option value="wholesale">มากกว่า 1,000 ซอง</option>
-                                <option value="consult">ต้องการปรึกษา</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>งบประมาณโดยประมาณ</label>
-                            <select name="budget">
-                                <option value="">เลือกงบประมาณ</option>
-                                <option value="under10k">ต่ำกว่า 10,000 บาท</option>
-                                <option value="10k-50k">10,000 - 50,000 บาท</option>
-                                <option value="50k-100k">50,000 - 100,000 บาท</option>
-                                <option value="100k-500k">100,000 - 500,000 บาท</option>
-                                <option value="over500k">มากกว่า 500,000 บาท</option>
-                                <option value="no-limit">ไม่ระบุ</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label class="required">อีเมล</label>
+                        <input type="email" name="email" required placeholder="อีเมลสำหรับส่งใบเสนอราคา">
                     </div>
-                    
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">📅 ข้อมูลเพิ่มเติม</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">วันที่ต้องการได้รับใบเสนอราคา</label>
-                            <input type="date" name="quotationDate" required>
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เราจะพยายามส่งภายในวันที่ระบุ</div>
-                        </div>
-                        <div class="form-group">
-                            <label>วันที่ต้องการได้รับสินค้า (โดยประมาณ)</label>
-                            <input type="date" name="deliveryDate">
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เพื่อให้เราจัดลำดับความสำคัญในการจัดส่ง</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>ที่อยู่จัดส่ง/ที่อยู่บิล</label>
+                    <textarea name="address" placeholder="ที่อยู่สำหรับจัดส่งสินค้าหรือออกใบกำกับภาษี (ถ้ามี)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">ท่านเป็นลูกค้าประเภทใด</label>
+                    <select name="customerType" required>
+                        <option value="">เลือกประเภทลูกค้า</option>
+                        <option value="new">🆕 ลูกค้าใหม่ (ครั้งแรกที่สั่ง)</option>
+                        <option value="regular">🤝 ลูกค้าประจำ (เคยสั่งแล้ว 2-5 ครั้ง)</option>
+                        <option value="vip">👑 ลูกค้า VIP (สั่งประจำ/ปริมาณเยอะ)</option>
+                        <option value="retail">🏪 ร้านค้าปลีก (ซื้อไปขายต่อ)</option>
+                        <option value="wholesale">🏭 ผู้ประกอบการรายใหญ่</option>
+                    </select>
+                </div>
+                
+                <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">🛍️ ข้อมูลสินค้า</div>
+                
+                <div class="form-group">
+                    <label class="required">สินค้าที่สนใจ</label>
+                    <select name="productType" required>
+                        <option value="">เลือกสินค้า</option>
+                        <option value="veevee_patch">แผ่นแปะกันยุง VeeVee (12 ชิ้น/ซอง)</option>
+                    </select>
+                    <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">
+                        ราคา: 69 บาท/ซอง | ส่วนลด: 100+ ซอง (66 บาท) | 1000+ ซอง (65 บาท)
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">จำนวนที่ต้องการ (ซอง)</label>
+                        <input type="number" name="quantity" required min="1" placeholder="ระบุจำนวนซอง">
+                        <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">
+                            1 ซอง = 12 ชิ้น
                         </div>
                     </div>
-                    
+                    <div class="form-group" id="pricePreview" style="display: none;">
+                        <label>ราคาโดยประมาณ</label>
+                        <div style="background: #f0f8ff; padding: 15px; border-radius: 10px; border: 2px solid #75914C;">
+                            <div id="priceBreakdown">
+                                <div>จำนวน: <span id="previewQuantity">0</span> ซอง</div>
+                                <div>ราคาต่อซอง: <span id="previewUnitPrice">69</span> บาท</div>
+                                <div style="font-weight: bold; color: #75914C; font-size: 1.2rem;">
+                                    ราคารวม: <span id="previewTotal">0</span> บาท
+                                </div>
+                                <div id="discountMessage" style="color: #D78B30; font-weight: bold;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">📅 ข้อมูลเพิ่มเติม</div>
+                
+                <div class="form-row">
                     <div class="form-group">
-                        <label>Line ID (ถ้ามี)</label>
-                        <input type="text" name="lineId" placeholder="สำหรับติดต่อประสานงานเร่งด่วน">
+                        <label class="required">วันที่ต้องการได้รับใบเสนอราคา</label>
+                        <input type="date" name="quotationDate" required>
+                        <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เราจะส่งภายในวันที่ระบุ</div>
                     </div>
-                    
                     <div class="form-group">
-                        <label>ข้อความเพิ่มเติม/ข้อกำหนดพิเศษ</label>
-                        <textarea name="additionalNote" placeholder="เช่น:&#10;• ต้องการใบกำกับภาษี&#10;• ต้องการการรับประกัน&#10;• ต้องการตัวอย่างสินค้า&#10;• มีข้อกำหนดด้านคุณภาพ&#10;• อื่นๆ"></textarea>
+                        <label>วันที่ต้องการได้รับสินค้า (โดยประมาณ)</label>
+                        <input type="date" name="deliveryDate">
+                        <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เพื่อให้เราจัดลำดับความสำคัญในการจัดส่ง</div>
                     </div>
-                    
-                    <button type="submit" class="btn btn-quote" style="width: 100%; margin-top: 20px;">
-                        📋 ส่งคำขอใบเสนอราคา
-                    </button>
-                    
-                    <div class="loading" id="quoteLoading">
-                        <div class="spinner"></div>
-                        <p>กำลังส่งข้อมูล...</p>
-                    </div>
-                    
-                    <div class="success-message" id="quoteSuccess">
-                        <h3>✅ ส่งคำขอเรียบร้อยแล้ว!</h3>
-                        <p>เราได้รับคำขอใบเสนอราคาของท่านเรียบร้อยแล้ว</p>
-                        <p><strong>เลขที่คำขอ:</strong> <span id="quoteRequestId"></span></p>
-                        <p>ทีมงานจะส่งใบเสนอราคาภายใน 24 ชั่วโมง</p>
-                        <p>📞 ติดต่อด่วน: 097-996-5556</p>
-                    </div>
-                    
-                    <div class="error-message" id="quoteError">
-                        <h3>❌ เกิดข้อผิดพลาด</h3>
-                        <p>ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่หรือติดต่อ 097-996-5556</p>
-                    </div>
-                </form>
-            </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Line ID (ถ้ามี)</label>
+                    <input type="text" name="lineId" placeholder="สำหรับติดต่อประสานงานเร่งด่วน">
+                </div>
+                
+                <div class="form-group">
+                    <label>ข้อความเพิ่มเติม/ข้อกำหนดพิเศษ</label>
+                    <textarea name="additionalNote" placeholder="เช่น:&#10;• ต้องการใบกำกับภาษี&#10;• ต้องการการรับประกัน&#10;• ต้องการตัวอย่างสินค้า&#10;• อื่นๆ"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-quote" style="width: 100%; margin-top: 20px;">
+                    📋 ส่งคำขอใบเสนอราคา (ได้ PDF ทันที)
+                </button>
+                
+                <div class="loading" id="quoteLoading">
+                    <div class="spinner"></div>
+                    <p>กำลังสร้างใบเสนอราคา PDF...</p>
+                </div>
+                
+                <div class="success-message" id="quoteSuccess">
+                    <h3>✅ ส่งใบเสนอราคาเรียบร้อยแล้ว!</h3>
+                    <p>เราได้ส่งใบเสนอราคา PDF ไปยังอีเมลของท่านแล้ว</p>
+                    <p><strong>เลขที่คำขอ:</strong> <span id="quoteRequestId"></span></p>
+                    <p>📧 กรุณาตรวจสอบอีเมล (รวมถึง Spam/Junk)</p>
+                    <p>📞 ติดต่อสอบถาม: 097-996-5556</p>
+                </div>
+                
+                <div class="error-message" id="quoteError">
+                    <h3>❌ เกิดข้อผิดพลาด</h3>
+                    <p>ไม่สามารถส่งใบเสนอราคาได้ กรุณาลองใหม่หรือติดต่อ 097-996-5556</p>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <section id="features" class="features">
         <div class="container">
@@ -1656,6 +1658,187 @@ document.querySelectorAll('.floating-element').forEach((element, index) => {
 });
 
 console.log('🎉 VeeVee Website JavaScript fully loaded and ready!');
+</script>
+<script>
+// เพิ่มฟังก์ชันคำนวณราคาแบบ Real-time
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInput = document.querySelector('input[name="quantity"]');
+    const pricePreview = document.getElementById('pricePreview');
+    const previewQuantity = document.getElementById('previewQuantity');
+    const previewUnitPrice = document.getElementById('previewUnitPrice');
+    const previewTotal = document.getElementById('previewTotal');
+    const discountMessage = document.getElementById('discountMessage');
+    
+    if (quantityInput) {
+        quantityInput.addEventListener('input', calculatePrice);
+        quantityInput.addEventListener('change', calculatePrice);
+    }
+    
+    function calculatePrice() {
+        const quantity = parseInt(quantityInput.value);
+        
+        if (!quantity || quantity < 1) {
+            pricePreview.style.display = 'none';
+            return;
+        }
+        
+        let unitPrice = 69; // ราคาปกติ
+        let discountText = '';
+        
+        if (quantity >= 1000) {
+            unitPrice = 65; // ลด 4 บาท
+            discountText = '🎉 ส่วนลดพิเศษ 1000+ ซอง: ลด 4 บาท/ซอง';
+        } else if (quantity >= 100) {
+            unitPrice = 66; // ลด 3 บาท  
+            discountText = '🎊 ส่วนลดขายส่ง 100+ ซอง: ลด 3 บาท/ซอง';
+        }
+        
+        const total = quantity * unitPrice;
+        
+        previewQuantity.textContent = quantity.toLocaleString();
+        previewUnitPrice.textContent = unitPrice;
+        previewTotal.textContent = total.toLocaleString();
+        discountMessage.textContent = discountText;
+        
+        pricePreview.style.display = 'block';
+    }
+});
+// เพิ่มใน JavaScript section ของเว็บไซต์
+
+// Updated submitQuoteForm function
+async function submitQuoteForm(formData) {
+    console.log('📋 Processing quote submission');
+    
+    // Validate required fields
+    const requiredFields = {
+        'companyName': 'ชื่อบริษัท',
+        'contactName': 'ชื่อผู้ติดต่อ',
+        'phone': 'เบอร์โทรศัพท์',
+        'email': 'อีเมล',
+        'customerType': 'ประเภทลูกค้า',
+        'productType': 'สินค้าที่สนใจ',
+        'quantity': 'จำนวน',
+        'quotationDate': 'วันที่ต้องการใบเสนอราคา'
+    };
+    
+    const missingFields = [];
+    
+    for (let [field, label] of Object.entries(requiredFields)) {
+        const value = formData.get(field);
+        if (!value || value.trim() === '') {
+            missingFields.push(label);
+        }
+    }
+    
+    if (missingFields.length > 0) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
+        return;
+    }
+    
+    // Validate quantity
+    const quantity = parseInt(formData.get('quantity'));
+    if (!quantity || quantity < 1) {
+        alert('กรุณาระบุจำนวนที่ถูกต้อง');
+        return;
+    }
+    
+    const requestId = 'VV-REQ-' + Date.now();
+    const quoteData = {
+        type: 'quotation',
+        requestId: requestId,
+        timestamp: new Date().toLocaleString('th-TH'),
+        companyName: formData.get('companyName'),
+        contactName: formData.get('contactName'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        address: formData.get('address') || '',
+        customerType: formData.get('customerType'),
+        productType: formData.get('productType'),
+        quantity: quantity,
+        quotationDate: formData.get('quotationDate'),
+        deliveryDate: formData.get('deliveryDate') || '',
+        lineId: formData.get('lineId') || '',
+        additionalNote: formData.get('additionalNote') || ''
+    };
+    
+    await sendToGoogleScript(quoteData, 'quotation');
+}
+
+// Updated success message for quotation
+async function sendToGoogleScript(data, type) {
+    console.log('📤 Sending to Google Apps Script:', type, data);
+    
+    const loadingId = type === 'order' ? 'orderLoading' : 'quoteLoading';
+    const successId = type === 'order' ? 'orderSuccess' : 'quoteSuccess';
+    const errorId = type === 'order' ? 'orderError' : 'quoteError';
+    
+    // Safely find elements
+    const submitBtn = document.querySelector(`#${type}Form .btn[type="submit"]`);
+    const loadingDiv = document.getElementById(loadingId);
+    const successDiv = document.getElementById(successId);
+    const errorDiv = document.getElementById(errorId);
+    
+    try {
+        // Hide previous messages
+        if (successDiv) successDiv.style.display = 'none';
+        if (errorDiv) errorDiv.style.display = 'none';
+        
+        // Show loading
+        if (submitBtn) submitBtn.style.display = 'none';
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        
+        // Send to Google Apps Script
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        console.log('✅ Data sent successfully');
+        
+        // Show success
+        if (successDiv) {
+            successDiv.style.display = 'block';
+            
+            // Set request/order number
+            if (type === 'order') {
+                const orderNumberSpan = document.getElementById('orderNumber');
+                if (orderNumberSpan) orderNumberSpan.textContent = data.orderNumber;
+            } else {
+                const requestIdSpan = document.getElementById('quoteRequestId');
+                if (requestIdSpan) requestIdSpan.textContent = data.requestId;
+            }
+        }
+        
+        // Auto-reset after 8 seconds for quotation (longer because PDF is being generated)
+        const resetDelay = type === 'quotation' ? 8000 : 5000;
+        setTimeout(() => {
+            if (type === 'order') {
+                resetOrderForm();
+                closeModal('orderModal');
+            } else {
+                resetQuoteForm();
+                closeModal('quoteModal');
+            }
+        }, resetDelay);
+        
+    } catch (error) {
+        console.error('❌ Error sending data:', error);
+        
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
+        } else {
+            alert('เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อ 097-996-5556');
+        }
+    } finally {
+        // Restore UI
+        if (loadingDiv) loadingDiv.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'block';
+    }
+}
 </script>
 </body>
 </html>
