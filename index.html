@@ -1219,240 +1219,443 @@
         </div>
     </footer>
 
-    <!-- Null Safety Fix - แทนที่ Emergency Fix เดิม -->
+   <!-- ลบ <script> เก่าทั้งหมด แล้วใส่แค่นี้ก่อน </body> -->
 <script>
-// Bulletproof Quote Form Handler
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Bulletproof quote form script loaded');
-    
-    // Find quote form
-    const quoteForm = document.getElementById('quoteForm');
-    if (!quoteForm) {
-        console.error('❌ Quote form not found!');
-        return;
+// ==============================================
+// VeeVee Website - Final Clean JavaScript
+// ==============================================
+
+// Global variables
+let selectedProduct = null;
+let selectedPrice = 0;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMpyb8mLdAQmNw-IGSO3en7_OSC0UylmlS-i5WPQdNDgZbwYm86FMLYPDaziGPtLvZ/exec';
+
+console.log('🚀 VeeVee Website JavaScript v2.0 loaded');
+
+// Modal functions
+function openOrderModal() {
+    console.log('🛒 Opening order modal');
+    const modal = document.getElementById('orderModal');
+    if (modal) {
+        modal.style.display = 'block';
+        resetOrderForm();
     }
-    
-    // Remove any existing event listeners by cloning
-    const newQuoteForm = quoteForm.cloneNode(true);
-    quoteForm.parentNode.replaceChild(newQuoteForm, quoteForm);
-    
-    console.log('✅ Quote form found and cloned');
-    
-    // Add bulletproof event listener
-    newQuoteForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('📋 Quote form submitted');
+}
+
+function openQuoteModal() {
+    console.log('📋 Opening quote modal');
+    const modal = document.getElementById('quoteModal');
+    if (modal) {
+        modal.style.display = 'block';
+        resetQuoteForm();
         
-        try {
-            // Validate form
-            const formData = new FormData(this);
-            const requiredFields = {
-                'companyName': 'ชื่อบริษัท',
-                'contactName': 'ชื่อผู้ติดต่อ',
-                'phone': 'เบอร์โทรศัพท์',
-                'email': 'อีเมล',
-                'customerType': 'ประเภทลูกค้า',
-                'productList': 'รายการสินค้า',
-                'quotationDate': 'วันที่ต้องการใบเสนอราคา'
-            };
-            
-            const missingFields = [];
-            
-            for (let [field, label] of Object.entries(requiredFields)) {
-                const value = formData.get(field);
-                if (!value || value.trim() === '') {
-                    missingFields.push(label);
-                }
-            }
-            
-            if (missingFields.length > 0) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
-                console.log('❌ Missing fields:', missingFields);
-                return;
-            }
-            
-            console.log('✅ Validation passed');
-            
-            // Safely find elements
-            const submitBtn = this.querySelector('.btn[type="submit"]') || this.querySelector('.btn-quote');
-            const loadingDiv = document.getElementById('quoteLoading');
-            const successDiv = document.getElementById('quoteSuccess');
-            const errorDiv = document.getElementById('quoteError');
-            const requestIdSpan = document.getElementById('quoteRequestId');
-            
-            console.log('🔍 Elements found:', {
-                submitBtn: !!submitBtn,
-                loadingDiv: !!loadingDiv,
-                successDiv: !!successDiv,
-                errorDiv: !!errorDiv,
-                requestIdSpan: !!requestIdSpan
-            });
-            
-            // Hide previous messages
-            if (successDiv) successDiv.style.display = 'none';
-            if (errorDiv) errorDiv.style.display = 'none';
-            
-            // Show loading
-            if (submitBtn) submitBtn.style.display = 'none';
-            if (loadingDiv) loadingDiv.style.display = 'block';
-            
-            // Prepare data
-            const requestId = 'VV-REQ-' + Date.now();
-            const quoteData = {
-                type: 'quotation',
-                requestId: requestId,
-                timestamp: new Date().toLocaleString('th-TH'),
-                companyName: formData.get('companyName'),
-                contactName: formData.get('contactName'),
-                phone: formData.get('phone'),
-                email: formData.get('email'),
-                address: formData.get('address') || '',
-                customerType: formData.get('customerType'),
-                productList: formData.get('productList'),
-                quantity: formData.get('quantity') || '',
-                budget: formData.get('budget') || '',
-                quotationDate: formData.get('quotationDate'),
-                deliveryDate: formData.get('deliveryDate') || '',
-                lineId: formData.get('lineId') || '',
-                additionalNote: formData.get('additionalNote') || ''
-            };
-            
-            console.log('📤 Sending quote data:', quoteData);
-            
-            // Send to Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbzMpyb8mLdAQmNw-IGSO3en7_OSC0UylmlS-i5WPQdNDgZbwYm86FMLYPDaziGPtLvZ/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(quoteData)
-            })
-            .then(() => {
-                console.log('✅ Quote sent successfully');
-                
-                // Hide loading
-                if (loadingDiv) loadingDiv.style.display = 'none';
-                
-                // Show success
-                if (successDiv) {
-                    successDiv.style.display = 'block';
-                    if (requestIdSpan) {
-                        requestIdSpan.textContent = requestId;
-                    }
-                }
-                
-                // Reset form after 5 seconds
-                setTimeout(() => {
-                    this.reset();
-                    if (successDiv) successDiv.style.display = 'none';
-                    if (submitBtn) submitBtn.style.display = 'block';
-                    
-                    // Close modal
-                    const modal = document.getElementById('quoteModal');
-                    if (modal) modal.style.display = 'none';
-                }, 5000);
-            })
-            .catch(error => {
-                console.error('❌ Error sending quote:', error);
-                
-                // Hide loading
-                if (loadingDiv) loadingDiv.style.display = 'none';
-                
-                // Show error
-                if (errorDiv) {
-                    errorDiv.style.display = 'block';
-                } else {
-                    alert('เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อ 097-996-5556');
-                }
-                
-                // Show submit button
-                if (submitBtn) submitBtn.style.display = 'block';
-            });
-            
-        } catch (error) {
-            console.error('❌ Critical error in quote form:', error);
-            alert('เกิดข้อผิดพลาดร้ายแรง กรุณารีเฟรชหน้าเว็บแล้วลองใหม่');
+        // Set default quotation date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const quotationInput = document.querySelector('input[name="quotationDate"]');
+        if (quotationInput) {
+            quotationInput.value = tomorrow.toISOString().split('T')[0];
         }
+    }
+}
+
+function closeModal(modalId) {
+    console.log('❌ Closing modal:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Product selection for order
+function selectProduct(element, productType, price) {
+    console.log('🎯 Product selected:', productType, price);
+    
+    // Remove previous selection
+    document.querySelectorAll('.product-item').forEach(item => {
+        item.classList.remove('selected');
     });
     
-    console.log('✅ Bulletproof quote form handler attached');
-});
+    // Add selection to clicked item
+    element.classList.add('selected');
+    
+    selectedProduct = productType;
+    selectedPrice = price;
+    
+    // Show sections safely
+    const quantitySection = document.getElementById('quantitySection');
+    const customerSection = document.getElementById('customerSection');
+    const orderSummary = document.getElementById('orderSummary');
+    
+    if (quantitySection) quantitySection.style.display = 'block';
+    if (customerSection) customerSection.style.display = 'block';
+    if (orderSummary) orderSummary.style.display = 'block';
+    
+    updateOrderSummary();
+}
 
-// Bulletproof Order Form Handler
-document.addEventListener('DOMContentLoaded', function() {
-    const orderForm = document.getElementById('orderForm');
-    if (!orderForm) {
-        console.log('ℹ️ Order form not found (this is OK if only fixing quote form)');
-        return;
-    }
-    
-    console.log('✅ Order form also patched for safety');
-    
-    // Clone to remove existing listeners
-    const newOrderForm = orderForm.cloneNode(true);
-    orderForm.parentNode.replaceChild(newOrderForm, orderForm);
-    
-    newOrderForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('🛒 Order form submitted');
+// Quantity functions
+function changeQuantity(delta) {
+    const quantityInput = document.getElementById('quantity');
+    if (quantityInput) {
+        let currentValue = parseInt(quantityInput.value) || 1;
+        let newValue = currentValue + delta;
         
-        // Simple order handling with safety checks
-        try {
-            if (!selectedProduct) {
-                alert('กรุณาเลือกสินค้า');
-                return;
-            }
-            
-            const formData = new FormData(this);
-            const requiredFields = ['customerName', 'phone', 'email', 'address'];
-            const missing = [];
-            
-            for (let field of requiredFields) {
-                if (!formData.get(field)?.trim()) {
-                    missing.push(field);
-                }
-            }
-            
-            if (missing.length > 0) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            // Show success message
-            alert('🎉 คำสั่งซื้อได้รับการประมวลผลแล้ว! \nเลขที่: VV-' + Date.now());
-            
-        } catch (error) {
-            console.error('❌ Order form error:', error);
-            alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+        if (newValue >= 1) {
+            quantityInput.value = newValue;
+            updateOrderSummary();
         }
-    });
-});
+    }
+}
 
-// Debug helpers
-window.testQuoteSystem = function() {
-    console.log('🧪 Testing quote system...');
-    const elements = {
-        quoteForm: document.getElementById('quoteForm'),
-        quoteModal: document.getElementById('quoteModal'),
-        quoteLoading: document.getElementById('quoteLoading'),
-        quoteSuccess: document.getElementById('quoteSuccess'),
-        quoteError: document.getElementById('quoteError'),
-        quoteRequestId: document.getElementById('quoteRequestId')
+// Update order summary
+function updateOrderSummary() {
+    if (!selectedProduct) return;
+    
+    const quantityInput = document.getElementById('quantity');
+    const quantity = parseInt(quantityInput?.value || 1);
+    const subtotal = selectedPrice * quantity;
+    const shipping = 50;
+    const total = subtotal + shipping;
+    
+    const productNames = {
+        'single': 'VeeVee 1 ซอง',
+        'pack3': 'VeeVee 3 ซอง',
+        'pack5': 'VeeVee 5 ซอง'
     };
     
-    console.table(elements);
+    // Safely update summary elements
+    const summaryProduct = document.getElementById('summaryProduct');
+    const summaryQuantity = document.getElementById('summaryQuantity');
+    const summaryUnitPrice = document.getElementById('summaryUnitPrice');
+    const summaryTotal = document.getElementById('summaryTotal');
     
-    Object.entries(elements).forEach(([name, element]) => {
-        if (!element) {
-            console.error(`❌ Missing element: ${name}`);
+    if (summaryProduct) summaryProduct.textContent = productNames[selectedProduct];
+    if (summaryQuantity) summaryQuantity.textContent = quantity + ' แพ็ค';
+    if (summaryUnitPrice) summaryUnitPrice.textContent = '฿' + selectedPrice.toLocaleString();
+    if (summaryTotal) summaryTotal.textContent = '฿' + total.toLocaleString();
+}
+
+// Reset forms
+function resetOrderForm() {
+    const form = document.getElementById('orderForm');
+    if (form) form.reset();
+    
+    // Hide sections safely
+    const sections = ['quantitySection', 'customerSection', 'orderSummary', 'orderLoading', 'orderSuccess', 'orderError'];
+    sections.forEach(sectionId => {
+        const element = document.getElementById(sectionId);
+        if (element) element.style.display = 'none';
+    });
+    
+    // Reset selections
+    document.querySelectorAll('.product-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    selectedProduct = null;
+    selectedPrice = 0;
+    
+    const quantityInput = document.getElementById('quantity');
+    if (quantityInput) quantityInput.value = 1;
+}
+
+function resetQuoteForm() {
+    const form = document.getElementById('quoteForm');
+    if (form) form.reset();
+    
+    // Hide status elements safely
+    const elements = ['quoteLoading', 'quoteSuccess', 'quoteError'];
+    elements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element) element.style.display = 'none';
+    });
+}
+
+// Form submission functions
+async function submitOrderForm(formData) {
+    console.log('🛒 Processing order submission');
+    
+    if (!selectedProduct) {
+        alert('กรุณาเลือกสินค้า');
+        return;
+    }
+    
+    // Validate required fields
+    const required = ['customerName', 'phone', 'email', 'address'];
+    const missing = [];
+    
+    for (let field of required) {
+        if (!formData.get(field)?.trim()) {
+            missing.push(field);
+        }
+    }
+    
+    if (missing.length > 0) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+    }
+    
+    const quantityInput = document.getElementById('quantity');
+    const quantity = parseInt(quantityInput?.value || 1);
+    const subtotal = selectedPrice * quantity;
+    const shipping = 50;
+    const total = subtotal + shipping;
+    
+    const orderData = {
+        type: 'order',
+        orderNumber: 'VV-' + Date.now(),
+        timestamp: new Date().toLocaleString('th-TH'),
+        product: selectedProduct,
+        productName: document.getElementById('summaryProduct')?.textContent || '',
+        quantity: quantity,
+        unitPrice: selectedPrice,
+        subtotal: subtotal,
+        shipping: shipping,
+        total: total,
+        customerName: formData.get('customerName'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        address: formData.get('address'),
+        note: formData.get('note') || ''
+    };
+    
+    await sendToGoogleScript(orderData, 'order');
+}
+
+async function submitQuoteForm(formData) {
+    console.log('📋 Processing quote submission');
+    
+    // Validate required fields
+    const requiredFields = {
+        'companyName': 'ชื่อบริษัท',
+        'contactName': 'ชื่อผู้ติดต่อ',
+        'phone': 'เบอร์โทรศัพท์',
+        'email': 'อีเมล',
+        'customerType': 'ประเภทลูกค้า',
+        'productList': 'รายการสินค้า',
+        'quotationDate': 'วันที่ต้องการใบเสนอราคา'
+    };
+    
+    const missingFields = [];
+    
+    for (let [field, label] of Object.entries(requiredFields)) {
+        const value = formData.get(field);
+        if (!value || value.trim() === '') {
+            missingFields.push(label);
+        }
+    }
+    
+    if (missingFields.length > 0) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
+        return;
+    }
+    
+    const requestId = 'VV-REQ-' + Date.now();
+    const quoteData = {
+        type: 'quotation',
+        requestId: requestId,
+        timestamp: new Date().toLocaleString('th-TH'),
+        companyName: formData.get('companyName'),
+        contactName: formData.get('contactName'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        address: formData.get('address') || '',
+        customerType: formData.get('customerType'),
+        productList: formData.get('productList'),
+        quantity: formData.get('quantity') || '',
+        budget: formData.get('budget') || '',
+        quotationDate: formData.get('quotationDate'),
+        deliveryDate: formData.get('deliveryDate') || '',
+        lineId: formData.get('lineId') || '',
+        additionalNote: formData.get('additionalNote') || ''
+    };
+    
+    await sendToGoogleScript(quoteData, 'quotation');
+}
+
+// Send data to Google Apps Script
+async function sendToGoogleScript(data, type) {
+    console.log('📤 Sending to Google Apps Script:', type, data);
+    
+    const loadingId = type === 'order' ? 'orderLoading' : 'quoteLoading';
+    const successId = type === 'order' ? 'orderSuccess' : 'quoteSuccess';
+    const errorId = type === 'order' ? 'orderError' : 'quoteError';
+    
+    // Safely find elements
+    const submitBtn = document.querySelector(`#${type}Form .btn[type="submit"]`);
+    const loadingDiv = document.getElementById(loadingId);
+    const successDiv = document.getElementById(successId);
+    const errorDiv = document.getElementById(errorId);
+    
+    try {
+        // Hide previous messages
+        if (successDiv) successDiv.style.display = 'none';
+        if (errorDiv) errorDiv.style.display = 'none';
+        
+        // Show loading
+        if (submitBtn) submitBtn.style.display = 'none';
+        if (loadingDiv) loadingDiv.style.display = 'block';
+        
+        // Send to Google Apps Script
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        console.log('✅ Data sent successfully');
+        
+        // Show success
+        if (successDiv) {
+            successDiv.style.display = 'block';
+            
+            // Set request/order number
+            if (type === 'order') {
+                const orderNumberSpan = document.getElementById('orderNumber');
+                if (orderNumberSpan) orderNumberSpan.textContent = data.orderNumber;
+            } else {
+                const requestIdSpan = document.getElementById('quoteRequestId');
+                if (requestIdSpan) requestIdSpan.textContent = data.requestId;
+            }
+        }
+        
+        // Auto-reset after 5 seconds
+        setTimeout(() => {
+            if (type === 'order') {
+                resetOrderForm();
+                closeModal('orderModal');
+            } else {
+                resetQuoteForm();
+                closeModal('quoteModal');
+            }
+        }, 5000);
+        
+    } catch (error) {
+        console.error('❌ Error sending data:', error);
+        
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
         } else {
-            console.log(`✅ Found element: ${name}`);
+            alert('เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อ 097-996-5556');
+        }
+    } finally {
+        // Restore UI
+        if (loadingDiv) loadingDiv.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'block';
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎯 DOM loaded - initializing forms');
+    
+    // Set minimum dates for quote form
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowString = tomorrow.toISOString().split('T')[0];
+    
+    const quotationDateInput = document.querySelector('input[name="quotationDate"]');
+    const deliveryDateInput = document.querySelector('input[name="deliveryDate"]');
+    
+    if (quotationDateInput) {
+        quotationDateInput.min = tomorrowString;
+        quotationDateInput.value = tomorrowString;
+    }
+    if (deliveryDateInput) {
+        deliveryDateInput.min = tomorrowString;
+    }
+    
+    // Order form
+    const orderForm = document.getElementById('orderForm');
+    if (orderForm) {
+        orderForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('🛒 Order form submitted');
+            const formData = new FormData(this);
+            await submitOrderForm(formData);
+        });
+    }
+    
+    // Quote form
+    const quoteForm = document.getElementById('quoteForm');
+    if (quoteForm) {
+        quoteForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('📋 Quote form submitted');
+            const formData = new FormData(this);
+            await submitQuoteForm(formData);
+        });
+    }
+    
+    console.log('✅ Forms initialized successfully');
+});
+
+// Modal close on outside click
+window.onclick = function(event) {
+    const orderModal = document.getElementById('orderModal');
+    const quoteModal = document.getElementById('quoteModal');
+    if (event.target == orderModal) {
+        closeModal('orderModal');
+    }
+    if (event.target == quoteModal) {
+        closeModal('quoteModal');
+    }
+}
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
     });
+});
+
+// Scroll animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
 };
 
-console.log('🛡️ Bulletproof form handlers loaded');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.scroll-animation').forEach(el => {
+    observer.observe(el);
+});
+
+// Header background change on scroll
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    if (header) {
+        if (window.scrollY > 100) {
+            header.style.background = 'rgba(245, 230, 197, 0.98)';
+        } else {
+            header.style.background = 'rgba(245, 230, 197, 0.95)';
+        }
+    }
+});
+
+// Floating elements animation
+document.querySelectorAll('.floating-element').forEach((element, index) => {
+    element.style.animationDelay = `${index * 0.5}s`;
+});
+
+console.log('🎉 VeeVee Website JavaScript fully loaded and ready!');
 </script>
 </body>
 </html>
