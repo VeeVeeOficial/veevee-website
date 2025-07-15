@@ -4,1376 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VeeVee - แผ่นแปะกันยุงจากธรรมชาติ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c5530',
+                        accent: '#f4e4bc',
+                        green: '#7fb069'
+                    },
+                    fontFamily: {
+                        'thai': ['Kanit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #3E422E;
-            background: linear-gradient(135deg, #F5E6C5 0%, #ffffff 100%);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(245, 230, 197, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 2px 20px rgba(62, 66, 46, 0.1);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #75914C;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo img {
-            height: 40px;
-            width: auto;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #3E422E;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #75914C;
-            transform: translateY(-2px);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #D78B30;
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, rgba(117, 145, 76, 0.9) 0%, rgba(158, 136, 111, 0.8) 50%, rgba(245, 230, 197, 0.9) 100%), 
-                        url('https://i.postimg.cc/bwfnP4Sg/S-18800647-0.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            padding: 120px 0 80px;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-            animation: float 20s infinite linear;
-        }
-
+        body { font-family: 'Kanit', sans-serif; }
+        .hero-gradient { background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa726 100%); }
+        .section-padding { padding: 80px 0; }
+        .card-shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .float-animation { animation: float 6s ease-in-out infinite; }
         @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-20px) rotate(360deg); }
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.4s both;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #D78B30, #F5E6C5);
-            color: #3E422E;
-            box-shadow: 0 4px 15px rgba(215, 139, 48, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn-quote {
-            background: linear-gradient(45deg, #75914C, #9E886F);
-            color: white;
-            box-shadow: 0 4px 15px rgba(117, 145, 76, 0.4);
-        }
-
-        .btn-payment {
-            background: linear-gradient(45deg, #1976D2, #42A5F5);
-            color: white;
-            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #F5E6C5, #D78B30);
-        }
-
-        .btn-secondary:hover {
-            background: white;
-            color: #3E422E;
-        }
-
-        .btn-quote:hover {
-            background: linear-gradient(45deg, #9E886F, #75914C);
-        }
-
-        .btn-payment:hover {
-            background: linear-gradient(45deg, #42A5F5, #1976D2);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 2% auto;
-            padding: 0;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #75914C, #9E886F);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header.payment {
-            background: linear-gradient(135deg, #1976D2, #42A5F5);
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .close {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .close:hover {
-            background: rgba(255,255,255,0.2);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #3E422E;
-        }
-
-        .required::after {
-            content: ' *';
-            color: #e74c3c;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: #fafafa;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #75914C;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(117, 145, 76, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .product-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-
-        .product-item {
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            background: white;
-        }
-
-        .product-item:hover {
-            border-color: #75914C;
-            box-shadow: 0 5px 15px rgba(117, 145, 76, 0.2);
-        }
-
-        .product-item.selected {
-            border-color: #75914C;
-            background: rgba(117, 145, 76, 0.1);
-        }
-
-        .product-item img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .product-item h4 {
-            color: #3E422E;
-            margin-bottom: 5px;
-        }
-
-        .product-item .price {
-            color: #D78B30;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin: 10px 0;
-        }
-
-        .quantity-btn {
-            background: #75914C;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .quantity-btn:hover {
-            background: #9E886F;
-            transform: scale(1.1);
-        }
-
-        .quantity-input {
-            width: 80px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            border: 2px solid #75914C;
-        }
-
-        .form-summary {
-            background: linear-gradient(135deg, #F5E6C5, #ffffff);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #75914C;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            padding: 5px 0;
-        }
-
-        .summary-row.total {
-            border-top: 2px solid #75914C;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #75914C;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #75914C;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .success-message, .error-message {
-            display: none;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .success-message {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .error-message {
-            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        /* Payment Slip Upload Styles */
-        .file-upload-area {
-            border: 2px dashed #1976D2;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            background: linear-gradient(135deg, #E3F2FD, #FFFFFF);
-            margin: 20px 0;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .file-upload-area:hover {
-            border-color: #42A5F5;
-            background: linear-gradient(135deg, #BBDEFB, #E3F2FD);
-        }
-
-        .file-upload-area.drag-over {
-            border-color: #42A5F5;
-            background: linear-gradient(135deg, #BBDEFB, #E3F2FD);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            color: #1976D2;
-            margin-bottom: 10px;
-        }
-
-        .upload-text {
-            font-size: 1.1rem;
-            color: #1976D2;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .upload-subtext {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-preview {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background: #F8F9FA;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .file-preview img {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 10px;
-            margin: 10px 0;
-        }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .remove-file {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .remove-file:hover {
-            background: #c82333;
-        }
-
-        /* Payment Status */
-        .payment-status {
-            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid #FF9800;
-            margin: 20px 0;
-        }
-
-        .payment-status h3 {
-            color: #E65100;
-            margin-bottom: 10px;
-        }
-
-        .status-steps {
-            list-style: none;
-            padding: 0;
-        }
-
-        .status-steps li {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            padding: 10px 0;
-        }
-
-        .status-steps li::before {
-            content: "⏳";
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-
-        .status-steps li.completed::before {
-            content: "✅";
-        }
-
-        .status-steps li.current::before {
-            content: "🔄";
-            animation: spin 2s linear infinite;
-        }
-
-        /* Features Section (existing styles remain) */
-        .features {
-            padding: 80px 0;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #3E422E;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, #75914C, #D78B30);
-            margin: 1rem auto;
-            border-radius: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: linear-gradient(135deg, #F5E6C5, #ffffff);
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(117, 145, 76, 0.1);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #75914C, #9E886F);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 2rem;
-            box-shadow: 0 5px 15px rgba(117, 145, 76, 0.3);
-        }
-
-        .feature-card h3 {
-            color: #3E422E;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        /* Rest of existing styles... */
-        .product {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #F5E6C5 0%, rgba(245, 230, 197, 0.5) 100%);
-        }
-
-        .product-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .product-info h2 {
-            font-size: 2.5rem;
-            color: #3E422E;
-            margin-bottom: 2rem;
-        }
-
-        .product-features {
-            list-style: none;
-            margin: 2rem 0;
-        }
-
-        .product-features li {
-            display: flex;
-            align-items: center;
-            margin: 1rem 0;
-            padding: 0.5rem;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .product-features li:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: translateX(10px);
-        }
-
-        .product-features li::before {
-            content: '✓';
-            color: #75914C;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-right: 1rem;
-            width: 25px;
-            height: 25px;
-            background: rgba(117, 145, 76, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .price-tag {
-            background: linear-gradient(45deg, #D78B30, #F5E6C5);
-            color: #3E422E;
-            padding: 1rem 2rem;
-            border-radius: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: inline-block;
-            margin: 1rem 0;
-            box-shadow: 0 5px 15px rgba(215, 139, 48, 0.3);
-        }
-
-        .product-image {
-            text-align: center;
-            position: relative;
-        }
-
-        .product-mockup {
-            width: 100%;
-            max-width: 400px;
-            min-height: 500px;
-            background: linear-gradient(145deg, #ffffff, #F5E6C5);
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            padding: 20px;
-        }
-
-        .product-image-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .product-image-container img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .floating-elements {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .floating-element {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(117, 145, 76, 0.3);
-            border-radius: 50%;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
-        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
-
-        /* Contact Section */
-        .contact {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #3E422E 0%, #75914C 100%);
-            color: white;
-            text-align: center;
-        }
-
-        .contact-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .contact-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .contact-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .contact-card h3 {
-            margin-bottom: 1rem;
-            color: #F5E6C5;
-        }
-
-        /* Footer */
-        footer {
-            background: #3E422E;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .product-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            
-            .contact-info {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
-            }
-
-            .product-selector {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Scroll animations */
-        .scroll-animation {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
-
-        .scroll-animation.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .parallax { transform: translateZ(0); will-change: transform; }
     </style>
 </head>
-<body>
-    <header>
-        <nav class="container">
-            <div class="logo">
-                <img src="https://i.postimg.cc/Xvyt5GY4/AR-10.png" alt="VeeVee Logo" />
-                VeeVee
-            </div>
-            <ul class="nav-links">
-                <li><a href="#home">หน้าแรก</a></li>
-                <li><a href="#features">คุณสมบัติ</a></li>
-                <li><a href="#product">ผลิตภัณฑ์</a></li>
-                <li><a href="#contact">ติดต่อ</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="home" class="hero">
-        <div class="container">
-            <h1>VeeVee</h1>
-            <p>แผ่นแปะกันยุงจากธรรมชาติ • ปกป้องคุณได้ทุกที่ ทุกเวลา</p>
-            <div class="cta-buttons">
-                <button onclick="openOrderModal()" class="btn btn-primary">
-                    🛒 สั่งซื้อออนไลน์
+<body class="overflow-x-hidden" x-data="veeVeeApp()">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" alt="VeeVee Logo" class="h-10 w-auto">
+                    <span class="text-2xl font-bold text-secondary">VeeVee</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-primary transition-colors">หน้าแรก</a>
+                    <a href="#why" class="text-gray-700 hover:text-primary transition-colors">ทำไมต้อง VeeVee</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary transition-colors">คุณสมบัติ</a>
+                    <a href="#howto" class="text-gray-700 hover:text-primary transition-colors">วิธีใช้</a>
+                    <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">ติดต่อ</a>
+                </div>
+                
+                <button @click="scrollToOrder()" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
+                    สั่งซื้อเลย
                 </button>
-                <button onclick="openQuoteModal()" class="btn btn-quote">
-                    📋 ขอใบเสนอราคา
-                </button>
-                <button onclick="openPaymentModal()" class="btn btn-payment">
-                    💳 ส่งสลิปการโอนเงิน
-                </button>
-                <a href="https://shopee.co.th/search?keyword=VEEVEE%20%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B9%81%E0%B8%9B%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A2%E0%B8%B8%E0%B8%87" target="_blank" class="btn btn-secondary">
-                    🛍️ ดูใน Shopee
-                </a>
             </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- Order Modal (existing modal remains the same) -->
-    <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🛒 สั่งซื้อ VeeVee Online</h2>
-                <span class="close" onclick="closeModal('orderModal')">&times;</span>
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full float-animation"></div>
+            <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-40 left-1/4 w-12 h-12 bg-white/10 rounded-full float-animation" style="animation-delay: 2s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-white space-y-8 fade-in">
+                <div class="space-y-4">
+                    <h1 class="text-5xl lg:text-6xl font-bold leading-tight">
+                        แผ่นแปะ<br>
+                        <span class="text-accent">กันยุง</span>
+                    </h1>
+                    <p class="text-xl lg:text-2xl font-light">VeeVee Anti-Mosquito Patch</p>
+                </div>
+                
+                <p class="text-lg lg:text-xl text-white/90 leading-relaxed">
+                    น้ำมันหอมระเหยคุณภาพดี ปกป้องคุณจากยุงร้าย<br>
+                    แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยสำหรับทุกคนในครอบครัว
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button @click="scrollToWhy()" class="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        เรียนรู้เพิ่มเติม
+                    </button>
+                    <button @click="scrollToOrder()" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        สั่งซื้อทันที
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-8 pt-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">24</div>
+                        <div class="text-sm text-white/80">ชั่วโมง</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">100%</div>
+                        <div class="text-sm text-white/80">ธรรมชาติ</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">12</div>
+                        <div class="text-sm text-white/80">ชิ้น/ซอง</div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="orderForm">
-                    <div class="section-title" style="font-size: 1.2rem; margin: 0 0 20px 0;">เลือกสินค้า</div>
-                    
-                    <div class="product-selector">
-                        <div class="product-item" onclick="selectProduct(this, 'single', 69)">
-                            <img src="https://i.postimg.cc/tg5W2DT5/S-18800653-0.jpg" alt="VeeVee 1 ซอง">
-                            <h4>VeeVee 1 ซอง</h4>
-                            <div class="price">฿69</div>
-                            <p>(12 ชิ้น/ซอง)</p>
-                        </div>
-                        <div class="product-item" onclick="selectProduct(this, 'pack3', 199)">
-                            <img src="https://i.postimg.cc/tg5W2DT5/S-18800653-0.jpg" alt="VeeVee 3 ซอง">
-                            <h4>VeeVee 3 ซอง</h4>
-                            <div class="price">฿199</div>
-                            <p>ประหยัด ฿8</p>
-                        </div>
-                        <div class="product-item" onclick="selectProduct(this, 'pack5', 319)">
-                            <img src="https://i.postimg.cc/tg5W2DT5/S-18800653-0.jpg" alt="VeeVee 5 ซอง">
-                            <h4>VeeVee 5 ซอง</h4>
-                            <div class="price">฿319</div>
-                            <p>ประหยัด ฿26</p>
-                        </div>
-                    </div>
-
-                    <div id="quantitySection" style="display: none;">
-                        <div class="section-title" style="font-size: 1.1rem; margin: 20px 0 10px 0;">จำนวน</div>
-                        <div class="quantity-selector">
-                            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">-</button>
-                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" readonly>
-                            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
-                        </div>
-                    </div>
-
-                    <div id="customerSection" style="display: none;">
-                        <div class="section-title" style="font-size: 1.2rem; margin: 20px 0;">ข้อมูลลูกค้า</div>
+            
+            <div class="relative flex justify-center items-center fade-in">
+                <div class="relative max-w-lg w-full">
+                    <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+                        <img src="https://i.postimg.cc/3wy6HCqz/Vee-Vee.png" 
+                             alt="VeeVee Package" 
+                             class="w-full h-auto transform hover:scale-105 transition-all duration-500 float-animation">
                         
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required">ชื่อ-นามสกุล</label>
-                                <input type="text" name="customerName" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="required">เบอร์โทรศัพท์</label>
-                                <input type="tel" name="phone" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="required">อีเมล</label>
-                            <input type="email" name="email" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="required">ที่อยู่จัดส่ง</label>
-                            <textarea name="address" required placeholder="เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>หมายเหตุ (ถ้ามี)</label>
-                            <textarea name="note" placeholder="ข้อความเพิ่มเติม เช่น เวลาที่สะดวกรับสินค้า"></textarea>
+                        <!-- Package Badge -->
+                        <div class="absolute -top-4 -right-4 bg-accent text-primary px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+                            12 PCS
                         </div>
                     </div>
-
-                    <div id="orderSummary" class="form-summary" style="display: none;">
-                        <h3 style="color: #75914C; margin-bottom: 15px;">สรุปคำสั่งซื้อ</h3>
-                        <div class="summary-row">
-                            <span>สินค้า:</span>
-                            <span id="summaryProduct">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>จำนวน:</span>
-                            <span id="summaryQuantity">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>ราคาต่อหน่วย:</span>
-                            <span id="summaryUnitPrice">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>ค่าจัดส่ง:</span>
-                            <span id="summaryShipping">฿50</span>
-                        </div>
-                        <div class="summary-row total">
-                            <span>ยอดรวมทั้งสิ้น:</span>
-                            <span id="summaryTotal">-</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
-                        ยืนยันคำสั่งซื้อ
-                    </button>
-
-                    <div class="loading" id="orderLoading">
-                        <div class="spinner"></div>
-                        <p>กำลังส่งคำสั่งซื้อ...</p>
-                    </div>
-
-                    <div class="success-message" id="orderSuccess">
-                        <h3>✅ สั่งซื้อเรียบร้อยแล้ว!</h3>
-                        <p>เราได้รับคำสั่งซื้อของคุณเรียบร้อยแล้ว</p>
-                        <p><strong>เลขที่คำสั่งซื้อ:</strong> <span id="orderNumber"></span></p>
-                        <p>ทีมงานจะติดต่อกลับภายใน 2 ชั่วโมง</p>
-                    </div>
-
-                    <div class="error-message" id="orderError">
-                        <h3>❌ เกิดข้อผิดพลาด</h3>
-                        <p>ไม่สามารถส่งคำสั่งซื้อได้ กรุณาลองใหม่หรือติดต่อ 097-996-5556</p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quote Modal (existing modal) -->
-    <div id="quoteModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📋 ขอใบเสนอราคา - บริษัท วีวี จำกัด</h2>
-                <span class="close" onclick="closeModal('quoteModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="quoteForm">
-                    <div class="section-title" style="font-size: 1.2rem; margin: 0 0 20px 0;">📋 ข้อมูลลูกค้า</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">ชื่อบริษัท/ร้าน</label>
-                            <input type="text" name="companyName" required placeholder="ระบุชื่อบริษัท ห้างร้าน หรือชื่อย่อ">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">ชื่อผู้ติดต่อ</label>
-                            <input type="text" name="contactName" required placeholder="ชื่อ-นามสกุล ผู้ประสานงาน">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">เบอร์โทรศัพท์</label>
-                            <input type="tel" name="phone" required placeholder="เบอร์ที่สามารถติดต่อได้ทันที">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">อีเมล</label>
-                            <input type="email" name="email" required placeholder="อีเมลสำหรับส่งใบเสนอราคา">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>ที่อยู่จัดส่ง/ที่อยู่บิล</label>
-                        <textarea name="address" placeholder="ที่อยู่สำหรับจัดส่งสินค้าหรือออกใบกำกับภาษี (ถ้ามี)"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="required">ท่านเป็นลูกค้าประเภทใด</label>
-                        <select name="customerType" required>
-                            <option value="">เลือกประเภทลูกค้า</option>
-                            <option value="new">🆕 ลูกค้าใหม่ (ครั้งแรกที่สั่ง)</option>
-                            <option value="regular">🤝 ลูกค้าประจำ (เคยสั่งแล้ว 2-5 ครั้ง)</option>
-                            <option value="vip">👑 ลูกค้า VIP (สั่งประจำ/ปริมาณเยอะ)</option>
-                            <option value="retail">🏪 ร้านค้าปลีก (ซื้อไปขายต่อ)</option>
-                            <option value="wholesale">🏭 ผู้ประกอบการรายใหญ่</option>
-                        </select>
-                    </div>
-                    
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">🛍️ ข้อมูลสินค้า</div>
-                    
-                    <div class="form-group">
-                        <label class="required">สินค้าที่สนใจ</label>
-                        <select name="productType" required>
-                            <option value="">เลือกสินค้า</option>
-                            <option value="veevee_patch">แผ่นแปะกันยุง VeeVee (12 ชิ้น/ซอง)</option>
-                        </select>
-                        <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">
-                            ราคา: 69 บาท/ซอง | ส่วนลด: 100+ ซอง (66 บาท) | 1000+ ซอง (65 บาท)
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">จำนวนที่ต้องการ (ซอง)</label>
-                            <input type="number" name="quantity" required min="1" placeholder="ระบุจำนวนซอง">
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">
-                                1 ซอง = 12 ชิ้น
-                            </div>
-                        </div>
-                        <div class="form-group" id="pricePreview" style="display: none;">
-                            <label>ราคาโดยประมาณ</label>
-                            <div style="background: #f0f8ff; padding: 15px; border-radius: 10px; border: 2px solid #75914C;">
-                                <div id="priceBreakdown">
-                                    <div>จำนวน: <span id="previewQuantity">0</span> ซอง</div>
-                                    <div>ราคาต่อซอง: <span id="previewUnitPrice">69</span> บาท</div>
-                                    <div style="font-weight: bold; color: #75914C; font-size: 1.2rem;">
-                                        ราคารวม: <span id="previewTotal">0</span> บาท
-                                    </div>
-                                    <div id="discountMessage" style="color: #D78B30; font-weight: bold;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">📅 ข้อมูลเพิ่มเติม</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">วันที่ต้องการได้รับใบเสนอราคา</label>
-                            <input type="date" name="quotationDate" required>
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เราจะส่งภายในวันที่ระบุ</div>
-                        </div>
-                        <div class="form-group">
-                            <label>วันที่ต้องการได้รับสินค้า (โดยประมาณ)</label>
-                            <input type="date" name="deliveryDate">
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">เพื่อให้เราจัดลำดับความสำคัญในการจัดส่ง</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Line ID (ถ้ามี)</label>
-                        <input type="text" name="lineId" placeholder="สำหรับติดต่อประสานงานเร่งด่วน">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>ข้อความเพิ่มเติม/ข้อกำหนดพิเศษ</label>
-                        <textarea name="additionalNote" placeholder="เช่น:&#10;• ต้องการใบกำกับภาษี&#10;• ต้องการการรับประกัน&#10;• ต้องการตัวอย่างสินค้า&#10;• อื่นๆ"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-quote" style="width: 100%; margin-top: 20px;">
-                        📋 ส่งคำขอใบเสนอราคา (ได้ PDF พร้อม QR Code ทันที)
-                    </button>
-                    
-                    <div class="loading" id="quoteLoading">
-                        <div class="spinner"></div>
-                        <p>กำลังสร้างใบเสนอราคา PDF...</p>
-                    </div>
-                    
-                    <div class="success-message" id="quoteSuccess">
-                        <h3>✅ ส่งใบเสนอราคาเรียบร้อยแล้ว!</h3>
-                        <p>เราได้ส่งใบเสนอราคา PDF พร้อม QR Code ไปยังอีเมลของท่านแล้ว</p>
-                        <p><strong>เลขที่คำขอ:</strong> <span id="quoteRequestId"></span></p>
-                        <p>📧 กรุณาตรวจสอบอีเมล (รวมถึง Spam/Junk)</p>
-                        <p>💳 สามารถโอนเงินผ่าน QR Code ในไฟล์ PDF ได้เลย</p>
-                        <p>📞 ติดต่อสอบถาม: 097-996-5556</p>
-                    </div>
-                    
-                    <div class="error-message" id="quoteError">
-                        <h3>❌ เกิดข้อผิดพลาด</h3>
-                        <p>ไม่สามารถส่งใบเสนอราคาได้ กรุณาลองใหม่หรือติดต่อ 097-996-5556</p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- NEW: Payment Slip Modal -->
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header payment">
-                <h2>💳 ส่งสลิปการโอนเงิน VeeVee</h2>
-                <span class="close" onclick="closeModal('paymentModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="paymentForm">
-                    <div class="payment-status">
-                        <h3>📋 ขั้นตอนการชำระเงิน</h3>
-                        <ul class="status-steps">
-                            <li class="completed">ได้รับใบเสนอราคา PDF พร้อม QR Code</li>
-                            <li class="completed">โอนเงินผ่าน QR Code หรือเลขบัญชี</li>
-                            <li class="current">ส่งสลิปการโอนเงิน (ขั้นตอนนี้)</li>
-                            <li>รอการตรวจสอบและจัดส่งสินค้า</li>
-                        </ul>
-                    </div>
-
-                    <div class="section-title" style="font-size: 1.2rem; margin: 0 0 20px 0;">📋 ข้อมูลการสั่งซื้อ</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">เลขที่คำสั่งซื้อ/ใบเสนอราคา</label>
-                            <input type="text" name="orderNumber" required placeholder="VV-REQ-xxxxxxxxx หรือ VV-ORD-xxxxxxxxx">
-                            <div style="font-size: 14px; color: #666; margin-top: 5px; font-style: italic;">
-                                ดูได้จากอีเมลที่เราส่งให้
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="required">ชื่อ-นามสกุล</label>
-                            <input type="text" name="customerName" required placeholder="ชื่อผู้โอนเงิน">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">เบอร์โทรศัพท์</label>
-                            <input type="tel" name="customerPhone" required placeholder="เบอร์ที่สามารถติดต่อได้">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">อีเมล</label>
-                            <input type="email" name="customerEmail" required placeholder="อีเมลเดียวกับที่สั่งซื้อ">
-                        </div>
-                    </div>
-
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">💰 ข้อมูลการโอนเงิน</div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="required">จำนวนเงินที่โอน (บาท)</label>
-                            <input type="number" name="amount" required min="1" placeholder="ระบุจำนวนเงินที่โอน">
-                        </div>
-                        <div class="form-group">
-                            <label class="required">วันที่โอนเงิน</label>
-                            <input type="date" name="transferDate" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>ธนาคารที่โอนจาก</label>
-                        <select name="bankName">
-                            <option value="">เลือกธนาคาร (ถ้าต้องการ)</option>
-                            <option value="SCB">ไทยพาณิชย์ (SCB)</option>
-                            <option value="BBL">กรุงเทพ (BBL)</option>
-                            <option value="KTB">กรุงไทย (KTB)</option>
-                            <option value="KBANK">กสิกรไทย (KBANK)</option>
-                            <option value="TMB">ทหารไทย (TMB)</option>
-                            <option value="BAY">กรุงศรีอยุธยา (BAY)</option>
-                            <option value="GSB">ออมสิน (GSB)</option>
-                            <option value="TBANK">ธนชาต (TBANK)</option>
-                            <option value="CIMB">ซีไอเอ็มบี (CIMB)</option>
-                            <option value="UOB">ยูโอบี (UOB)</option>
-                            <option value="PROMPTPAY">พร้อมเพย์</option>
-                            <option value="OTHER">อื่นๆ</option>
-                        </select>
-                    </div>
-
-                    <div class="section-title" style="font-size: 1.2rem; margin: 30px 0 20px 0;">📎 แนบสลิปการโอนเงิน</div>
-                    
-                    <div class="file-upload-area" onclick="document.getElementById('slipFile').click()">
-                        <div class="upload-icon">📸</div>
-                        <div class="upload-text">คลิกเพื่อเลือกไฟล์สลิป หรือลากไฟล์มาวางที่นี่</div>
-                        <div class="upload-subtext">รองรับไฟล์: JPG, PNG, PDF (ขนาดไม่เกิน 5MB)</div>
-                    </div>
-                    
-                    <input type="file" id="slipFile" name="slipFile" class="file-input" accept="image/*,application/pdf" required>
-                    
-                    <div class="file-preview" id="filePreview">
-                        <div class="file-info">
-                            <span id="fileName"></span>
-                            <button type="button" class="remove-file" onclick="removeFile()">ลบไฟล์</button>
-                        </div>
-                        <img id="previewImage" alt="ตัวอย่างสลิป">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>หมายเหตุเพิ่มเติม</label>
-                        <textarea name="slipNote" placeholder="ข้อความเพิ่มเติม เช่น เวลาที่โอน, หมายเลขอ้างอิง เป็นต้น"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-payment" style="width: 100%; margin-top: 20px;">
-                        💳 ส่งสลิปการโอนเงิน
-                    </button>
-                    
-                    <div class="loading" id="paymentLoading">
-                        <div class="spinner"></div>
-                        <p>กำลังส่งสลิปการโอนเงิน...</p>
-                    </div>
-                    
-                    <div class="success-message" id="paymentSuccess">
-                        <h3>✅ ส่งสลิปเรียบร้อยแล้ว!</h3>
-                        <p>เราได้รับสลิปการโอนเงินของคุณเรียบร้อยแล้ว</p>
-                        <p><strong>สถานะ:</strong> กำลังตรวจสอบการโอนเงิน</p>
-                        <p>ทีมงานจะติดต่อกลับภายใน 2 ชั่วโมงเพื่อยืนยันและแจ้งการจัดส่ง</p>
-                        <p>📞 ติดต่อสอบถาม: 097-996-5556</p>
-                    </div>
-                    
-                    <div class="error-message" id="paymentError">
-                        <h3>❌ เกิดข้อผิดพลาด</h3>
-                        <p>ไม่สามารถส่งสลิปได้ กรุณาลองใหม่หรือติดต่อ 097-996-5556</p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Existing sections remain the same -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title scroll-animation">ทำไมต้อง VeeVee?</h2>
-            <div class="features-grid">
-                <div class="feature-card scroll-animation">
-                    <div class="feature-icon">🌿</div>
-                    <h3>จากธรรมชาติ 100%</h3>
-                    <p>ผสานพลังสารสกัดธรรมชาติ 5 ชนิด: ตะไคร้หอม เจอเรเนี่ยม เลมอนยูคาลิปตัส ลาเวนเดอร์ และเปปเปอร์มินต์</p>
-                </div>
-                <div class="feature-card scroll-animation">
-                    <div class="feature-icon">⏰</div>
-                    <h3>ป้องกันนาน 24 ชั่วโมง</h3>
-                    <p>เทคโนโลยี Microencapsulation ช่วยปล่อยกลิ่นแบบ Slow Release ปกป้องยาวนานตลอดวัน</p>
-                </div>
-                <div class="feature-card scroll-animation">
-                    <div class="feature-icon">🎯</div>
-                    <h3>ใช้งานง่าย พกพาสะดวก</h3>
-                    <p>แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ กระเป๋า เสื้อผ้า น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
-                </div>
-                <div class="feature-card scroll-animation">
-                    <div class="feature-icon">💪</div>
-                    <h3>สารระเหยมากกว่า 40 เท่า</h3>
-                    <p>ปริมาณสารระเหยมากกว่าแผ่นแปะกันยุงทั่วไปถึง 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="product" class="product">
-        <div class="container">
-            <div class="product-container">
-                <div class="product-info scroll-animation">
-                    <h2>VeeVee Anti Mosquito Patch</h2>
-                    <p>แผ่นแปะกันยุงรูปแบบใหม่ ที่ใช้เทคโนโลยีขั้นสูงผสานกับธรรมชาติ</p>
+    <!-- Why VeeVee Section -->
+    <section id="why" class="section-padding bg-gradient-to-br from-green-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ทำไมต้อง VeeVee?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    น้ำมันหอมระเหยคุณภาพดี ป้องกันคุณจากยุงร้าย<br>
+                    แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยกลิ่นหอมพิเศษที่ทำให้ยุงส่ายหน้า มีนวง ไม่กล้าเข้าใกล้คุณและปกป้องคุณตลอดวัน
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 fade-in">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-green/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-leaf text-green text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">น้ำมันหอมระเหยคุณภาพดี</h3>
+                            <p class="text-gray-600">อ่อนโยนจากสารสกัดธรรมชาติ ได้แก่ น้ำมันตะไคร้หอม, น้ำมันยูคาลิปตัส, เปปเปอร์มินต์, ดอกเจอเรเนียม และลาเวนเดอร์ ผสมผสานกันอย่างลงตัว เพื่อการไล่ยุงอย่างมีประสิทธิภาพ</p>
+                        </div>
+                    </div>
                     
-                    <ul class="product-features">
-                        <li>แบบกดปุ่ม 4 เม็ด กดได้ตามต้องการ</li>
-                        <li>วัสดุ PU คุณภาพสูง มีโฟมด้านใน</li>
-                        <li>12 ชิ้นต่อซอง ใช้ได้นาน</li>
-                        <li>กลิ่นตะไคร้หอม หอมนุ่ม ไม่แสบคอ</li>
-                        <li>เหมาะกับทุกวัย แม้แต่เด็กเล็ก</li>
-                        <li>แปะได้ทุกที่ ไม่เปื้อนเสื้อผ้า</li>
-                    </ul>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">ป้องกันยาวนาน 24 ชั่วโมง</h3>
+                            <p class="text-gray-600">เทคโนโลยี Microencapsulation ช่วยปล่อยกลิ่นแบบ Slow Release ให้ประสิทธิภาพสูงสุดตลอด 24 ชั่วโมง</p>
+                        </div>
+                    </div>
                     
-                    <div class="price-tag">฿69 / ซอง</div>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-shield-alt text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">ปลอดภัยสำหรับทุกคน</h3>
+                            <p class="text-gray-600">ไม่มีสารเคมีที่เป็นอันตราย เหมาะสำหรับเด็ก ผู้ใหญ่ และผู้สูงอายุ ใช้ได้อย่างมั่นใจ</p>
+                        </div>
+                    </div>
                     
-                    <div class="cta-buttons">
-                        <button onclick="openOrderModal()" class="btn btn-primary">
-                            สั่งซื้อเลย
-                        </button>
-                        <button onclick="openQuoteModal()" class="btn btn-quote">
-                            ขอใบเสนอราคา
-                        </button>
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-accent/40 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-hand-paper text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">ใช้งานง่าย พกพาสะดวก</h3>
+                            <p class="text-gray-600">แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="product-image scroll-animation">
-                    <div class="product-mockup" id="productImage">
-                        <div class="product-image-container">
-                            <img src="https://i.postimg.cc/C5WqzQPF/S-18800655-0.jpg" alt="VeeVee Infographic" style="width: 100%; max-width: 350px; height: auto; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" />
-                        </div>
-                        <div class="floating-elements">
-                            <div class="floating-element"></div>
-                            <div class="floating-element"></div>
-                            <div class="floating-element"></div>
+                <div class="relative fade-in">
+                    <img src="https://i.postimg.cc/Y94jBVNY/S-18800654-0.jpg" 
+                         alt="Natural Protection" 
+                         class="w-full h-auto rounded-3xl shadow-2xl">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute top-8 right-8 bg-white rounded-2xl p-4 shadow-lg">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green">100%</div>
+                            <div class="text-sm text-gray-600">ธรรมชาติ</div>
                         </div>
                     </div>
                 </div>
@@ -1381,741 +207,482 @@
         </div>
     </section>
 
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title scroll-animation">ติดต่อเรา</h2>
-            <div class="contact-info">
-                <div class="contact-card scroll-animation">
-                    <h3>📞 โทรสั่งซื้อ</h3>
-                    <p>097-996-5556</p>
+    <!-- Features Section -->
+    <section id="features" class="section-padding bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">คุณสมบัติเด่น</h2>
+                <p class="text-xl text-gray-600">สารระเหยมากกว่า 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
+            </div>
+            
+            <!-- Product Hero Image -->
+            <div class="text-center mb-16 fade-in">
+                <img src="https://i.postimg.cc/1zjgY6nW/S-18800647-0.jpg" 
+                     alt="VeeVee Product Features" 
+                     class="max-w-2xl mx-auto rounded-3xl shadow-2xl">
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-green/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-leaf text-green text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">จากธรรมชาติ 100%</h3>
+                    <p class="text-gray-600">ผสานพลังสารสกัดธรรมชาติ 5 ชนิด ปลอดภัยสำหรับทุกคนในครอบครัว</p>
                 </div>
-                <div class="contact-card scroll-animation">
-                    <h3>💬 Line Official</h3>
-                    <p>วีวี วี ไลน์ช้อปปิ้ง line</p>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-clock text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">ป้องกันนาน 24 ชั่วโมง</h3>
+                    <p class="text-gray-600">เทคโนโลยี Microencapsulation ช่วยปล่อยกลิ่นแบบ Slow Release</p>
                 </div>
-                <div class="contact-card scroll-animation">
-                    <h3>💳 QR Payment</h3>
-                    <p>สแกน QR Code ใน PDF ใบเสนอราคา</p>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-hand-paper text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">ใช้งานง่าย</h3>
+                    <p class="text-gray-600">แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ กระเป๋า เสื้อผ้า</p>
                 </div>
-                <div class="contact-card scroll-animation">
-                    <h3>🛍️ ช่องทางสั่งซื้อ</h3>
-                    <p>เว็บไซต์ • Shopee • TikTok Shop</p>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-accent/40 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-chart-line text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">สารระเหยมากกว่า 40 เท่า</h3>
+                    <p class="text-gray-600">ปริมาณสารระเหยมากกว่าแผ่นแปะกันยุงทั่วไปถึง 40 เท่า</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 VeeVee. แผ่นแปะกันยุงจากธรรมชาติ. สงวนลิขสิทธิ์.</p>
+    <!-- How to Use Section -->
+    <section id="howto" class="section-padding bg-gradient-to-br from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ติดไว้ได้ทุกที่ที่ต้องการ</h2>
+                <h3 class="text-2xl font-semibold text-primary">ป้องกันคุณจากยุงรบกวน</h3>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="text-center space-y-6 fade-in">
+                    <div class="relative">
+                        <img src="https://i.postimg.cc/DZ56RSg8/2-1.png" alt="ติดบนเสื้อ" class="w-full h-64 object-cover rounded-2xl shadow-lg">
+                        <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            บนเสื้อ
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">แปะบนเสื้อผ้า</h3>
+                    <p class="text-gray-600">แปะบนเสื้อ เชิ้ต หรือเสื้อผ้าที่สวมใส่ประจำวัน ป้องกันยุงได้ตลอดวัน</p>
+                </div>
+                
+                <div class="text-center space-y-6 fade-in">
+                    <div class="relative">
+                        <img src="https://i.postimg.cc/KYDDg1CJ/3.png" alt="ติดบนกางเกง" class="w-full h-64 object-cover rounded-2xl shadow-lg">
+                        <div class="absolute top-4 left-4 bg-green text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            บนกางเกง
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">แปะบนกางเกง</h3>
+                    <p class="text-gray-600">แปะบนกางเกง กระโปรง หรือกางเกงขาสั้น เพื่อป้องกันขาจากยุงกัด</p>
+                </div>
+                
+                <div class="text-center space-y-6 fade-in">
+                    <div class="relative">
+                        <img src="https://i.postimg.cc/MKf0mPhc/4.png" alt="ติดบนกระเป๋า" class="w-full h-64 object-cover rounded-2xl shadow-lg">
+                        <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            บนกระเป๋า
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">แปะบนกระเป๋า</h3>
+                    <p class="text-gray-600">แปะบนกระเป๋าเป้ กระเป๋าสะพาย เพื่อป้องกันรอบๆ ตัวขณะเดินทาง</p>
+                </div>
+            </div>
+            
+            <!-- Product Demo -->
+            <div class="mt-16 bg-white rounded-3xl p-8 shadow-xl fade-in">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <img src="https://i.postimg.cc/N0F1CQMx/AR-6.png" alt="วิธีการใช้ VeeVee" class="w-full h-auto rounded-2xl shadow-lg">
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-bold text-secondary">แบบกดปุ่ม 4 เม็ด</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                <p class="text-gray-700">กดปุ่มกลางให้แน่น</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                                <p class="text-gray-700">จะมีสารระเหยออกมา 4 เม็ด</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                <p class="text-gray-700">แปะในตำแหน่งที่ต้องการ</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                                <p class="text-gray-700">ป้องกันยุงได้นาน 24 ชั่วโมง</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Family Protection Section -->
+    <section class="section-padding bg-green-50">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 fade-in">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-secondary">พกไปด้วยทุกที่<br>สบายใจได้ทุกเวลา</h2>
+                    <p class="text-xl text-gray-600">ไม่มีเสียงรบกวนกวนใจอีกต่อไป</p>
+                    <p class="text-gray-600 leading-relaxed">
+                        VeeVee ป้องกันยุงแบบธรรมชาติ เหมาะสำหรับการเดินทาง แคมปิ้ง หรือกิจกรรมกลางแจ้ง 
+                        ไม่ว่าจะเป็นเด็กเล็กหรือผู้ใหญ่ ใช้ได้อย่างปลอดภัย มั่นใจ
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">เหมาะสำหรับเด็กและผู้ใหญ่</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">ไม่มีสารเคมีที่เป็นอันตราย</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">ใช้ได้ทุกกิจกรรม ทุกสถานที่</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative fade-in">
+                    <img src="https://i.postimg.cc/V6P2z0ng/S-18800655-0.jpg" alt="ครอบครัวปลอดภัย" class="w-full h-auto rounded-3xl shadow-2xl">
+                    
+                    <!-- Testimonial Badge -->
+                    <div class="absolute bottom-8 left-8 bg-white rounded-2xl p-6 shadow-lg max-w-xs">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-quote-left text-primary text-2xl"></i>
+                            <div>
+                                <p class="text-sm text-gray-600">"ลูกนอนหลับสบาย ไม่ถูกยุงรบกวน"</p>
+                                <p class="text-xs text-gray-500 mt-1">- คุณแม่มนัสนันท์</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Outdoor Adventure Section -->
+    <section class="section-padding bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative fade-in order-2 lg:order-1">
+                    <img src="https://i.postimg.cc/yxLf3vr1/9.png" alt="การผจญภัยกลางแจ้ง" class="w-full h-auto rounded-3xl shadow-2xl">
+                    
+                    <!-- Activity Badge -->
+                    <div class="absolute top-8 left-8 bg-primary text-white px-4 py-2 rounded-full font-semibold">
+                        🏕️ Perfect for Camping
+                    </div>
+                </div>
+                
+                <div class="space-y-8 fade-in order-1 lg:order-2">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ไม่ว่าจะไปที่ไหน<br>ก็ไม่ต้องกังวลเรื่องยุงกัด</h2>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-mountain text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ท่องเที่ยว</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-campground text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">แคมปิ้ง</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-tree text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ป่าไผ่</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-water text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ริมน้ำ</h4>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 leading-relaxed">
+                        เดินทางไปไหนก็ไม่ต้องกลัวยุงอีกต่อไป VeeVee ปกป้องคุณและครอบครัวในทุกการผจญภัย 
+                        ไม่ว่าจะเป็นการแคมปิ้ง เดินป่า หรือนั่งเล่นริมน้ำ
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase -->
+    <section class="section-padding bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ผลิตภัณฑ์ VeeVee</h2>
+                <p class="text-xl text-gray-600">แผ่นแปะกันยุงจากธรรมชาติ คุณภาพระดับพรีเมียม</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl fade-in">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="relative">
+                            <img src="https://i.postimg.cc/7PSV7Q7K/2.png" alt="VeeVee Product" class="w-full h-auto rounded-2xl shadow-lg">
+                            
+                            <!-- Product Features -->
+                            <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 space-y-4">
+                                <div class="bg-green text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-leaf text-xl"></i>
+                                </div>
+                                <div class="bg-primary text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-shield-alt text-xl"></i>
+                                </div>
+                                <div class="bg-secondary text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-clock text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-3xl font-bold text-secondary mb-4">VeeVee Anti-Mosquito Patch</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    แผ่นแปะกันยุงขนาด 12 ชิ้นต่อซอง พร้อมเทคโนโลยีการปล่อยสารกันยุงแบบ Slow Release 
+                                    ที่ให้ประสิทธิภาพยาวนานถึง 24 ชั่วโมง
+                                </p>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">จำนวนในซอง</span>
+                                    <span class="text-primary font-bold">12 ชิ้น</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">ระยะเวลาป้องกัน</span>
+                                    <span class="text-primary font-bold">24 ชั่วโมง</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">ส่วนผสม</span>
+                                    <span class="text-primary font-bold">100% ธรรมชาติ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-primary mb-2">฿69</div>
+                                <p class="text-gray-600">ราคาต่อซอง</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="order" class="section-padding hero-gradient relative overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full float-animation"></div>
+            <div class="absolute bottom-20 right-10 w-24 h-24 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 text-center text-white relative z-10">
+            <div class="max-w-4xl mx-auto space-y-8 fade-in">
+                <h2 class="text-4xl lg:text-6xl font-bold">พร้อมปกป้องคุณและครอบครัว?</h2>
+                <p class="text-xl lg:text-2xl text-white/90">
+                    สั่งซื้อ VeeVee แผ่นแปะกันยุงจากธรรมชาติ<br>
+                    ปลอดภัย มีประสิทธิภาพ ใช้งานง่าย
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                    <a href="tel:0979965556" class="bg-white text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-phone mr-3"></i>
+                        โทรสั่งซื้อ 097-996-5556
+                    </a>
+                    
+                    <a href="https://lin.ee/veevee" target="_blank" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fab fa-line mr-3"></i>
+                        สั่งผ่าน Line
+                    </a>
+                    
+                    <a href="https://shopee.co.th/search?keyword=VEEVEE" target="_blank" class="bg-secondary text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-secondary/90 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-3"></i>
+                        ซื้อใน Shopee
+                    </a>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
+                    <div class="text-center">
+                        <i class="fas fa-shipping-fast text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">จัดส่งฟรี</h4>
+                        <p class="text-white/80">สั่งครบ 500 บาท</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-undo text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">รับประกันคุณภาพ</h4>
+                        <p class="text-white/80">ไม่พอใจ คืนเงิน 100%</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-headset text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">บริการหลังการขาย</h4>
+                        <p class="text-white/80">ดูแลลูกค้าตลอดไป</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-secondary text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 fade-in">
+                    <h2 class="text-4xl lg:text-5xl font-bold">ติดต่อเรา</h2>
+                    <p class="text-xl text-gray-300">พร้อมให้บริการและตอบคำถามทุกเรื่องเกี่ยวกับ VeeVee</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-phone text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">โทรศัพท์</h4>
+                                <p class="text-gray-300">097-996-5556</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fab fa-line text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Line Official</h4>
+                                <p class="text-gray-300">@veevee.official</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-envelope text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">อีเมล</h4>
+                                <p class="text-gray-300">info@veevee.co.th</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-facebook text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-instagram text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-youtube text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-tiktok text-white"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 fade-in">
+                    <h3 class="text-2xl font-bold text-secondary mb-6">ส่งข้อความหาเรา</h3>
+                    <form class="space-y-6">
+                        <div>
+                            <input type="text" placeholder="ชื่อ-นามสกุล" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="อีเมล" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <input type="tel" placeholder="เบอร์โทรศัพท์" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <textarea placeholder="ข้อความ" rows="4" 
+                                     class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700"></textarea>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                            ส่งข้อความ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" alt="VeeVee Logo" class="h-10 w-auto">
+                <span class="text-2xl font-bold">VeeVee</span>
+            </div>
+            <p class="text-gray-400 mb-4">แผ่นแปะกันยุงจากธรรมชาติ ปกป้องคุณและครอบครัวอย่างปลอดภัย</p>
+            <p class="text-gray-500">&copy; 2025 VeeVee. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // ======================================================
-        // VeeVee Website JavaScript v3.0 - Enhanced with Payment Slip
-        // ======================================================
+        function veeVeeApp() {
+            return {
+                init() {
+                    // Intersection Observer for fade-in animations
+                    const observerOptions = {
+                        threshold: 0.1,
+                        rootMargin: '0px 0px -50px 0px'
+                    };
 
-        // Global variables
-        let selectedProduct = null;
-        let selectedPrice = 0;
-        let uploadedFile = null;
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9XIelyByw9t7Gs3Ru62PzHjxV8Z5EgzLwb4Oop-nzoNd3cIDp_0Wt1rvdrmFBJFM0/exec';
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                            }
+                        });
+                    }, observerOptions);
 
-        console.log('🚀 VeeVee Website JavaScript v3.0 loaded');
+                    document.querySelectorAll('.fade-in').forEach(el => {
+                        observer.observe(el);
+                    });
 
-        // Modal functions
-        function openOrderModal() {
-            console.log('🛒 Opening order modal');
-            const modal = document.getElementById('orderModal');
-            if (modal) {
-                modal.style.display = 'block';
-                resetOrderForm();
-            }
-        }
-
-        function openQuoteModal() {
-            console.log('📋 Opening quote modal');
-            const modal = document.getElementById('quoteModal');
-            if (modal) {
-                modal.style.display = 'block';
-                resetQuoteForm();
+                    // Smooth scroll for navigation
+                    this.setupSmoothScroll();
+                },
                 
-                // Set default quotation date to tomorrow
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const quotationInput = document.querySelector('input[name="quotationDate"]');
-                if (quotationInput) {
-                    quotationInput.value = tomorrow.toISOString().split('T')[0];
-                }
-            }
-        }
-
-        function openPaymentModal() {
-            console.log('💳 Opening payment modal');
-            const modal = document.getElementById('paymentModal');
-            if (modal) {
-                modal.style.display = 'block';
-                resetPaymentForm();
+                scrollToWhy() {
+                    document.getElementById('why').scrollIntoView({ behavior: 'smooth' });
+                },
                 
-                // Set default transfer date to today
-                const today = new Date();
-                const transferDateInput = document.querySelector('input[name="transferDate"]');
-                if (transferDateInput) {
-                    transferDateInput.value = today.toISOString().split('T')[0];
-                }
-            }
-        }
-
-        function closeModal(modalId) {
-            console.log('❌ Closing modal:', modalId);
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        // Product selection for order
-        function selectProduct(element, productType, price) {
-            console.log('🎯 Product selected:', productType, price);
-            
-            // Remove previous selection
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            
-            // Add selection to clicked item
-            element.classList.add('selected');
-            
-            selectedProduct = productType;
-            selectedPrice = price;
-            
-            // Show sections safely
-            const quantitySection = document.getElementById('quantitySection');
-            const customerSection = document.getElementById('customerSection');
-            const orderSummary = document.getElementById('orderSummary');
-            
-            if (quantitySection) quantitySection.style.display = 'block';
-            if (customerSection) customerSection.style.display = 'block';
-            if (orderSummary) orderSummary.style.display = 'block';
-            
-            updateOrderSummary();
-        }
-
-        // Quantity functions
-        function changeQuantity(delta) {
-            const quantityInput = document.getElementById('quantity');
-            if (quantityInput) {
-                let currentValue = parseInt(quantityInput.value) || 1;
-                let newValue = currentValue + delta;
+                scrollToOrder() {
+                    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+                },
                 
-                if (newValue >= 1) {
-                    quantityInput.value = newValue;
-                    updateOrderSummary();
-                }
-            }
-        }
-
-        // Update order summary
-        function updateOrderSummary() {
-            if (!selectedProduct) return;
-            
-            const quantityInput = document.getElementById('quantity');
-            const quantity = parseInt(quantityInput?.value || 1);
-            const subtotal = selectedPrice * quantity;
-            const shipping = 50;
-            const total = subtotal + shipping;
-            
-            const productNames = {
-                'single': 'VeeVee 1 ซอง',
-                'pack3': 'VeeVee 3 ซอง',
-                'pack5': 'VeeVee 5 ซอง'
-            };
-            
-            // Safely update summary elements
-            const summaryProduct = document.getElementById('summaryProduct');
-            const summaryQuantity = document.getElementById('summaryQuantity');
-            const summaryUnitPrice = document.getElementById('summaryUnitPrice');
-            const summaryTotal = document.getElementById('summaryTotal');
-            
-            if (summaryProduct) summaryProduct.textContent = productNames[selectedProduct];
-            if (summaryQuantity) summaryQuantity.textContent = quantity + ' แพ็ค';
-            if (summaryUnitPrice) summaryUnitPrice.textContent = '฿' + selectedPrice.toLocaleString();
-            if (summaryTotal) summaryTotal.textContent = '฿' + total.toLocaleString();
-        }
-
-        // File upload functionality
-        function setupFileUpload() {
-            const fileInput = document.getElementById('slipFile');
-            const uploadArea = document.querySelector('.file-upload-area');
-            const filePreview = document.getElementById('filePreview');
-            
-            if (!fileInput || !uploadArea) return;
-
-            // File input change event
-            fileInput.addEventListener('change', handleFileSelect);
-            
-            // Drag and drop events
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.classList.add('drag-over');
-            });
-            
-            uploadArea.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('drag-over');
-            });
-            
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.classList.remove('drag-over');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    handleFileSelect({ target: { files: files } });
-                }
-            });
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Validate file
-            const maxSize = 5 * 1024 * 1024; // 5MB
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-            
-            if (file.size > maxSize) {
-                alert('ไฟล์ใหญ่เกินไป กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 5MB');
-                return;
-            }
-            
-            if (!allowedTypes.includes(file.type)) {
-                alert('ประเภทไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์ JPG, PNG หรือ PDF');
-                return;
-            }
-            
-            uploadedFile = file;
-            showFilePreview(file);
-        }
-
-        function showFilePreview(file) {
-            const filePreview = document.getElementById('filePreview');
-            const fileName = document.getElementById('fileName');
-            const previewImage = document.getElementById('previewImage');
-            
-            if (!filePreview || !fileName) return;
-            
-            fileName.textContent = file.name;
-            filePreview.style.display = 'block';
-            
-            // Show image preview for image files
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    if (previewImage) {
-                        previewImage.src = e.target.result;
-                        previewImage.style.display = 'block';
-                    }
-                };
-                reader.readAsDataURL(file);
-            } else {
-                if (previewImage) {
-                    previewImage.style.display = 'none';
-                }
-            }
-        }
-
-        function removeFile() {
-            const fileInput = document.getElementById('slipFile');
-            const filePreview = document.getElementById('filePreview');
-            
-            if (fileInput) fileInput.value = '';
-            if (filePreview) filePreview.style.display = 'none';
-            
-            uploadedFile = null;
-        }
-
-        // Reset forms
-        function resetOrderForm() {
-            const form = document.getElementById('orderForm');
-            if (form) form.reset();
-            
-            // Hide sections safely
-            const sections = ['quantitySection', 'customerSection', 'orderSummary', 'orderLoading', 'orderSuccess', 'orderError'];
-            sections.forEach(sectionId => {
-                const element = document.getElementById(sectionId);
-                if (element) element.style.display = 'none';
-            });
-            
-            // Reset selections
-            document.querySelectorAll('.product-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            
-            selectedProduct = null;
-            selectedPrice = 0;
-            
-            const quantityInput = document.getElementById('quantity');
-            if (quantityInput) quantityInput.value = 1;
-        }
-
-        function resetQuoteForm() {
-            const form = document.getElementById('quoteForm');
-            if (form) form.reset();
-            
-            // Hide status elements safely
-            const elements = ['quoteLoading', 'quoteSuccess', 'quoteError'];
-            elements.forEach(elementId => {
-                const element = document.getElementById(elementId);
-                if (element) element.style.display = 'none';
-            });
-        }
-
-        function resetPaymentForm() {
-            const form = document.getElementById('paymentForm');
-            if (form) form.reset();
-            
-            // Hide status elements safely
-            const elements = ['paymentLoading', 'paymentSuccess', 'paymentError'];
-            elements.forEach(elementId => {
-                const element = document.getElementById(elementId);
-                if (element) element.style.display = 'none';
-            });
-            
-            // Reset file upload
-            removeFile();
-            uploadedFile = null;
-        }
-
-        // Form submission functions
-        async function submitOrderForm(formData) {
-            console.log('🛒 Processing order submission');
-            
-            if (!selectedProduct) {
-                alert('กรุณาเลือกสินค้า');
-                return;
-            }
-            
-            // Validate required fields
-            const required = ['customerName', 'phone', 'email', 'address'];
-            const missing = [];
-            
-            for (let field of required) {
-                if (!formData.get(field)?.trim()) {
-                    missing.push(field);
-                }
-            }
-            
-            if (missing.length > 0) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            const quantityInput = document.getElementById('quantity');
-            const quantity = parseInt(quantityInput?.value || 1);
-            const subtotal = selectedPrice * quantity;
-            const shipping = 50;
-            const total = subtotal + shipping;
-            
-            const orderData = {
-                type: 'order',
-                orderNumber: 'VV-' + Date.now(),
-                timestamp: new Date().toLocaleString('th-TH'),
-                product: selectedProduct,
-                productName: document.getElementById('summaryProduct')?.textContent || '',
-                quantity: quantity,
-                unitPrice: selectedPrice,
-                subtotal: subtotal,
-                shipping: shipping,
-                total: total,
-                customerName: formData.get('customerName'),
-                phone: formData.get('phone'),
-                email: formData.get('email'),
-                address: formData.get('address'),
-                note: formData.get('note') || ''
-            };
-            
-            await sendToGoogleScript(orderData, 'order');
-        }
-
-        async function submitQuoteForm(formData) {
-            console.log('📋 Processing quote submission');
-            
-            // Validate required fields
-            const requiredFields = {
-                'companyName': 'ชื่อบริษัท',
-                'contactName': 'ชื่อผู้ติดต่อ',
-                'phone': 'เบอร์โทรศัพท์',
-                'email': 'อีเมล',
-                'customerType': 'ประเภทลูกค้า',
-                'productType': 'สินค้าที่สนใจ',
-                'quantity': 'จำนวน',
-                'quotationDate': 'วันที่ต้องการใบเสนอราคา'
-            };
-            
-            const missingFields = [];
-            
-            for (let [field, label] of Object.entries(requiredFields)) {
-                const value = formData.get(field);
-                if (!value || value.trim() === '') {
-                    missingFields.push(label);
-                }
-            }
-            
-            if (missingFields.length > 0) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
-                return;
-            }
-            
-            // Validate quantity
-            const quantity = parseInt(formData.get('quantity'));
-            if (!quantity || quantity < 1) {
-                alert('กรุณาระบุจำนวนที่ถูกต้อง');
-                return;
-            }
-            
-            const requestId = 'VV-REQ-' + Date.now();
-            const quoteData = {
-                type: 'quotation',
-                requestId: requestId,
-                timestamp: new Date().toLocaleString('th-TH'),
-                companyName: formData.get('companyName'),
-                contactName: formData.get('contactName'),
-                phone: formData.get('phone'),
-                email: formData.get('email'),
-                address: formData.get('address') || '',
-                customerType: formData.get('customerType'),
-                productType: formData.get('productType'),
-                quantity: quantity,
-                quotationDate: formData.get('quotationDate'),
-                deliveryDate: formData.get('deliveryDate') || '',
-                lineId: formData.get('lineId') || '',
-                additionalNote: formData.get('additionalNote') || ''
-            };
-            
-            await sendToGoogleScript(quoteData, 'quotation');
-        }
-
-        async function submitPaymentForm(formData) {
-            console.log('💳 Processing payment slip submission');
-            
-            // Validate required fields
-            const requiredFields = {
-                'orderNumber': 'เลขที่คำสั่งซื้อ',
-                'customerName': 'ชื่อ-นามสกุล',
-                'customerPhone': 'เบอร์โทรศัพท์',
-                'customerEmail': 'อีเมล',
-                'amount': 'จำนวนเงิน',
-                'transferDate': 'วันที่โอนเงิน'
-            };
-            
-            const missingFields = [];
-            
-            for (let [field, label] of Object.entries(requiredFields)) {
-                const value = formData.get(field);
-                if (!value || value.trim() === '') {
-                    missingFields.push(label);
-                }
-            }
-            
-            if (missingFields.length > 0) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
-                return;
-            }
-            
-            // Validate file upload
-            if (!uploadedFile) {
-                alert('กรุณาแนบสลิปการโอนเงิน');
-                return;
-            }
-            
-            // Validate amount
-            const amount = parseFloat(formData.get('amount'));
-            if (!amount || amount <= 0) {
-                alert('กรุณาระบุจำนวนเงินที่ถูกต้อง');
-                return;
-            }
-            
-            const paymentData = {
-                type: 'payment_slip',
-                timestamp: new Date().toLocaleString('th-TH'),
-                orderNumber: formData.get('orderNumber'),
-                customerName: formData.get('customerName'),
-                customerPhone: formData.get('customerPhone'),
-                customerEmail: formData.get('customerEmail'),
-                amount: amount,
-                transferDate: formData.get('transferDate'),
-                bankName: formData.get('bankName') || '',
-                slipNote: formData.get('slipNote') || '',
-                fileName: uploadedFile.name,
-                fileSize: uploadedFile.size,
-                fileType: uploadedFile.type
-            };
-            
-            // Note: In a real implementation, you would upload the file to Google Drive or another storage service
-            // For now, we'll just send the payment data without the actual file
-            
-            await sendToGoogleScript(paymentData, 'payment');
-        }
-
-        // Send data to Google Apps Script
-        async function sendToGoogleScript(data, type) {
-            console.log('📤 Sending to Google Apps Script:', type, data);
-            
-            const loadingId = type === 'order' ? 'orderLoading' : type === 'quotation' ? 'quoteLoading' : 'paymentLoading';
-            const successId = type === 'order' ? 'orderSuccess' : type === 'quotation' ? 'quoteSuccess' : 'paymentSuccess';
-            const errorId = type === 'order' ? 'orderError' : type === 'quotation' ? 'quoteError' : 'paymentError';
-            
-            // Safely find elements
-            const submitBtn = document.querySelector(`#${type === 'quotation' ? 'quote' : type === 'payment' ? 'payment' : 'order'}Form .btn[type="submit"]`);
-            const loadingDiv = document.getElementById(loadingId);
-            const successDiv = document.getElementById(successId);
-            const errorDiv = document.getElementById(errorId);
-            
-            try {
-                // Hide previous messages
-                if (successDiv) successDiv.style.display = 'none';
-                if (errorDiv) errorDiv.style.display = 'none';
-                
-                // Show loading
-                if (submitBtn) submitBtn.style.display = 'none';
-                if (loadingDiv) loadingDiv.style.display = 'block';
-                
-                // Send to Google Apps Script
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                console.log('✅ Data sent successfully');
-                
-                // Show success
-                if (successDiv) {
-                    successDiv.style.display = 'block';
-                    
-                    // Set request/order number
-                    if (type === 'order') {
-                        const orderNumberSpan = document.getElementById('orderNumber');
-                        if (orderNumberSpan) orderNumberSpan.textContent = data.orderNumber;
-                    } else if (type === 'quotation') {
-                        const requestIdSpan = document.getElementById('quoteRequestId');
-                        if (requestIdSpan) requestIdSpan.textContent = data.requestId;
-                    }
-                }
-                
-                // Auto-reset after delay
-                const resetDelay = type === 'quotation' ? 8000 : 5000;
-                setTimeout(() => {
-                    if (type === 'order') {
-                        resetOrderForm();
-                        closeModal('orderModal');
-                    } else if (type === 'quotation') {
-                        resetQuoteForm();
-                        closeModal('quoteModal');
-                    } else if (type === 'payment') {
-                        resetPaymentForm();
-                        closeModal('paymentModal');
-                    }
-                }, resetDelay);
-                
-            } catch (error) {
-                console.error('❌ Error sending data:', error);
-                
-                if (errorDiv) {
-                    errorDiv.style.display = 'block';
-                } else {
-                    alert('เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อ 097-996-5556');
-                }
-            } finally {
-                // Restore UI
-                if (loadingDiv) loadingDiv.style.display = 'none';
-                if (submitBtn) submitBtn.style.display = 'block';
-            }
-        }
-
-        // Real-time price calculation for quote form
-        function calculatePrice() {
-            const quantityInput = document.querySelector('input[name="quantity"]');
-            const pricePreview = document.getElementById('pricePreview');
-            const previewQuantity = document.getElementById('previewQuantity');
-            const previewUnitPrice = document.getElementById('previewUnitPrice');
-            const previewTotal = document.getElementById('previewTotal');
-            const discountMessage = document.getElementById('discountMessage');
-            
-            if (!quantityInput) return;
-            
-            const quantity = parseInt(quantityInput.value);
-            
-            if (!quantity || quantity < 1) {
-                if (pricePreview) pricePreview.style.display = 'none';
-                return;
-            }
-            
-            let unitPrice = 69; // ราคาปกติ
-            let discountText = '';
-            
-            if (quantity >= 1000) {
-                unitPrice = 65; // ลด 4 บาท
-                discountText = '🎉 ส่วนลดพิเศษ 1000+ ซอง: ลด 4 บาท/ซอง';
-            } else if (quantity >= 100) {
-                unitPrice = 66; // ลด 3 บาท  
-                discountText = '🎊 ส่วนลดขายส่ง 100+ ซอง: ลด 3 บาท/ซอง';
-            }
-            
-            const total = quantity * unitPrice;
-            
-            if (previewQuantity) previewQuantity.textContent = quantity.toLocaleString();
-            if (previewUnitPrice) previewUnitPrice.textContent = unitPrice;
-            if (previewTotal) previewTotal.textContent = total.toLocaleString();
-            if (discountMessage) discountMessage.textContent = discountText;
-            
-            if (pricePreview) pricePreview.style.display = 'block';
-        }
-
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 DOM loaded - initializing enhanced forms');
-            
-            // Set minimum dates
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowString = tomorrow.toISOString().split('T')[0];
-            const todayString = new Date().toISOString().split('T')[0];
-            
-            const quotationDateInput = document.querySelector('input[name="quotationDate"]');
-            const deliveryDateInput = document.querySelector('input[name="deliveryDate"]');
-            const transferDateInput = document.querySelector('input[name="transferDate"]');
-            
-            if (quotationDateInput) {
-                quotationDateInput.min = tomorrowString;
-                quotationDateInput.value = tomorrowString;
-            }
-            if (deliveryDateInput) {
-                deliveryDateInput.min = tomorrowString;
-            }
-            if (transferDateInput) {
-                transferDateInput.max = todayString;
-            }
-            
-            // Initialize file upload
-            setupFileUpload();
-            
-            // Real-time price calculation
-            const quantityInput = document.querySelector('input[name="quantity"]');
-            if (quantityInput) {
-                quantityInput.addEventListener('input', calculatePrice);
-                quantityInput.addEventListener('change', calculatePrice);
-            }
-            
-            // Order form
-            const orderForm = document.getElementById('orderForm');
-            if (orderForm) {
-                orderForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    console.log('🛒 Order form submitted');
-                    const formData = new FormData(this);
-                    await submitOrderForm(formData);
-                });
-            }
-            
-            // Quote form
-            const quoteForm = document.getElementById('quoteForm');
-            if (quoteForm) {
-                quoteForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    console.log('📋 Quote form submitted');
-                    const formData = new FormData(this);
-                    await submitQuoteForm(formData);
-                });
-            }
-            
-            // Payment form
-            const paymentForm = document.getElementById('paymentForm');
-            if (paymentForm) {
-                paymentForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    console.log('💳 Payment form submitted');
-                    const formData = new FormData(this);
-                    await submitPaymentForm(formData);
-                });
-            }
-            
-            console.log('✅ Enhanced forms initialized successfully');
-        });
-
-        // Modal close on outside click
-        window.onclick = function(event) {
-            const orderModal = document.getElementById('orderModal');
-            const quoteModal = document.getElementById('quoteModal');
-            const paymentModal = document.getElementById('paymentModal');
-            
-            if (event.target == orderModal) {
-                closeModal('orderModal');
-            }
-            if (event.target == quoteModal) {
-                closeModal('quoteModal');
-            }
-            if (event.target == paymentModal) {
-                closeModal('paymentModal');
-            }
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                setupSmoothScroll() {
+                    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const target = document.querySelector(this.getAttribute('href'));
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        });
                     });
                 }
-            });
-        });
-
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.scroll-animation').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Header background change on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (header) {
-                if (window.scrollY > 100) {
-                    header.style.background = 'rgba(245, 230, 197, 0.98)';
-                } else {
-                    header.style.background = 'rgba(245, 230, 197, 0.95)';
-                }
             }
-        });
-
-        // Floating elements animation
-        document.querySelectorAll('.floating-element').forEach((element, index) => {
-            element.style.animationDelay = `${index * 0.5}s`;
-        });
-
-        console.log('🎉 VeeVee Website v3.0 with Payment System fully loaded and ready!');
+        }
     </script>
 </body>
 </html>
