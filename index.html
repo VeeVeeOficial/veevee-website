@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeeVee - แผ่นแปะกันยุงจากธรรมชาติ | สั่งซื้อออนไลน์</title>
+    <title>VeeVee - แผ่นแปะกันยุงจากธรรมชาติ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -30,7 +30,7 @@
     <style>
         body { font-family: 'Kanit', sans-serif; }
         .hero-gradient { background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ffa726 100%); }
-        .section-padding { padding: 60px 0; }
+        .section-padding { padding: 80px 0; }
         .card-shadow { box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .float-animation { animation: float 6s ease-in-out infinite; }
         @keyframes float {
@@ -39,24 +39,7 @@
         }
         .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
-        
-        /* Product Image Sizes */
-        .product-img { max-width: 300px; height: auto; }
-        .hero-img { max-width: 400px; height: auto; }
-        
-        /* Loading Spinner */
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #ff6b35;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .parallax { transform: translateZ(0); will-change: transform; }
     </style>
 </head>
 <body class="overflow-x-hidden" x-data="veeVeeApp()">
@@ -65,59 +48,29 @@
     <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 transition-all duration-300">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3 cursor-pointer" @click="window.location.href='#home'">
+                <div class="flex items-center space-x-3">
                     <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" alt="VeeVee Logo" class="h-10 w-auto">
                     <span class="text-2xl font-bold text-secondary">VeeVee</span>
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-700 hover:text-primary transition-colors">หน้าแรก</a>
-                    <a href="#products" class="text-gray-700 hover:text-primary transition-colors">สินค้า</a>
                     <a href="#why" class="text-gray-700 hover:text-primary transition-colors">ทำไมต้อง VeeVee</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary transition-colors">คุณสมบัติ</a>
                     <a href="#howto" class="text-gray-700 hover:text-primary transition-colors">วิธีใช้</a>
                     <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">ติดต่อ</a>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <!-- Cart Button -->
-                    <button @click="showCart = true" class="relative">
-                        <i class="fas fa-shopping-cart text-2xl text-gray-700 hover:text-primary transition-colors"></i>
-                        <span x-show="cart.length > 0" 
-                              x-text="cartItemsCount" 
-                              class="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        </span>
-                    </button>
-                    
-                    <!-- Login/User Button -->
-                    <button @click="user ? showUserMenu = !showUserMenu : showLogin = true" 
-                            class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-all duration-300">
-                        <i class="fas" :class="user ? 'fa-user' : 'fa-sign-in-alt'" class="mr-2"></i>
-                        <span x-text="user ? user.name.split(' ')[0] : 'เข้าสู่ระบบ'"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- User Menu Dropdown -->
-        <div x-show="showUserMenu" 
-             @click.away="showUserMenu = false"
-             x-transition
-             class="absolute right-6 top-16 bg-white rounded-lg shadow-xl p-4 w-64">
-            <div class="space-y-2">
-                <button @click="showOrders = true; showUserMenu = false" 
-                        class="w-full text-left px-4 py-2 hover:bg-gray-100 rounded">
-                    <i class="fas fa-box mr-2"></i> คำสั่งซื้อของฉัน
-                </button>
-                <button @click="logout()" 
-                        class="w-full text-left px-4 py-2 hover:bg-gray-100 rounded text-red-600">
-                    <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+                <button @click="scrollToOrder()" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
+                    สั่งซื้อเลย
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero-gradient min-h-screen flex items-center relative overflow-hidden pt-20">
+    <section id="home" class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
+        <!-- Background Elements -->
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full float-animation"></div>
             <div class="absolute top-40 right-20 w-16 h-16 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
@@ -140,13 +93,13 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 pt-6">
-                    <button @click="scrollTo('products')" class="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-shopping-bag mr-2"></i>
-                        เลือกซื้อสินค้า
-                    </button>
-                    <button @click="scrollTo('why')" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                    <button @click="scrollToWhy()" class="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                         <i class="fas fa-info-circle mr-2"></i>
                         เรียนรู้เพิ่มเติม
+                    </button>
+                    <button @click="scrollToOrder()" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        สั่งซื้อทันที
                     </button>
                 </div>
                 
@@ -156,8 +109,8 @@
                         <div class="text-sm text-white/80">ชั่วโมง</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold">69</div>
-                        <div class="text-sm text-white/80">บาท/ซอง</div>
+                        <div class="text-3xl font-bold">100%</div>
+                        <div class="text-sm text-white/80">ธรรมชาติ</div>
                     </div>
                     <div class="text-center">
                         <div class="text-3xl font-bold">12</div>
@@ -168,82 +121,17 @@
             
             <div class="relative flex justify-center items-center fade-in">
                 <div class="relative max-w-lg w-full">
-                    <img src="https://i.postimg.cc/3wy6HCqz/Vee-Vee.png" 
-                         alt="VeeVee Package" 
-                         class="hero-img transform hover:scale-105 transition-all duration-500 float-animation">
-                    <div class="absolute -top-4 -right-4 bg-accent text-primary px-4 py-2 rounded-full font-bold text-sm shadow-lg">
-                        12 PCS
+                    <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+                        <img src="https://i.postimg.cc/3wy6HCqz/Vee-Vee.png" 
+                             alt="VeeVee Package" 
+                             class="w-full h-auto transform hover:scale-105 transition-all duration-500 float-animation">
+                        
+                        <!-- Package Badge -->
+                        <div class="absolute -top-4 -right-4 bg-accent text-primary px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+                            12 PCS
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Products Section -->
-    <section id="products" class="section-padding bg-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center space-y-6 mb-12 fade-in">
-                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">เลือกแพ็คเกจที่เหมาะกับคุณ</h2>
-                <p class="text-xl text-gray-600">แผ่นแปะกันยุงคุณภาพดี ราคาประหยัด</p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" x-show="!loading">
-                <template x-for="product in products" :key="product.id">
-                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 fade-in">
-                        <div class="relative">
-                            <img :src="product.image_url" 
-                                 :alt="product.name" 
-                                 class="w-full h-48 object-cover">
-                            <div x-show="product.stock <= 10" 
-                                 class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                                เหลือน้อย
-                            </div>
-                        </div>
-                        
-                        <div class="p-6 space-y-4">
-                            <h3 class="text-xl font-semibold text-secondary" x-text="product.name"></h3>
-                            <p class="text-gray-600" x-text="product.description"></p>
-                            
-                            <div class="flex items-center justify-between">
-                                <span class="text-2xl font-bold text-primary">
-                                    ฿<span x-text="product.price"></span>
-                                </span>
-                                <span class="text-sm text-gray-500">
-                                    คงเหลือ <span x-text="product.stock"></span> ชิ้น
-                                </span>
-                            </div>
-                            
-                            <div class="flex items-center space-x-2">
-                                <button @click="decreaseQuantity(product)" 
-                                        class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
-                                    <i class="fas fa-minus text-sm"></i>
-                                </button>
-                                <input type="number" 
-                                       :value="getProductQuantity(product.id)"
-                                       @change="updateQuantity(product.id, $event.target.value)"
-                                       class="w-16 text-center border rounded-lg"
-                                       min="1" 
-                                       :max="product.stock">
-                                <button @click="increaseQuantity(product)" 
-                                        class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
-                                    <i class="fas fa-plus text-sm"></i>
-                                </button>
-                            </div>
-                            
-                            <button @click="addToCart(product)" 
-                                    :disabled="product.stock === 0"
-                                    class="w-full bg-primary text-white py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
-                                <i class="fas fa-cart-plus mr-2"></i>
-                                <span x-text="product.stock === 0 ? 'สินค้าหมด' : 'เพิ่มลงตะกร้า'"></span>
-                            </button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            
-            <!-- Loading State -->
-            <div x-show="loading" class="flex justify-center items-center py-20">
-                <div class="spinner"></div>
             </div>
         </div>
     </section>
@@ -255,7 +143,7 @@
                 <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ทำไมต้อง VeeVee?</h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     น้ำมันหอมระเหยคุณภาพดี ป้องกันคุณจากยุงร้าย<br>
-                    แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยกลิ่นหอมพิเศษที่ทำให้ยุงส่ายหน้า มึนวง ไม่กล้าเข้าใกล้คุณ
+                    แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยกลิ่นหอมพิเศษที่ทำให้ยุงส่ายหน้า มีนวง ไม่กล้าเข้าใกล้คุณและปกป้องคุณตลอดวัน
                 </p>
             </div>
             
@@ -267,7 +155,7 @@
                         </div>
                         <div>
                             <h3 class="text-xl font-semibold text-secondary mb-2">น้ำมันหอมระเหยคุณภาพดี</h3>
-                            <p class="text-gray-600">อ่อนโยนจากสารสกัดธรรมชาติ ได้แก่ น้ำมันตะไคร้หอม, น้ำมันยูคาลิปตัส, เปปเปอร์มินต์, ดอกเจอเรเนียม และลาเวนเดอร์ ผสมผสานกันอย่างลงตัว</p>
+                            <p class="text-gray-600">อ่อนโยนจากสารสกัดธรรมชาติ ได้แก่ น้ำมันตะไคร้หอม, น้ำมันยูคาลิปตัส, เปปเปอร์มินต์, ดอกเจอเรเนียม และลาเวนเดอร์ ผสมผสานกันอย่างลงตัว เพื่อการไล่ยุงอย่างมีประสิทธิภาพ</p>
                         </div>
                     </div>
                     
@@ -290,19 +178,81 @@
                             <p class="text-gray-600">ไม่มีสารเคมีที่เป็นอันตราย เหมาะสำหรับเด็ก ผู้ใหญ่ และผู้สูงอายุ ใช้ได้อย่างมั่นใจ</p>
                         </div>
                     </div>
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-accent/40 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-hand-paper text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">ใช้งานง่าย พกพาสะดวก</h3>
+                            <p class="text-gray-600">แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="relative fade-in">
                     <img src="https://i.postimg.cc/Y94jBVNY/S-18800654-0.jpg" 
                          alt="Natural Protection" 
-                         class="product-img rounded-3xl shadow-2xl mx-auto">
+                         class="w-full h-auto rounded-3xl shadow-2xl">
                     
+                    <!-- Floating Badge -->
                     <div class="absolute top-8 right-8 bg-white rounded-2xl p-4 shadow-lg">
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-green">สารสกัด</div>
+                            <div class="text-2xl font-bold text-green">100%</div>
                             <div class="text-sm text-gray-600">ธรรมชาติ</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">คุณสมบัติเด่น</h2>
+                <p class="text-xl text-gray-600">สารระเหยมากกว่า 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
+            </div>
+            
+            <!-- Product Hero Image -->
+            <div class="text-center mb-16 fade-in">
+                <img src="https://i.postimg.cc/1zjgY6nW/S-18800647-0.jpg" 
+                     alt="VeeVee Product Features" 
+                     class="max-w-2xl mx-auto rounded-3xl shadow-2xl">
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-green/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-leaf text-green text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">จากธรรมชาติ 100%</h3>
+                    <p class="text-gray-600">ผสานพลังสารสกัดธรรมชาติ 5 ชนิด ปลอดภัยสำหรับทุกคนในครอบครัว</p>
+                </div>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-clock text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">ป้องกันนาน 24 ชั่วโมง</h3>
+                    <p class="text-gray-600">เทคโนโลยี Microencapsulation ช่วยปล่อยกลิ่นแบบ Slow Release</p>
+                </div>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-hand-paper text-secondary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">ใช้งานง่าย</h3>
+                    <p class="text-gray-600">แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ กระเป๋า เสื้อผ้า</p>
+                </div>
+                
+                <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
+                    <div class="w-16 h-16 bg-accent/40 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-chart-line text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-secondary">สารระเหยมากกว่า 40 เท่า</h3>
+                    <p class="text-gray-600">ปริมาณสารระเหยมากกว่าแผ่นแปะกันยุงทั่วไปถึง 40 เท่า</p>
                 </div>
             </div>
         </div>
@@ -312,42 +262,278 @@
     <section id="howto" class="section-padding bg-gradient-to-br from-gray-50 to-white">
         <div class="container mx-auto px-6">
             <div class="text-center space-y-6 mb-16 fade-in">
-                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">วิธีใช้งานง่าย ๆ</h2>
-                <h3 class="text-2xl font-semibold text-primary">แค่กดปุ่ม 4 เม็ด แปะได้ทุกที่</h3>
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ติดไว้ได้ทุกที่ที่ต้องการ</h2>
+                <h3 class="text-2xl font-semibold text-primary">ป้องกันคุณจากยุงรบกวน</h3>
             </div>
             
             <div class="grid lg:grid-cols-3 gap-8">
                 <div class="text-center space-y-6 fade-in">
                     <div class="relative">
-                        <img src="https://i.postimg.cc/DZ56RSg8/2-1.png" alt="ติดบนเสื้อ" class="w-full h-48 object-cover rounded-2xl shadow-lg">
+                        <img src="https://i.postimg.cc/DZ56RSg8/2-1.png" alt="ติดบนเสื้อ" class="w-full h-64 object-cover rounded-2xl shadow-lg">
                         <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">
                             บนเสื้อ
                         </div>
                     </div>
                     <h3 class="text-xl font-semibold text-secondary">แปะบนเสื้อผ้า</h3>
-                    <p class="text-gray-600">ป้องกันยุงได้ตลอดวัน</p>
+                    <p class="text-gray-600">แปะบนเสื้อ เชิ้ต หรือเสื้อผ้าที่สวมใส่ประจำวัน ป้องกันยุงได้ตลอดวัน</p>
                 </div>
                 
                 <div class="text-center space-y-6 fade-in">
                     <div class="relative">
-                        <img src="https://i.postimg.cc/KYDDg1CJ/3.png" alt="ติดบนกางเกง" class="w-full h-48 object-cover rounded-2xl shadow-lg">
+                        <img src="https://i.postimg.cc/KYDDg1CJ/3.png" alt="ติดบนกางเกง" class="w-full h-64 object-cover rounded-2xl shadow-lg">
                         <div class="absolute top-4 left-4 bg-green text-white px-3 py-1 rounded-full text-sm font-semibold">
                             บนกางเกง
                         </div>
                     </div>
                     <h3 class="text-xl font-semibold text-secondary">แปะบนกางเกง</h3>
-                    <p class="text-gray-600">ป้องกันขาจากยุงกัด</p>
+                    <p class="text-gray-600">แปะบนกางเกง กระโปรง หรือกางเกงขาสั้น เพื่อป้องกันขาจากยุงกัด</p>
                 </div>
                 
                 <div class="text-center space-y-6 fade-in">
                     <div class="relative">
-                        <img src="https://i.postimg.cc/MKf0mPhc/4.png" alt="ติดบนกระเป๋า" class="w-full h-48 object-cover rounded-2xl shadow-lg">
+                        <img src="https://i.postimg.cc/MKf0mPhc/4.png" alt="ติดบนกระเป๋า" class="w-full h-64 object-cover rounded-2xl shadow-lg">
                         <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
                             บนกระเป๋า
                         </div>
                     </div>
                     <h3 class="text-xl font-semibold text-secondary">แปะบนกระเป๋า</h3>
-                    <p class="text-gray-600">ป้องกันรอบๆ ตัวขณะเดินทาง</p>
+                    <p class="text-gray-600">แปะบนกระเป๋าเป้ กระเป๋าสะพาย เพื่อป้องกันรอบๆ ตัวขณะเดินทาง</p>
+                </div>
+            </div>
+            
+            <!-- Product Demo -->
+            <div class="mt-16 bg-white rounded-3xl p-8 shadow-xl fade-in">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <img src="https://i.postimg.cc/N0F1CQMx/AR-6.png" alt="วิธีการใช้ VeeVee" class="w-full h-auto rounded-2xl shadow-lg">
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="text-3xl font-bold text-secondary">แบบกดปุ่ม 4 เม็ด</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                <p class="text-gray-700">กดปุ่มกลางให้แน่น</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                                <p class="text-gray-700">จะมีสารระเหยออกมา 4 เม็ด</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                <p class="text-gray-700">แปะในตำแหน่งที่ต้องการ</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                                <p class="text-gray-700">ป้องกันยุงได้นาน 24 ชั่วโมง</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Family Protection Section -->
+    <section class="section-padding bg-green-50">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 fade-in">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-secondary">พกไปด้วยทุกที่<br>สบายใจได้ทุกเวลา</h2>
+                    <p class="text-xl text-gray-600">ไม่มีเสียงรบกวนกวนใจอีกต่อไป</p>
+                    <p class="text-gray-600 leading-relaxed">
+                        VeeVee ป้องกันยุงแบบธรรมชาติ เหมาะสำหรับการเดินทาง แคมปิ้ง หรือกิจกรรมกลางแจ้ง 
+                        ไม่ว่าจะเป็นเด็กเล็กหรือผู้ใหญ่ ใช้ได้อย่างปลอดภัย มั่นใจ
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">เหมาะสำหรับเด็กและผู้ใหญ่</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">ไม่มีสารเคมีที่เป็นอันตราย</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-check-circle text-green text-xl"></i>
+                            <span class="text-gray-700">ใช้ได้ทุกกิจกรรม ทุกสถานที่</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative fade-in">
+                    <img src="https://i.postimg.cc/V6P2z0ng/S-18800655-0.jpg" alt="ครอบครัวปลอดภัย" class="w-full h-auto rounded-3xl shadow-2xl">
+                    
+                    <!-- Testimonial Badge -->
+                    <div class="absolute bottom-8 left-8 bg-white rounded-2xl p-6 shadow-lg max-w-xs">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-quote-left text-primary text-2xl"></i>
+                            <div>
+                                <p class="text-sm text-gray-600">"ลูกนอนหลับสบาย ไม่ถูกยุงรบกวน"</p>
+                                <p class="text-xs text-gray-500 mt-1">- คุณแม่มนัสนันท์</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Outdoor Adventure Section -->
+    <section class="section-padding bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative fade-in order-2 lg:order-1">
+                    <img src="https://i.postimg.cc/yxLf3vr1/9.png" alt="การผจญภัยกลางแจ้ง" class="w-full h-auto rounded-3xl shadow-2xl">
+                    
+                    <!-- Activity Badge -->
+                    <div class="absolute top-8 left-8 bg-primary text-white px-4 py-2 rounded-full font-semibold">
+                        🏕️ Perfect for Camping
+                    </div>
+                </div>
+                
+                <div class="space-y-8 fade-in order-1 lg:order-2">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ไม่ว่าจะไปที่ไหน<br>ก็ไม่ต้องกังวลเรื่องยุงกัด</h2>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-mountain text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ท่องเที่ยว</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-campground text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">แคมปิ้ง</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-tree text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ป่าไผ่</h4>
+                        </div>
+                        <div class="text-center p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-water text-green text-3xl mb-2"></i>
+                            <h4 class="font-semibold text-secondary">ริมน้ำ</h4>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 leading-relaxed">
+                        เดินทางไปไหนก็ไม่ต้องกลัวยุงอีกต่อไป VeeVee ปกป้องคุณและครอบครัวในทุกการผจญภัย 
+                        ไม่ว่าจะเป็นการแคมปิ้ง เดินป่า หรือนั่งเล่นริมน้ำ
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase -->
+    <section class="section-padding bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div class="container mx-auto px-6">
+            <div class="text-center space-y-6 mb-16 fade-in">
+                <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ผลิตภัณฑ์ VeeVee</h2>
+                <p class="text-xl text-gray-600">แผ่นแปะกันยุงจากธรรมชาติ คุณภาพระดับพรีเมียม</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl fade-in">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="relative">
+                            <img src="https://i.postimg.cc/7PSV7Q7K/2.png" alt="VeeVee Product" class="w-full h-auto rounded-2xl shadow-lg">
+                            
+                            <!-- Product Features -->
+                            <div class="absolute -right-4 top-1/2 transform -translate-y-1/2 space-y-4">
+                                <div class="bg-green text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-leaf text-xl"></i>
+                                </div>
+                                <div class="bg-primary text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-shield-alt text-xl"></i>
+                                </div>
+                                <div class="bg-secondary text-white p-3 rounded-full shadow-lg">
+                                    <i class="fas fa-clock text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-3xl font-bold text-secondary mb-4">VeeVee Anti-Mosquito Patch</h3>
+                                <p class="text-gray-600 leading-relaxed">
+                                    แผ่นแปะกันยุงขนาด 12 ชิ้นต่อซอง พร้อมเทคโนโลยีการปล่อยสารกันยุงแบบ Slow Release 
+                                    ที่ให้ประสิทธิภาพยาวนานถึง 24 ชั่วโมง
+                                </p>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">จำนวนในซอง</span>
+                                    <span class="text-primary font-bold">12 ชิ้น</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">ระยะเวลาป้องกัน</span>
+                                    <span class="text-primary font-bold">24 ชั่วโมง</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                    <span class="font-semibold text-secondary">ส่วนผสม</span>
+                                    <span class="text-primary font-bold">100% ธรรมชาติ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-primary mb-2">฿69</div>
+                                <p class="text-gray-600">ราคาต่อซอง</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="order" class="section-padding hero-gradient relative overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full float-animation"></div>
+            <div class="absolute bottom-20 right-10 w-24 h-24 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 text-center text-white relative z-10">
+            <div class="max-w-4xl mx-auto space-y-8 fade-in">
+                <h2 class="text-4xl lg:text-6xl font-bold">พร้อมปกป้องคุณและครอบครัว?</h2>
+                <p class="text-xl lg:text-2xl text-white/90">
+                    สั่งซื้อ VeeVee แผ่นแปะกันยุงจากธรรมชาติ<br>
+                    ปลอดภัย มีประสิทธิภาพ ใช้งานง่าย
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                    <a href="tel:0979965556" class="bg-white text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-phone mr-3"></i>
+                        โทรสั่งซื้อ 097-996-5556
+                    </a>
+                    
+                    <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fab fa-line mr-3"></i>
+                        สั่งผ่าน Line
+                    </a>
+                    
+                    <a href="https://s.shopee.co.th/10rxDH30cw?share_channel_code=6" target="_blank" class="bg-secondary text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-secondary/90 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-3"></i>
+                        ซื้อใน Shopee
+                    </a>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
+                    <div class="text-center">
+                        <i class="fas fa-shipping-fast text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">จัดส่งฟรี</h4>
+                        <p class="text-white/80">สั่งครบ 500 บาท</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-undo text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">รับประกันคุณภาพ</h4>
+                        <p class="text-white/80">ไม่พอใจ คืนเงิน 100%</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="fas fa-headset text-4xl mb-4"></i>
+                        <h4 class="font-semibold mb-2">บริการหลังการขาย</h4>
+                        <p class="text-white/80">ดูแลลูกค้าตลอดไป</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -388,30 +574,51 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold">อีเมล</h4>
-                                <p class="text-gray-300">info@veevee.co.th</p>
+                                <p class="text-gray-300">veeveeofficialthailand@gmail.com</p>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-facebook text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-instagram text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-youtube text-white"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <i class="fab fa-tiktok text-white"></i>
+                        </a>
                     </div>
                 </div>
                 
                 <div class="bg-white rounded-3xl p-8 fade-in">
-                    <h3 class="text-2xl font-bold text-secondary mb-6">ซื้อทางช่องทางอื่น</h3>
-                    <div class="space-y-4">
-                        <a href="tel:0979965556" class="flex items-center justify-center bg-green text-white px-6 py-3 rounded-xl hover:bg-green/90 transition-colors">
-                            <i class="fas fa-phone mr-3"></i>
-                            โทรสั่งซื้อ 097-996-5556
-                        </a>
-                        
-                        <a href="https://lin.ee/veevee" target="_blank" class="flex items-center justify-center bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-colors">
-                            <i class="fab fa-line mr-3"></i>
-                            สั่งผ่าน Line
-                        </a>
-                        
-                        <a href="https://shopee.co.th/search?keyword=VEEVEE" target="_blank" class="flex items-center justify-center bg-orange-500 text-white px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors">
-                            <i class="fas fa-shopping-bag mr-3"></i>
-                            ซื้อใน Shopee
-                        </a>
-                    </div>
+                    <h3 class="text-2xl font-bold text-secondary mb-6">ส่งข้อความหาเรา</h3>
+                    <form class="space-y-6">
+                        <div>
+                            <input type="text" placeholder="ชื่อ-นามสกุล" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="อีเมล" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <input type="tel" placeholder="เบอร์โทรศัพท์" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
+                        </div>
+                        <div>
+                            <textarea placeholder="ข้อความ" rows="4" 
+                                     class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700"></textarea>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                            ส่งข้อความ
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -426,743 +633,13 @@
             </div>
             <p class="text-gray-400 mb-4">แผ่นแปะกันยุงจากธรรมชาติ ปกป้องคุณและครอบครัวอย่างปลอดภัย</p>
             <p class="text-gray-500">&copy; 2025 VeeVee. All rights reserved.</p>
-            <div class="mt-4">
-                <a href="admin.html" class="text-gray-600 hover:text-gray-400 text-sm">Admin</a>
-            </div>
         </div>
     </footer>
 
-    <!-- Cart Modal -->
-    <div x-show="showCart" 
-         x-transition 
-         @click.away="showCart = false"
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto" @click.stop>
-            <div class="sticky top-0 bg-white border-b p-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-2xl font-bold text-secondary">ตะกร้าสินค้า</h3>
-                    <button @click="showCart = false" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="p-6">
-                <div x-show="cart.length === 0" class="text-center py-12">
-                    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-xl text-gray-500">ตะกร้าของคุณว่างเปล่า</p>
-                </div>
-                
-                <div x-show="cart.length > 0" class="space-y-4">
-                    <template x-for="item in cart" :key="item.id">
-                        <div class="flex items-center space-x-4 bg-gray-50 p-4 rounded-xl">
-                            <img :src="item.image_url" :alt="item.name" class="w-20 h-20 object-cover rounded-lg">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-secondary" x-text="item.name"></h4>
-                                <p class="text-gray-600">฿<span x-text="item.price"></span> x <span x-text="item.quantity"></span></p>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-semibold text-primary">฿<span x-text="item.price * item.quantity"></span></p>
-                                <button @click="removeFromCart(item.id)" class="text-red-500 hover:text-red-700 text-sm">
-                                    <i class="fas fa-trash"></i> ลบ
-                                </button>
-                            </div>
-                        </div>
-                    </template>
-                    
-                    <div class="border-t pt-4 space-y-2">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">ยอดรวมสินค้า</span>
-                            <span class="font-semibold">฿<span x-text="cartSubtotal"></span></span>
-                        </div>
-                        <div class="flex justify-between text-xl font-bold text-secondary">
-                            <span>ยอดรวมทั้งหมด</span>
-                            <span>฿<span x-text="cartSubtotal"></span></span>
-                        </div>
-                    </div>
-                    
-                    <button @click="proceedToCheckout()" 
-                            class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
-                        <i class="fas fa-credit-card mr-2"></i>
-                        ดำเนินการชำระเงิน
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div x-show="showLogin" 
-         x-transition 
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-8" @click.stop>
-            <h3 class="text-2xl font-bold text-secondary mb-6 text-center">เข้าสู่ระบบ</h3>
-            
-            <form @submit.prevent="login()">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">อีเมล</label>
-                        <input type="email" x-model="loginForm.email" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">รหัสผ่าน</label>
-                        <input type="password" x-model="loginForm.password" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors mt-6">
-                    เข้าสู่ระบบ
-                </button>
-            </form>
-            
-            <div class="text-center mt-4">
-                <button @click="showLogin = false; showRegister = true" class="text-primary hover:underline">
-                    ยังไม่มีบัญชี? สมัครสมาชิก
-                </button>
-            </div>
-            
-            <button @click="showLogin = false" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div x-show="showRegister" 
-         x-transition 
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-8" @click.stop>
-            <h3 class="text-2xl font-bold text-secondary mb-6 text-center">สมัครสมาชิก</h3>
-            
-            <form @submit.prevent="register()">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">ชื่อ-นามสกุล</label>
-                        <input type="text" x-model="registerForm.name" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">อีเมล</label>
-                        <input type="email" x-model="registerForm.email" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">เบอร์โทรศัพท์</label>
-                        <input type="tel" x-model="registerForm.phone" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">รหัสผ่าน</label>
-                        <input type="password" x-model="registerForm.password" required 
-                               class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors mt-6">
-                    สมัครสมาชิก
-                </button>
-            </form>
-            
-            <div class="text-center mt-4">
-                <button @click="showRegister = false; showLogin = true" class="text-primary hover:underline">
-                    มีบัญชีแล้ว? เข้าสู่ระบบ
-                </button>
-            </div>
-            
-            <button @click="showRegister = false" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Checkout Modal -->
-    <div x-show="showCheckout" 
-         x-transition 
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-auto" @click.stop>
-            <div class="sticky top-0 bg-white border-b p-6">
-                <h3 class="text-2xl font-bold text-secondary">ข้อมูลการจัดส่ง</h3>
-            </div>
-            
-            <form @submit.prevent="submitOrder()" class="p-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Shipping Address -->
-                    <div class="space-y-4">
-                        <h4 class="font-semibold text-lg">ที่อยู่จัดส่ง</h4>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">ชื่อผู้รับ</label>
-                            <input type="text" x-model="shippingAddress.name" required 
-                                   class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">เบอร์โทรศัพท์</label>
-                            <input type="tel" x-model="shippingAddress.phone" required 
-                                   class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">ที่อยู่</label>
-                            <textarea x-model="shippingAddress.address" required rows="3"
-                                      class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">อำเภอ/เขต</label>
-                            <input type="text" x-model="shippingAddress.district" required 
-                                   class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">จังหวัด</label>
-                            <input type="text" x-model="shippingAddress.province" required 
-                                   class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-gray-700 mb-2">รหัสไปรษณีย์</label>
-                            <input type="text" x-model="shippingAddress.postal_code" required 
-                                   class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                    </div>
-                    
-                    <!-- Order Summary -->
-                    <div class="space-y-4">
-                        <h4 class="font-semibold text-lg">สรุปคำสั่งซื้อ</h4>
-                        
-                        <div class="bg-gray-50 p-4 rounded-xl space-y-3">
-                            <template x-for="item in cart" :key="item.id">
-                                <div class="flex justify-between text-sm">
-                                    <span x-text="item.name + ' x ' + item.quantity"></span>
-                                    <span>฿<span x-text="item.price * item.quantity"></span></span>
-                                </div>
-                            </template>
-                            
-                            <div class="border-t pt-3 space-y-2">
-                                <div class="flex justify-between">
-                                    <span>ยอดรวมสินค้า</span>
-                                    <span>฿<span x-text="cartSubtotal"></span></span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>ค่าจัดส่ง</span>
-                                    <span>฿<span x-text="shippingFee"></span></span>
-                                </div>
-                                <div x-show="paymentMethod === 'cod'" class="flex justify-between">
-                                    <span>ค่าธรรมเนียม COD (3%)</span>
-                                    <span>฿<span x-text="codFee"></span></span>
-                                </div>
-                                <div class="flex justify-between text-lg font-bold text-primary">
-                                    <span>ยอดรวมทั้งหมด</span>
-                                    <span>฿<span x-text="orderTotal"></span></span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Payment Method -->
-                        <div>
-                            <h4 class="font-semibold mb-3">วิธีการชำระเงิน</h4>
-                            <div class="space-y-2">
-                                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" x-model="paymentMethod" value="qr" class="mr-3">
-                                    <div>
-                                        <div class="font-semibold">QR PromptPay</div>
-                                        <div class="text-sm text-gray-600">โอนเงินผ่าน QR Code</div>
-                                    </div>
-                                </label>
-                                
-                                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" x-model="paymentMethod" value="transfer" class="mr-3">
-                                    <div>
-                                        <div class="font-semibold">โอนเงินธนาคาร</div>
-                                        <div class="text-sm text-gray-600">โอนเงินและแนบสลิป</div>
-                                    </div>
-                                </label>
-                                
-                                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" x-model="paymentMethod" value="cod" class="mr-3">
-                                    <div>
-                                        <div class="font-semibold">เก็บเงินปลายทาง</div>
-                                        <div class="text-sm text-gray-600">ค่าธรรมเนียม 3% ของยอดสินค้า</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex gap-4">
-                    <button type="button" @click="showCheckout = false" 
-                            class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors">
-                        ย้อนกลับ
-                    </button>
-                    <button type="submit" 
-                            class="flex-1 bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        ยืนยันคำสั่งซื้อ
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Order Success Modal -->
-    <div x-show="showOrderSuccess" 
-         x-transition 
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-8 text-center" @click.stop>
-            <div class="mb-6">
-                <i class="fas fa-check-circle text-6xl text-green"></i>
-            </div>
-            
-            <h3 class="text-2xl font-bold text-secondary mb-4">สั่งซื้อสำเร็จ!</h3>
-            <p class="text-gray-600 mb-2">หมายเลขคำสั่งซื้อ: <span class="font-semibold" x-text="currentOrderNumber"></span></p>
-            <p class="text-gray-600 mb-6">ยอดรวม: <span class="font-semibold text-primary">฿<span x-text="orderTotal"></span></span></p>
-            
-            <!-- QR Code for PromptPay -->
-            <div x-show="paymentMethod === 'qr' && qrCodeUrl" class="mb-6">
-                <h4 class="font-semibold mb-4">สแกน QR Code เพื่อชำระเงิน</h4>
-                <img :src="qrCodeUrl" alt="QR Code" class="mx-auto mb-4">
-                <p class="text-sm text-gray-600">PromptPay: 097-996-5556</p>
-                <p class="text-sm text-gray-600">จำนวนเงิน: ฿<span x-text="orderTotal"></span></p>
-            </div>
-            
-            <!-- Bank Transfer Info -->
-            <div x-show="paymentMethod === 'transfer'" class="mb-6 bg-gray-50 p-4 rounded-xl text-left">
-                <h4 class="font-semibold mb-3">ข้อมูลการโอนเงิน</h4>
-                <p class="text-sm"><span class="font-semibold">ธนาคาร:</span> กสิกรไทย</p>
-                <p class="text-sm"><span class="font-semibold">ชื่อบัญชี:</span> VeeVee Official</p>
-                <p class="text-sm"><span class="font-semibold">เลขบัญชี:</span> 123-456-7890</p>
-                <p class="text-sm"><span class="font-semibold">จำนวนเงิน:</span> ฿<span x-text="orderTotal"></span></p>
-                <p class="text-sm text-red-600 mt-2">* กรุณาส่งสลิปทาง Line: @veevee.official</p>
-            </div>
-            
-            <!-- COD Info -->
-            <div x-show="paymentMethod === 'cod'" class="mb-6 bg-gray-50 p-4 rounded-xl">
-                <p class="text-sm">เตรียมเงินสด <span class="font-semibold text-primary">฿<span x-text="orderTotal"></span></span> สำหรับชำระเมื่อได้รับสินค้า</p>
-            </div>
-            
-            <div class="flex gap-4">
-                <button @click="showOrderSuccess = false; showOrders = true" 
-                        class="flex-1 bg-secondary text-white py-3 rounded-xl font-semibold hover:bg-secondary/90 transition-colors">
-                    <i class="fas fa-list mr-2"></i>
-                    ดูคำสั่งซื้อ
-                </button>
-                <button @click="showOrderSuccess = false; resetCart()" 
-                        class="flex-1 bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
-                    <i class="fas fa-home mr-2"></i>
-                    กลับหน้าหลัก
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Orders Modal -->
-    <div x-show="showOrders" 
-         x-transition 
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto" @click.stop>
-            <div class="sticky top-0 bg-white border-b p-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-2xl font-bold text-secondary">คำสั่งซื้อของฉัน</h3>
-                    <button @click="showOrders = false" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="p-6">
-                <div x-show="orders.length === 0" class="text-center py-12">
-                    <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
-                    <p class="text-xl text-gray-500">ยังไม่มีคำสั่งซื้อ</p>
-                </div>
-                
-                <div x-show="orders.length > 0" class="space-y-4">
-                    <template x-for="order in orders" :key="order.id">
-                        <div class="border rounded-xl p-4 hover:shadow-lg transition-shadow">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <h4 class="font-semibold text-lg" x-text="'คำสั่งซื้อ #' + order.order_number"></h4>
-                                    <p class="text-sm text-gray-600" x-text="formatDate(order.created_at)"></p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="font-semibold text-primary text-lg">฿<span x-text="order.total"></span></p>
-                                    <span class="text-sm px-3 py-1 rounded-full"
-                                          :class="{
-                                              'bg-yellow-100 text-yellow-800': order.status === 'pending',
-                                              'bg-blue-100 text-blue-800': order.status === 'processing',
-                                              'bg-purple-100 text-purple-800': order.status === 'shipped',
-                                              'bg-green-100 text-green-800': order.status === 'delivered',
-                                              'bg-red-100 text-red-800': order.status === 'cancelled'
-                                          }"
-                                          x-text="getOrderStatusText(order.status)">
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="text-sm text-gray-600">
-                                <p><span class="font-semibold">การชำระเงิน:</span> <span x-text="getPaymentMethodText(order.payment_method)"></span></p>
-                                <p><span class="font-semibold">สถานะการชำระเงิน:</span> 
-                                    <span :class="order.payment_status === 'paid' ? 'text-green-600' : 'text-yellow-600'"
-                                          x-text="order.payment_status === 'paid' ? 'ชำระแล้ว' : 'รอชำระเงิน'">
-                                    </span>
-                                </p>
-                            </div>
-                            
-                            <div x-show="order.tracking_number" class="mt-3 pt-3 border-t">
-                                <p class="text-sm">
-                                    <span class="font-semibold">เลขพัสดุ:</span> 
-                                    <a :href="'https://www.flashexpress.com/tracking/?tracking_number=' + order.tracking_number" 
-                                       target="_blank"
-                                       class="text-primary hover:underline"
-                                       x-text="order.tracking_number">
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Configuration
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzLIVzXA0xCszfWNe2J0OyOJWsfs8f-qUS0nBgke-Bz0RRi8hE6MO3YkJ8KfqSuLOHy/exec'; // ใส่ URL ของ Google Apps Script ที่ Deploy แล้ว
-        
         function veeVeeApp() {
             return {
-                // State
-                products: [],
-                cart: [],
-                user: null,
-                orders: [],
-                loading: true,
-                
-                // UI State
-                showCart: false,
-                showLogin: false,
-                showRegister: false,
-                showCheckout: false,
-                showOrderSuccess: false,
-                showOrders: false,
-                showUserMenu: false,
-                
-                // Forms
-                loginForm: { email: '', password: '' },
-                registerForm: { name: '', email: '', phone: '', password: '' },
-                shippingAddress: {
-                    name: '',
-                    phone: '',
-                    address: '',
-                    district: '',
-                    province: '',
-                    postal_code: ''
-                },
-                
-                // Order State
-                paymentMethod: 'qr',
-                currentOrderNumber: '',
-                qrCodeUrl: '',
-                productQuantities: {},
-                
-                // Computed Properties
-                get cartItemsCount() {
-                    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
-                },
-                
-                get cartSubtotal() {
-                    return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                },
-                
-                get shippingFee() {
-                    const totalQuantity = this.cartItemsCount;
-                    if (totalQuantity >= 100) return 130;
-                    if (totalQuantity > 10) return 60;
-                    return 50;
-                },
-                
-                get codFee() {
-                    return this.paymentMethod === 'cod' ? Math.round(this.cartSubtotal * 0.03) : 0;
-                },
-                
-                get orderTotal() {
-                    return this.cartSubtotal + this.shippingFee + this.codFee;
-                },
-                
-                // Initialize
-                async init() {
-                    // Load user from localStorage
-                    const savedUser = localStorage.getItem('veevee_user');
-                    if (savedUser) {
-                        this.user = JSON.parse(savedUser);
-                    }
-                    
-                    // Load cart
-                    const savedCart = localStorage.getItem('veevee_cart');
-                    if (savedCart) {
-                        this.cart = JSON.parse(savedCart);
-                    }
-                    
-                    // Load products
-                    await this.loadProducts();
-                    
-                    // Setup animations
-                    this.setupAnimations();
-                },
-                
-                // API Methods
-                async apiCall(action, params = {}) {
-                    try {
-                        const response = await fetch(API_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action, ...params })
-                        });
-                        
-                        const result = await response.json();
-                        if (!result.success) {
-                            throw new Error(result.error || 'API Error');
-                        }
-                        
-                        return result.data;
-                    } catch (error) {
-                        console.error('API Error:', error);
-                        alert('เกิดข้อผิดพลาด: ' + error.message);
-                        throw error;
-                    }
-                },
-                
-                // Product Methods
-                async loadProducts() {
-                    this.loading = true;
-                    try {
-                        this.products = await this.apiCall('get_products');
-                        
-                        // Initialize quantities
-                        this.products.forEach(product => {
-                            this.productQuantities[product.id] = 1;
-                        });
-                    } catch (error) {
-                        console.error('Failed to load products:', error);
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-                
-                getProductQuantity(productId) {
-                    return this.productQuantities[productId] || 1;
-                },
-                
-                updateQuantity(productId, value) {
-                    const quantity = parseInt(value) || 1;
-                    const product = this.products.find(p => p.id === productId);
-                    if (product) {
-                        this.productQuantities[productId] = Math.min(Math.max(1, quantity), product.stock);
-                    }
-                },
-                
-                increaseQuantity(product) {
-                    const current = this.productQuantities[product.id] || 1;
-                    if (current < product.stock) {
-                        this.productQuantities[product.id] = current + 1;
-                    }
-                },
-                
-                decreaseQuantity(product) {
-                    const current = this.productQuantities[product.id] || 1;
-                    if (current > 1) {
-                        this.productQuantities[product.id] = current - 1;
-                    }
-                },
-                
-                // Cart Methods
-                addToCart(product) {
-                    const quantity = this.productQuantities[product.id] || 1;
-                    const existingItem = this.cart.find(item => item.id === product.id);
-                    
-                    if (existingItem) {
-                        if (existingItem.quantity + quantity <= product.stock) {
-                            existingItem.quantity += quantity;
-                        } else {
-                            alert('ไม่สามารถเพิ่มสินค้าได้ เนื่องจากเกินจำนวนในสต็อก');
-                            return;
-                        }
-                    } else {
-                        this.cart.push({
-                            ...product,
-                            quantity: quantity
-                        });
-                    }
-                    
-                    this.saveCart();
-                    this.showCart = true;
-                    
-                    // Reset quantity
-                    this.productQuantities[product.id] = 1;
-                },
-                
-                removeFromCart(productId) {
-                    this.cart = this.cart.filter(item => item.id !== productId);
-                    this.saveCart();
-                },
-                
-                saveCart() {
-                    localStorage.setItem('veevee_cart', JSON.stringify(this.cart));
-                },
-                
-                resetCart() {
-                    this.cart = [];
-                    this.saveCart();
-                },
-                
-                // Auth Methods
-                async login() {
-                    try {
-                        const result = await this.apiCall('login', this.loginForm);
-                        this.user = result.user;
-                        localStorage.setItem('veevee_user', JSON.stringify(result.user));
-                        localStorage.setItem('veevee_token', result.token);
-                        
-                        // Prefill shipping address
-                        this.shippingAddress.name = result.user.name;
-                        this.shippingAddress.phone = result.user.phone;
-                        
-                        this.showLogin = false;
-                        this.loginForm = { email: '', password: '' };
-                        
-                        // Load orders
-                        await this.loadOrders();
-                        
-                        alert('เข้าสู่ระบบสำเร็จ');
-                    } catch (error) {
-                        alert('เข้าสู่ระบบไม่สำเร็จ');
-                    }
-                },
-                
-                async register() {
-                    try {
-                        const result = await this.apiCall('register', this.registerForm);
-                        this.user = result.user;
-                        localStorage.setItem('veevee_user', JSON.stringify(result.user));
-                        localStorage.setItem('veevee_token', result.token);
-                        
-                        this.showRegister = false;
-                        this.registerForm = { name: '', email: '', phone: '', password: '' };
-                        
-                        alert('สมัครสมาชิกสำเร็จ');
-                    } catch (error) {
-                        alert('สมัครสมาชิกไม่สำเร็จ: ' + error.message);
-                    }
-                },
-                
-                logout() {
-                    this.user = null;
-                    this.orders = [];
-                    localStorage.removeItem('veevee_user');
-                    localStorage.removeItem('veevee_token');
-                    this.showUserMenu = false;
-                },
-                
-                // Order Methods
-                proceedToCheckout() {
-                    if (!this.user) {
-                        this.showCart = false;
-                        this.showLogin = true;
-                        return;
-                    }
-                    
-                    this.showCart = false;
-                    this.showCheckout = true;
-                },
-                
-                async submitOrder() {
-                    try {
-                        const orderData = {
-                            customer_id: this.user.id,
-                            items: this.cart.map(item => ({
-                                product_id: item.id,
-                                quantity: item.quantity
-                            })),
-                            shipping_address: this.shippingAddress,
-                            payment_method: this.paymentMethod
-                        };
-                        
-                        const result = await this.apiCall('create_order', orderData);
-                        
-                        this.currentOrderNumber = result.order_number;
-                        
-                        // Generate QR Code if payment method is QR
-                        if (this.paymentMethod === 'qr' && result.qr_code) {
-                            this.qrCodeUrl = result.qr_code.qr_url;
-                        }
-                        
-                        // Clear cart
-                        this.resetCart();
-                        
-                        // Show success
-                        this.showCheckout = false;
-                        this.showOrderSuccess = true;
-                        
-                        // Reload orders
-                        await this.loadOrders();
-                        
-                    } catch (error) {
-                        alert('เกิดข้อผิดพลาดในการสั่งซื้อ: ' + error.message);
-                    }
-                },
-                
-                async loadOrders() {
-                    if (!this.user) return;
-                    
-                    try {
-                        this.orders = await this.apiCall('get_orders', { customer_id: this.user.id });
-                    } catch (error) {
-                        console.error('Failed to load orders:', error);
-                    }
-                },
-                
-                // Helper Methods
-                scrollTo(elementId) {
-                    document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' });
-                },
-                
-                formatDate(dateString) {
-                    const date = new Date(dateString);
-                    return date.toLocaleDateString('th-TH', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                },
-                
-                getOrderStatusText(status) {
-                    const statusMap = {
-                        'pending': 'รอดำเนินการ',
-                        'processing': 'กำลังดำเนินการ',
-                        'shipped': 'จัดส่งแล้ว',
-                        'delivered': 'ส่งสำเร็จ',
-                        'cancelled': 'ยกเลิก'
-                    };
-                    return statusMap[status] || status;
-                },
-                
-                getPaymentMethodText(method) {
-                    const methodMap = {
-                        'qr': 'QR PromptPay',
-                        'transfer': 'โอนเงินธนาคาร',
-                        'cod': 'เก็บเงินปลายทาง'
-                    };
-                    return methodMap[method] || method;
-                },
-                
-                setupAnimations() {
+                init() {
                     // Intersection Observer for fade-in animations
                     const observerOptions = {
                         threshold: 0.1,
@@ -1179,6 +656,29 @@
 
                     document.querySelectorAll('.fade-in').forEach(el => {
                         observer.observe(el);
+                    });
+
+                    // Smooth scroll for navigation
+                    this.setupSmoothScroll();
+                },
+                
+                scrollToWhy() {
+                    document.getElementById('why').scrollIntoView({ behavior: 'smooth' });
+                },
+                
+                scrollToOrder() {
+                    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+                },
+                
+                setupSmoothScroll() {
+                    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const target = document.querySelector(this.getAttribute('href'));
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth' });                               
+                            }
+                        });
                     });
                 }
             }
