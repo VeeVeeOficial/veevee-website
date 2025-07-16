@@ -1274,14 +1274,55 @@ ${this.shippingAddress.district} ${this.shippingAddress.province} ${this.shippin
                 }
             }
         }// ใน JS ฝั่งหน้าเว็บ
-const demoEmail = "newuser@example.com";
-const demoPassword = "password123";
+ 
+      // ✅ Import Firebase SDK (version 11)
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
 
-if (emailInput === demoEmail && passwordInput === demoPassword) {
-  alert("เข้าสู่ระบบสำเร็จ");
-} else {
-  alert("เข้าสู่ระบบไม่สำเร็จ");
-}
+      // ✅ Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyAlUUr6ATEfDQohr5Zvdk5_C7xKJFBLem0",
+        authDomain: "veeveeweb.firebaseapp.com",
+        projectId: "veeveeweb",
+        storageBucket: "veeveeweb.firebasestorage.app",
+        messagingSenderId: "1054738271826",
+        appId: "1:1054738271826:web:c8d3ede74df35b87cc998b",
+        measurementId: "G-JNJW30SKK9"
+      };
+
+      // ✅ Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const analytics = getAnalytics(app);
+
+      // ✅ Login
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          alert("✅ เข้าสู่ระบบสำเร็จ: " + userCredential.user.email);
+        } catch (error) {
+          alert("❌ เข้าสู่ระบบล้มเหลว: " + error.message);
+        }
+      });
+
+      // ✅ Register
+      document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("regEmail").value;
+        const password = document.getElementById("regPassword").value;
+
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          alert("✅ สมัครสำเร็จ: " + userCredential.user.email);
+        } catch (error) {
+          alert("❌ สมัครไม่สำเร็จ: " + error.message);
+        }
+      });
 
     </script>
 </body>
