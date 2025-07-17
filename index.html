@@ -129,6 +129,11 @@
                 box-shadow: inset 0px 0px 0px 30px #4ade80;
             }
         }
+
+        /* QR Code Modal */
+        .qr-modal {
+            backdrop-filter: blur(8px);
+        }
     </style>
 </head>
 <body class="overflow-x-hidden" x-data="veeVeeApp()">
@@ -338,7 +343,7 @@
                 
                 <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all duration-300 fade-in">
                     <div class="w-16 h-16 bg-accent/40 rounded-full flex items-center justify-center mx-auto">
-                        <i class="fas fa-chart-line text-primary text-2xl"></i>
+                        <i class="fas fa-chart-line text-primary text-xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-secondary">สารระเหยมากกว่า 40 เท่า</h3>
                     <p class="text-gray-600">ปริมาณสารระเหยมากกว่าแผ่นแปะกันยุงทั่วไปถึง 40 เท่า</p>
@@ -790,6 +795,35 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">วิธีการชำระเงิน *</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="flex items-center p-4 border rounded-xl cursor-pointer" :class="orderForm.paymentMethod === 'qr' ? 'border-primary bg-primary/10' : 'border-gray-300'">
+                            <input type="radio" x-model="orderForm.paymentMethod" value="qr" class="sr-only">
+                            <div class="flex-1 text-center">
+                                <i class="fas fa-qrcode text-2xl mb-2 block" :class="orderForm.paymentMethod === 'qr' ? 'text-primary' : 'text-gray-400'"></i>
+                                <span class="font-semibold">QR PromptPay</span>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-center p-4 border rounded-xl cursor-pointer" :class="orderForm.paymentMethod === 'transfer' ? 'border-primary bg-primary/10' : 'border-gray-300'">
+                            <input type="radio" x-model="orderForm.paymentMethod" value="transfer" class="sr-only">
+                            <div class="flex-1 text-center">
+                                <i class="fas fa-university text-2xl mb-2 block" :class="orderForm.paymentMethod === 'transfer' ? 'text-primary' : 'text-gray-400'"></i>
+                                <span class="font-semibold">โอนธนาคาร</span>
+                            </div>
+                        </label>
+                        
+                        <label class="flex items-center p-4 border rounded-xl cursor-pointer" :class="orderForm.paymentMethod === 'cod' ? 'border-primary bg-primary/10' : 'border-gray-300'">
+                            <input type="radio" x-model="orderForm.paymentMethod" value="cod" class="sr-only">
+                            <div class="flex-1 text-center">
+                                <i class="fas fa-hand-holding-usd text-2xl mb-2 block" :class="orderForm.paymentMethod === 'cod' ? 'text-primary' : 'text-gray-400'"></i>
+                                <span class="font-semibold">เก็บเงินปลายทาง</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">หมายเหตุ</label>
                     <textarea x-model="orderForm.note" rows="2" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"
                              class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
@@ -805,21 +839,22 @@
                         </div>
                         <div class="flex justify-between text-sm text-gray-600">
                             <span>ค่าจัดส่ง</span>
-                            <span x-text="orderForm.quantity * 69 >= 500 ? 'ฟรี' : '฿50'"></span>
+                            <span>฿50</span>
+                        </div>
+                        <div x-show="orderForm.paymentMethod === 'cod'" class="flex justify-between text-sm text-gray-600">
+                            <span>ค่า COD (3%)</span>
+                            <span x-text="'฿' + Math.round((orderForm.quantity * 69) * 0.03)"></span>
                         </div>
                         <hr class="my-2">
                         <div class="flex justify-between font-bold text-lg">
                             <span>รวมทั้งหมด</span>
                             <span class="text-primary" x-text="'฿' + getTotalPrice().toLocaleString()"></span>
                         </div>
-                        <div x-show="orderForm.quantity * 69 >= 500" class="text-green-600 text-sm">
-                            🎉 ฟรีค่าจัดส่ง!
-                        </div>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" :disabled="orderSubmitting"
+                <button type="submit" :disabled="orderSubmitting || !orderForm.paymentMethod"
                         class="w-full bg-primary text-white py-4 rounded-xl font-semibold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center">
                     <span x-show="!orderSubmitting">ยืนยันคำสั่งซื้อ</span>
                     <span x-show="orderSubmitting" class="flex items-center">
@@ -835,6 +870,50 @@
         </div>
     </div>
 
+    <!-- QR Code Modal -->
+    <div x-show="showQRModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 qr-modal" @click.self="closeQRModal()">
+        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
+            
+            <!-- Close Button -->
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-secondary">สแกน QR Code</h3>
+                <button @click="closeQRModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-times text-gray-600"></i>
+                </button>
+            </div>
+
+            <!-- QR Code -->
+            <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+                <img x-bind:src="qrCodeUrl" alt="QR Code" class="w-64 h-64 mx-auto mb-4">
+                <div class="text-center">
+                    <p class="text-lg font-semibold text-secondary mb-2">PromptPay: 097-996-5556</p>
+                    <p class="text-2xl font-bold text-primary" x-text="'฿' + qrAmount.toLocaleString()"></p>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="text-left space-y-2 mb-6">
+                <p class="text-sm text-gray-600">1. สแกน QR Code หรือโอนเงินไปยัง PromptPay</p>
+                <p class="text-sm text-gray-600">2. ถ่ายรูปหลักฐานการโอนเงิน</p>
+                <p class="text-sm text-gray-600">3. ส่งหลักฐานมาที่ Line: @veevee.official</p>
+                <p class="text-sm text-gray-600">4. ระบุเลขที่คำสั่งซื้อ: <span class="font-semibold" x-text="orderNumber"></span></p>
+            </div>
+
+            <div class="space-y-3">
+                <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" 
+                   class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
+                    <i class="fab fa-line mr-2"></i>
+                    ส่งหลักฐานผ่าน Line
+                </a>
+                
+                <button @click="closeQRModal()" 
+                        class="w-full border border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors">
+                    ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Modal -->
     <div x-show="showSuccessModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
@@ -845,7 +924,8 @@
             </svg>
 
             <h3 class="text-2xl font-bold text-secondary mb-4">ขอบคุณครับ!</h3>
-            <p class="text-gray-600 mb-6" x-text="successMessage"></p>
+            <p class="text-gray-600 mb-2" x-text="successMessage"></p>
+            <p class="text-sm text-gray-500 mb-6" x-show="orderNumber">หมายเลขคำสั่งซื้อ: <span class="font-semibold" x-text="orderNumber"></span></p>
             
             <button @click="closeSuccessModal()" 
                     class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">
@@ -870,10 +950,17 @@
         function veeVeeApp() {
             return {
                 showOrderModal: false,
+                showQRModal: false,
                 showSuccessModal: false,
                 orderSubmitting: false,
                 contactSubmitting: false,
                 successMessage: '',
+                orderNumber: '',
+                qrCodeUrl: '',
+                qrAmount: 0,
+                
+                // Configuration - Replace with your Apps Script Web App URL
+                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
                 
                 // Order form data
                 orderForm: {
@@ -882,7 +969,8 @@
                     email: '',
                     quantity: 1,
                     address: '',
-                    note: ''
+                    note: '',
+                    paymentMethod: 'qr'
                 },
                 
                 // Contact form data
@@ -930,8 +1018,14 @@
                     document.body.style.overflow = 'auto';
                 },
                 
+                closeQRModal() {
+                    this.showQRModal = false;
+                    document.body.style.overflow = 'auto';
+                },
+                
                 closeSuccessModal() {
                     this.showSuccessModal = false;
+                    this.orderNumber = '';
                     document.body.style.overflow = 'auto';
                 },
                 
@@ -947,8 +1041,14 @@
                 
                 getTotalPrice() {
                     const subtotal = this.orderForm.quantity * 69;
-                    const shipping = subtotal >= 500 ? 0 : 50;
-                    return subtotal + shipping;
+                    const shipping = 50;
+                    const codFee = this.orderForm.paymentMethod === 'cod' ? Math.round(subtotal * 0.03) : 0;
+                    return subtotal + shipping + codFee;
+                },
+                
+                generatePromptPayQR(amount) {
+                    const promptPayId = '0979965556';
+                    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020101021129370016A000000677010111${promptPayId}5802TH5303764540${amount.toFixed(2).length.toString().padStart(2, '0')}${amount.toFixed(2)}6304`;
                 },
                 
                 async submitOrder() {
@@ -956,38 +1056,90 @@
                     
                     try {
                         const orderData = {
-                            ...this.orderForm,
-                            total: this.getTotalPrice(),
-                            timestamp: new Date(),
-                            type: 'order'
+                            customer_id: 'guest_' + Date.now(),
+                            items: [{
+                                product_id: 'veevee_patch',
+                                name: 'VeeVee Anti-Mosquito Patch',
+                                quantity: this.orderForm.quantity,
+                                unit_price: 69,
+                                total_price: this.orderForm.quantity * 69
+                            }],
+                            shipping_address: JSON.stringify({
+                                name: this.orderForm.name,
+                                phone: this.orderForm.phone,
+                                email: this.orderForm.email,
+                                address: this.orderForm.address
+                            }),
+                            payment_method: this.orderForm.paymentMethod,
+                            notes: this.orderForm.note
                         };
 
-                        // Save to Firebase
-                        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'orders'), {
-                            ...orderData,
-                            timestamp: window.firebaseServerTimestamp()
+                        // Save to Firebase first
+                        if (window.firebaseDb) {
+                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'orders'), {
+                                ...orderData,
+                                timestamp: window.firebaseServerTimestamp()
+                            });
+                        }
+
+                        // Send to Google Apps Script
+                        const response = await fetch(this.APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                action: 'create_order',
+                                ...orderData
+                            })
                         });
 
-                        // Also send to Google Sheets via Apps Script (replace with your actual URL)
-                        // await this.sendToGoogleSheets('orders', orderData);
+                        let result;
+                        if (response.ok) {
+                            result = await response.json();
+                        } else {
+                            // Fallback if Apps Script fails
+                            result = {
+                                success: true,
+                                data: {
+                                    order_number: 'VV-' + Date.now(),
+                                    total: this.getTotalPrice()
+                                }
+                            };
+                        }
 
-                        this.successMessage = `คำสั่งซื้อของคุณได้รับการบันทึกแล้ว ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง`;
-                        this.closeOrderModal();
-                        this.showSuccessModal = true;
-                        
-                        // Reset form
-                        this.orderForm = {
-                            name: '',
-                            phone: '',
-                            email: '',
-                            quantity: 1,
-                            address: '',
-                            note: ''
-                        };
+                        if (result.success) {
+                            this.orderNumber = result.data.order_number || 'VV-' + Date.now();
+                            
+                            // Handle payment method
+                            if (this.orderForm.paymentMethod === 'qr') {
+                                this.qrAmount = this.getTotalPrice();
+                                this.qrCodeUrl = this.generatePromptPayQR(this.qrAmount);
+                                this.closeOrderModal();
+                                this.showQRModal = true;
+                            } else {
+                                this.successMessage = `คำสั่งซื้อของคุณได้รับการบันทึกแล้ว ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง`;
+                                this.closeOrderModal();
+                                this.showSuccessModal = true;
+                            }
+                            
+                            // Reset form
+                            this.orderForm = {
+                                name: '',
+                                phone: '',
+                                email: '',
+                                quantity: 1,
+                                address: '',
+                                note: '',
+                                paymentMethod: 'qr'
+                            };
+                        } else {
+                            throw new Error(result.message || 'เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ');
+                        }
                         
                     } catch (error) {
                         console.error('Error submitting order:', error);
-                        alert('เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ กรุณาลองใหม่อีกครั้ง');
+                        alert('เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ กรุณาลองใหม่อีกครั้งหรือติดต่อเราโดยตรง');
                     } finally {
                         this.orderSubmitting = false;
                     }
@@ -998,19 +1150,49 @@
                     
                     try {
                         const contactData = {
-                            ...this.contactForm,
-                            timestamp: new Date(),
+                            name: this.contactForm.name,
+                            email: this.contactForm.email,
+                            phone: this.contactForm.phone,
+                            message: this.contactForm.message,
+                            timestamp: new Date().toISOString(),
                             type: 'contact'
                         };
 
                         // Save to Firebase
-                        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
-                            ...contactData,
-                            timestamp: window.firebaseServerTimestamp()
-                        });
+                        if (window.firebaseDb) {
+                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
+                                ...contactData,
+                                timestamp: window.firebaseServerTimestamp()
+                            });
+                        }
 
-                        // Also send to Google Sheets via Apps Script (replace with your actual URL)
-                        // await this.sendToGoogleSheets('contacts', contactData);
+                        // Send to Google Apps Script (optional)
+                        try {
+                            await fetch(this.APPS_SCRIPT_URL, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    action: 'send_email',
+                                    to: 'veeveeofficialthailand@gmail.com',
+                                    subject: `[VeeVee] ข้อความติดต่อใหม่จาก ${contactData.name}`,
+                                    body: `
+ข้อความติดต่อใหม่จากเว็บไซต์ VeeVee
+
+ชื่อ: ${contactData.name}
+อีเมล: ${contactData.email}
+เบอร์โทร: ${contactData.phone}
+วันที่: ${new Date().toLocaleString('th-TH')}
+
+ข้อความ:
+${contactData.message}
+                                    `
+                                })
+                            });
+                        } catch (emailError) {
+                            console.log('Email notification failed, but contact saved to Firebase');
+                        }
 
                         this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
                         this.showSuccessModal = true;
@@ -1030,30 +1212,6 @@
                         this.contactSubmitting = false;
                     }
                 },
-                
-                // Function to send data to Google Sheets (uncomment and configure when ready)
-                /*
-                async sendToGoogleSheets(sheetType, data) {
-                    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
-                    
-                    const response = await fetch(APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            type: sheetType,
-                            data: data
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Google Sheets API error: ${response.status}`);
-                    }
-                    
-                    return await response.json();
-                },
-                */
                 
                 setupSmoothScroll() {
                     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
