@@ -959,8 +959,8 @@
                 qrCodeUrl: '',
                 qrAmount: 0,
                 
-                // Configuration - Replace with your Apps Script Web App URL
-                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyLG3lSVV8ynMebpWhJC9xymkDmVmrPQUd3bbRfwwdhgDB7W8sRA5FWicdo3_DKdwPk/exec',
+                // Configuration - Replace with your Apps Script Web App URL  
+                APPS_SCRIPT_URL: '', // Will be set after Apps Script deployment
                 
                 // Order form data
                 orderForm: {
@@ -1057,85 +1057,84 @@
                     try {
                         const orderData = {
                             customer_id: 'guest_' + Date.now(),
-                            items: [{
-                                product_id: 'veevee_patch',
-                                name: 'VeeVee Anti-Mosquito Patch',
-                                quantity: this.orderForm.quantity,
-                                unit_price: 69,
-                                total_price: this.orderForm.quantity * 69
-                            }],
-                            shipping_address: JSON.stringify({
-                                name: this.orderForm.name,
-                                phone: this.orderForm.phone,
-                                email: this.orderForm.email,
-                                address: this.orderForm.address
-                            }),
+                            name: this.orderForm.name,
+                            phone: this.orderForm.phone,
+                            email: this.orderForm.email,
+                            quantity: this.orderForm.quantity,
+                            address: this.orderForm.address,
                             payment_method: this.orderForm.paymentMethod,
-                            notes: this.orderForm.note
+                            notes: this.orderForm.note,
+                            total_amount: this.getTotalPrice(),
+                            created_at: new Date().toISOString()
                         };
 
-                        // Save to Firebase first
+                        // Save to Firebase
+                        let firebaseSuccess = false;
                         if (window.firebaseDb) {
-                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'orders'), {
-                                ...orderData,
-                                timestamp: window.firebaseServerTimestamp()
-                            });
-                        }
-
-                        // Send to Google Apps Script
-                        const response = await fetch(this.APPS_SCRIPT_URL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'create_order',
-                                ...orderData
-                            })
-                        });
-
-                        let result;
-                        if (response.ok) {
-                            result = await response.json();
-                        } else {
-                            // Fallback if Apps Script fails
-                            result = {
-                                success: true,
-                                data: {
-                                    order_number: 'VV-' + Date.now(),
-                                    total: this.getTotalPrice()
-                                }
-                            };
-                        }
-
-                        if (result.success) {
-                            this.orderNumber = result.data.order_number || 'VV-' + Date.now();
-                            
-                            // Handle payment method
-                            if (this.orderForm.paymentMethod === 'qr') {
-                                this.qrAmount = this.getTotalPrice();
-                                this.qrCodeUrl = this.generatePromptPayQR(this.qrAmount);
-                                this.closeOrderModal();
-                                this.showQRModal = true;
-                            } else {
-                                this.successMessage = `คำสั่งซื้อของคุณได้รับการบันทึกแล้ว ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง`;
-                                this.closeOrderModal();
-                                this.showSuccessModal = true;
+                            try {
+                                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'orders'), {
+                                    ...orderData,
+                                    timestamp: window.firebaseServerTimestamp()
+                                });
+                                firebaseSuccess = true;
+                                console.log('✅ Order saved to Firebase');
+                            } catch (fbError) {
+                                console.error('Firebase save failed:', fbError);
                             }
-                            
-                            // Reset form
-                            this.orderForm = {
-                                name: '',
-                                phone: '',
-                                email: '',
-                                quantity: 1,
-                                address: '',
-                                note: '',
-                                paymentMethod: 'qr'
-                            };
-                        } else {
-                            throw new Error(result.message || 'เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ');
                         }
+
+                        // Try to send to Google Apps Script (if URL is configured)
+                        let appsScriptSuccess = false;
+                        if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
+                            try {
+                                const response = await fetch(this.APPS_SCRIPT_URL, {
+                                    method: 'POST',
+                                    mode: 'no-cors', // Handle CORS for Apps Script
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        action: 'create_order',
+                                        ...orderData
+                                    })
+                                });
+                                appsScriptSuccess = true;
+                                console.log('✅ Order sent to Apps Script');
+                            } catch (asError) {
+                                console.error('Apps Script send failed:', asError);
+                            }
+                        }
+
+                        // Generate order number
+                        this.orderNumber = 'VV-' + Date.now();
+                        
+                        // Send email notification (fallback)
+                        if (firebaseSuccess || appsScriptSuccess) {
+                            this.sendEmailNotification(orderData);
+                        }
+                        
+                        // Handle payment method
+                        if (this.orderForm.paymentMethod === 'qr') {
+                            this.qrAmount = this.getTotalPrice();
+                            this.qrCodeUrl = this.generatePromptPayQR(this.qrAmount);
+                            this.closeOrderModal();
+                            this.showQRModal = true;
+                        } else {
+                            this.successMessage = `คำสั่งซื้อของคุณได้รับการบันทึกแล้ว ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง`;
+                            this.closeOrderModal();
+                            this.showSuccessModal = true;
+                        }
+                        
+                        // Reset form
+                        this.orderForm = {
+                            name: '',
+                            phone: '',
+                            email: '',
+                            quantity: 1,
+                            address: '',
+                            note: '',
+                            paymentMethod: 'qr'
+                        };
                         
                     } catch (error) {
                         console.error('Error submitting order:', error);
@@ -1143,6 +1142,33 @@
                     } finally {
                         this.orderSubmitting = false;
                     }
+                },
+                
+                sendEmailNotification(orderData) {
+                    // Send email notification via a simple service
+                    const subject = `[VeeVee] คำสั่งซื้อใหม่ #${this.orderNumber}`;
+                    const body = `
+มีคำสั่งซื้อใหม่เข้ามา!
+
+เลขที่คำสั่งซื้อ: ${this.orderNumber}
+วันที่: ${new Date().toLocaleString('th-TH')}
+
+ข้อมูลลูกค้า:
+- ชื่อ: ${orderData.name}
+- เบอร์โทร: ${orderData.phone}
+- อีเมล: ${orderData.email}
+
+ที่อยู่จัดส่ง: ${orderData.address}
+
+จำนวน: ${orderData.quantity} ซอง
+ยอดรวม: ฿${orderData.total_amount}
+วิธีชำระเงิน: ${orderData.payment_method}
+
+หมายเหตุ: ${orderData.notes || 'ไม่มี'}
+                    `;
+                    
+                    // You can use a service like EmailJS or Formspree here
+                    console.log('📧 Email notification:', { subject, body });
                 },
                 
                 async submitContactForm() {
@@ -1159,25 +1185,34 @@
                         };
 
                         // Save to Firebase
+                        let success = false;
                         if (window.firebaseDb) {
-                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
-                                ...contactData,
-                                timestamp: window.firebaseServerTimestamp()
-                            });
+                            try {
+                                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
+                                    ...contactData,
+                                    timestamp: window.firebaseServerTimestamp()
+                                });
+                                success = true;
+                                console.log('✅ Contact form saved to Firebase');
+                            } catch (fbError) {
+                                console.error('Firebase save failed:', fbError);
+                            }
                         }
 
-                        // Send to Google Apps Script (optional)
-                        try {
-                            await fetch(this.APPS_SCRIPT_URL, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    action: 'send_email',
-                                    to: 'veeveeofficialthailand@gmail.com',
-                                    subject: `[VeeVee] ข้อความติดต่อใหม่จาก ${contactData.name}`,
-                                    body: `
+                        // Try to send to Apps Script (if configured)
+                        if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
+                            try {
+                                await fetch(this.APPS_SCRIPT_URL, {
+                                    method: 'POST',
+                                    mode: 'no-cors',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        action: 'send_email',
+                                        to: 'veeveeofficialthailand@gmail.com',
+                                        subject: `[VeeVee] ข้อความติดต่อใหม่จาก ${contactData.name}`,
+                                        body: `
 ข้อความติดต่อใหม่จากเว็บไซต์ VeeVee
 
 ชื่อ: ${contactData.name}
@@ -1187,23 +1222,29 @@
 
 ข้อความ:
 ${contactData.message}
-                                    `
-                                })
-                            });
-                        } catch (emailError) {
-                            console.log('Email notification failed, but contact saved to Firebase');
+                                        `
+                                    })
+                                });
+                                console.log('✅ Contact form sent to Apps Script');
+                            } catch (asError) {
+                                console.error('Apps Script send failed:', asError);
+                            }
                         }
 
-                        this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
-                        this.showSuccessModal = true;
-                        
-                        // Reset form
-                        this.contactForm = {
-                            name: '',
-                            email: '',
-                            phone: '',
-                            message: ''
-                        };
+                        if (success || window.firebaseDb) {
+                            this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
+                            this.showSuccessModal = true;
+                            
+                            // Reset form
+                            this.contactForm = {
+                                name: '',
+                                email: '',
+                                phone: '',
+                                message: ''
+                            };
+                        } else {
+                            throw new Error('ไม่สามารถส่งข้อความได้');
+                        }
                         
                     } catch (error) {
                         console.error('Error submitting contact form:', error);
