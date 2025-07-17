@@ -10,6 +10,34 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-analytics.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlUUr6ATEfDQohr5Zvdk5_C7xKJFBLem0",
+            authDomain: "veeveeweb.firebaseapp.com",
+            projectId: "veeveeweb",
+            storageBucket: "veeveeweb.firebasestorage.app",
+            messagingSenderId: "1054738271826",
+            appId: "1:1054738271826:web:c8d3ede74df35b87cc998b",
+            measurementId: "G-JNJW30SKK9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+
+        // Make Firebase available globally
+        window.firebaseDb = db;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseCollection = collection;
+        window.firebaseServerTimestamp = serverTimestamp;
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -40,6 +68,67 @@
         .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
         .parallax { transform: translateZ(0); will-change: transform; }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success animation */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4ade80;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px #4ade80;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        .success-checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4ade80;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .success-checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px #4ade80;
+            }
+        }
     </style>
 </head>
 <body class="overflow-x-hidden" x-data="veeVeeApp()">
@@ -61,7 +150,7 @@
                     <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">ติดต่อ</a>
                 </div>
                 
-                <button @click="scrollToOrder()" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
+                <button @click="openOrderModal()" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
                     สั่งซื้อเลย
                 </button>
             </div>
@@ -97,7 +186,7 @@
                         <i class="fas fa-info-circle mr-2"></i>
                         เรียนรู้เพิ่มเติม
                     </button>
-                    <button @click="scrollToOrder()" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                    <button @click="openOrderModal()" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                         <i class="fas fa-shopping-cart mr-2"></i>
                         สั่งซื้อทันที
                     </button>
@@ -478,6 +567,9 @@
                             <div class="text-center">
                                 <div class="text-4xl font-bold text-primary mb-2">฿69</div>
                                 <p class="text-gray-600">ราคาต่อซอง</p>
+                                <button @click="openOrderModal()" class="mt-4 bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
+                                    สั่งซื้อเลย
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -487,7 +579,7 @@
     </section>
 
     <!-- Call to Action Section -->
-    <section id="order" class="section-padding hero-gradient relative overflow-hidden">
+    <section class="section-padding hero-gradient relative overflow-hidden">
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full float-animation"></div>
             <div class="absolute bottom-20 right-10 w-24 h-24 bg-white/10 rounded-full float-animation" style="animation-delay: 1s;"></div>
@@ -597,32 +689,170 @@
                 
                 <div class="bg-white rounded-3xl p-8 fade-in">
                     <h3 class="text-2xl font-bold text-secondary mb-6">ส่งข้อความหาเรา</h3>
-                    <form class="space-y-6">
+                    <form @submit.prevent="submitContactForm()" class="space-y-6">
                         <div>
-                            <input type="text" placeholder="ชื่อ-นามสกุล" 
+                            <input type="text" x-model="contactForm.name" placeholder="ชื่อ-นามสกุล" required
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
                         </div>
                         <div>
-                            <input type="email" placeholder="อีเมล" 
+                            <input type="email" x-model="contactForm.email" placeholder="อีเมล" required
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
                         </div>
                         <div>
-                            <input type="tel" placeholder="เบอร์โทรศัพท์" 
+                            <input type="tel" x-model="contactForm.phone" placeholder="เบอร์โทรศัพท์" required
                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700">
                         </div>
                         <div>
-                            <textarea placeholder="ข้อความ" rows="4" 
+                            <textarea x-model="contactForm.message" placeholder="ข้อความ" rows="4" required
                                      class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700"></textarea>
                         </div>
-                        <button type="submit" 
-                                class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
-                            ส่งข้อความ
+                        <button type="submit" :disabled="contactSubmitting"
+                                class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center">
+                            <span x-show="!contactSubmitting">ส่งข้อความ</span>
+                            <span x-show="contactSubmitting" class="flex items-center">
+                                <div class="loading mr-2"></div>
+                                กำลังส่ง...
+                            </span>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Order Modal -->
+    <div x-show="showOrderModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="closeOrderModal()">
+        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto">
+            
+            <!-- Close Button -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-secondary">สั่งซื้อ VeeVee</h2>
+                <button @click="closeOrderModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-times text-gray-600"></i>
+                </button>
+            </div>
+
+            <!-- Product Summary -->
+            <div class="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-6 mb-8">
+                <div class="flex items-center space-x-4">
+                    <img src="https://i.postimg.cc/3wy6HCqz/Vee-Vee.png" alt="VeeVee Product" class="w-20 h-20 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold text-secondary mb-2">VeeVee Anti-Mosquito Patch</h3>
+                        <p class="text-gray-600">12 ชิ้น/ซอง - ป้องกันยุง 24 ชั่วโมง</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-2xl font-bold text-primary">฿69</span>
+                            <span class="text-gray-500 ml-2">ต่อซอง</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Form -->
+            <form @submit.prevent="submitOrder()" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อ-นามสกุล *</label>
+                        <input type="text" x-model="orderForm.name" required
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">เบอร์โทรศัพท์ *</label>
+                        <input type="tel" x-model="orderForm.phone" required
+                               class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">อีเมล</label>
+                    <input type="email" x-model="orderForm.email"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">จำนวนที่ต้องการ *</label>
+                    <div class="flex items-center space-x-4">
+                        <button type="button" @click="decreaseQuantity()" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-minus text-gray-600"></i>
+                        </button>
+                        <input type="number" x-model="orderForm.quantity" min="1" required readonly
+                               class="w-20 text-center py-2 border border-gray-300 rounded-lg font-semibold text-lg">
+                        <button type="button" @click="increaseQuantity()" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-plus text-gray-600"></i>
+                        </button>
+                        <span class="text-gray-600">ซอง</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">ที่อยู่จัดส่ง *</label>
+                    <textarea x-model="orderForm.address" rows="3" required placeholder="กรุณากรอกที่อยู่จัดส่งให้ครบถ้วน"
+                             class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">หมายเหตุ</label>
+                    <textarea x-model="orderForm.note" rows="2" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"
+                             class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h4 class="font-semibold text-gray-700 mb-4">สรุปคำสั่งซื้อ</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>VeeVee x <span x-text="orderForm.quantity"></span> ซอง</span>
+                            <span x-text="'฿' + (orderForm.quantity * 69).toLocaleString()"></span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>ค่าจัดส่ง</span>
+                            <span x-text="orderForm.quantity * 69 >= 500 ? 'ฟรี' : '฿50'"></span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-between font-bold text-lg">
+                            <span>รวมทั้งหมด</span>
+                            <span class="text-primary" x-text="'฿' + getTotalPrice().toLocaleString()"></span>
+                        </div>
+                        <div x-show="orderForm.quantity * 69 >= 500" class="text-green-600 text-sm">
+                            🎉 ฟรีค่าจัดส่ง!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" :disabled="orderSubmitting"
+                        class="w-full bg-primary text-white py-4 rounded-xl font-semibold text-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center">
+                    <span x-show="!orderSubmitting">ยืนยันคำสั่งซื้อ</span>
+                    <span x-show="orderSubmitting" class="flex items-center">
+                        <div class="loading mr-2"></div>
+                        กำลังส่งคำสั่งซื้อ...
+                    </span>
+                </button>
+
+                <p class="text-xs text-gray-500 text-center">
+                    หลังจากยืนยันคำสั่งซื้อ ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div x-show="showSuccessModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
+            
+            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="success-checkmark__check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+
+            <h3 class="text-2xl font-bold text-secondary mb-4">ขอบคุณครับ!</h3>
+            <p class="text-gray-600 mb-6" x-text="successMessage"></p>
+            
+            <button @click="closeSuccessModal()" 
+                    class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">
+                ตกลง
+            </button>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
@@ -639,6 +869,30 @@
     <script>
         function veeVeeApp() {
             return {
+                showOrderModal: false,
+                showSuccessModal: false,
+                orderSubmitting: false,
+                contactSubmitting: false,
+                successMessage: '',
+                
+                // Order form data
+                orderForm: {
+                    name: '',
+                    phone: '',
+                    email: '',
+                    quantity: 1,
+                    address: '',
+                    note: ''
+                },
+                
+                // Contact form data
+                contactForm: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    message: ''
+                },
+
                 init() {
                     // Intersection Observer for fade-in animations
                     const observerOptions = {
@@ -666,9 +920,140 @@
                     document.getElementById('why').scrollIntoView({ behavior: 'smooth' });
                 },
                 
-                scrollToOrder() {
-                    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+                openOrderModal() {
+                    this.showOrderModal = true;
+                    document.body.style.overflow = 'hidden';
                 },
+                
+                closeOrderModal() {
+                    this.showOrderModal = false;
+                    document.body.style.overflow = 'auto';
+                },
+                
+                closeSuccessModal() {
+                    this.showSuccessModal = false;
+                    document.body.style.overflow = 'auto';
+                },
+                
+                increaseQuantity() {
+                    this.orderForm.quantity++;
+                },
+                
+                decreaseQuantity() {
+                    if (this.orderForm.quantity > 1) {
+                        this.orderForm.quantity--;
+                    }
+                },
+                
+                getTotalPrice() {
+                    const subtotal = this.orderForm.quantity * 69;
+                    const shipping = subtotal >= 500 ? 0 : 50;
+                    return subtotal + shipping;
+                },
+                
+                async submitOrder() {
+                    this.orderSubmitting = true;
+                    
+                    try {
+                        const orderData = {
+                            ...this.orderForm,
+                            total: this.getTotalPrice(),
+                            timestamp: new Date(),
+                            type: 'order'
+                        };
+
+                        // Save to Firebase
+                        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'orders'), {
+                            ...orderData,
+                            timestamp: window.firebaseServerTimestamp()
+                        });
+
+                        // Also send to Google Sheets via Apps Script (replace with your actual URL)
+                        // await this.sendToGoogleSheets('orders', orderData);
+
+                        this.successMessage = `คำสั่งซื้อของคุณได้รับการบันทึกแล้ว ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง`;
+                        this.closeOrderModal();
+                        this.showSuccessModal = true;
+                        
+                        // Reset form
+                        this.orderForm = {
+                            name: '',
+                            phone: '',
+                            email: '',
+                            quantity: 1,
+                            address: '',
+                            note: ''
+                        };
+                        
+                    } catch (error) {
+                        console.error('Error submitting order:', error);
+                        alert('เกิดข้อผิดพลาดในการส่งคำสั่งซื้อ กรุณาลองใหม่อีกครั้ง');
+                    } finally {
+                        this.orderSubmitting = false;
+                    }
+                },
+                
+                async submitContactForm() {
+                    this.contactSubmitting = true;
+                    
+                    try {
+                        const contactData = {
+                            ...this.contactForm,
+                            timestamp: new Date(),
+                            type: 'contact'
+                        };
+
+                        // Save to Firebase
+                        await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
+                            ...contactData,
+                            timestamp: window.firebaseServerTimestamp()
+                        });
+
+                        // Also send to Google Sheets via Apps Script (replace with your actual URL)
+                        // await this.sendToGoogleSheets('contacts', contactData);
+
+                        this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
+                        this.showSuccessModal = true;
+                        
+                        // Reset form
+                        this.contactForm = {
+                            name: '',
+                            email: '',
+                            phone: '',
+                            message: ''
+                        };
+                        
+                    } catch (error) {
+                        console.error('Error submitting contact form:', error);
+                        alert('เกิดข้อผิดพลาดในการส่งข้อความ กรุณาลองใหม่อีกครั้ง');
+                    } finally {
+                        this.contactSubmitting = false;
+                    }
+                },
+                
+                // Function to send data to Google Sheets (uncomment and configure when ready)
+                /*
+                async sendToGoogleSheets(sheetType, data) {
+                    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+                    
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            type: sheetType,
+                            data: data
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Google Sheets API error: ${response.status}`);
+                    }
+                    
+                    return await response.json();
+                },
+                */
                 
                 setupSmoothScroll() {
                     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
