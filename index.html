@@ -13,29 +13,46 @@
     
     <!-- Firebase SDK -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-analytics.js';
+        console.log('🔥 Loading Firebase...');
+        
+        try {
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js');
+            const { getFirestore, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js');
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyAlUUr6ATEfDQohr5Zvdk5_C7xKJFBLem0",
+                authDomain: "veeveeweb.firebaseapp.com",
+                projectId: "veeveeweb",
+                storageBucket: "veeveeweb.firebasestorage.app",
+                messagingSenderId: "1054738271826",
+                appId: "1:1054738271826:web:c8d3ede74df35b87cc998b",
+                measurementId: "G-JNJW30SKK9"
+            };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAlUUr6ATEfDQohr5Zvdk5_C7xKJFBLem0",
-            authDomain: "veeveeweb.firebaseapp.com",
-            projectId: "veeveeweb",
-            storageBucket: "veeveeweb.firebasestorage.app",
-            messagingSenderId: "1054738271826",
-            appId: "1:1054738271826:web:c8d3ede74df35b87cc998b",
-            measurementId: "G-JNJW30SKK9"
-        };
+            console.log('🔥 Firebase Config:', firebaseConfig);
+            
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            
+            console.log('✅ Firebase initialized successfully');
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const analytics = getAnalytics(app);
-
-        // Make Firebase available globally
-        window.firebaseDb = db;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseCollection = collection;
-        window.firebaseServerTimestamp = serverTimestamp;
+            // Make Firebase available globally
+            window.firebaseDb = db;
+            window.firebaseAddDoc = addDoc;
+            window.firebaseCollection = collection;
+            window.firebaseServerTimestamp = serverTimestamp;
+            window.firebaseReady = true;
+            
+            console.log('✅ Firebase functions available globally');
+            
+            // Test Firebase connection
+            const testCollection = collection(db, 'connection-test');
+            console.log('✅ Firebase database connection ready');
+            
+        } catch (error) {
+            console.error('❌ Firebase initialization failed:', error);
+            window.firebaseReady = false;
+        }
     </script>
 
     <script>
@@ -872,44 +889,109 @@
 
     <!-- QR Code Modal -->
     <div x-show="showQRModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 qr-modal" @click.self="closeQRModal()">
-        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-md w-full text-center">
+        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white rounded-3xl p-8 max-w-md w-full text-center max-h-screen overflow-y-auto">
             
-            <!-- Close Button -->
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-secondary">สแกน QR Code</h3>
-                <button @click="closeQRModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-times text-gray-600"></i>
-                </button>
-            </div>
+            <!-- QR Payment Step -->
+            <div x-show="!showSlipUpload">
+                <!-- Close Button -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-secondary">สแกน QR Code</h3>
+                    <button @click="closeQRModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-times text-gray-600"></i>
+                    </button>
+                </div>
 
-            <!-- QR Code -->
-            <div class="bg-gray-50 rounded-2xl p-6 mb-6">
-                <img x-bind:src="qrCodeUrl" alt="QR Code" class="w-64 h-64 mx-auto mb-4">
-                <div class="text-center">
-                    <p class="text-lg font-semibold text-secondary mb-2">PromptPay: 097-996-5556</p>
-                    <p class="text-2xl font-bold text-primary" x-text="'฿' + qrAmount.toLocaleString()"></p>
+                <!-- QR Code -->
+                <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+                    <img x-bind:src="qrCodeUrl" alt="PromptPay QR Code" class="w-64 h-64 mx-auto mb-4">
+                    <div class="text-center">
+                        <p class="text-lg font-semibold text-secondary mb-2">PromptPay: 097-996-5556</p>
+                        <p class="text-2xl font-bold text-primary" x-text="'฿' + qrAmount.toLocaleString()"></p>
+                        <p class="text-sm text-gray-500 mt-2">เลขที่คำสั่งซื้อ: <span x-text="orderNumber"></span></p>
+                    </div>
+                </div>
+
+                <!-- Payment Instructions -->
+                <div class="text-left space-y-2 mb-6 bg-blue-50 p-4 rounded-xl">
+                    <h4 class="font-semibold text-blue-800 mb-2">วิธีการชำระเงิน:</h4>
+                    <p class="text-sm text-blue-700">1. สแกน QR Code ด้วยแอพธนาคาร</p>
+                    <p class="text-sm text-blue-700">2. ตรวจสอบยอดเงิน <span class="font-bold" x-text="'฿' + qrAmount.toLocaleString()"></span></p>
+                    <p class="text-sm text-blue-700">3. กดโอนเงิน</p>
+                    <p class="text-sm text-blue-700">4. อัปโหลดสลิปในขั้นตอนถัดไป</p>
+                </div>
+
+                <div class="space-y-3">
+                    <button @click="showSlipUpload = true" 
+                           class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
+                        <i class="fas fa-upload mr-2"></i>
+                        โอนเงินเรียบร้อย → อัปโหลดสลิป
+                    </button>
+                    
+                    <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" 
+                       class="w-full border border-green-500 text-green-600 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
+                        <i class="fab fa-line mr-2"></i>
+                        ส่งสลิปผ่าน Line
+                    </a>
                 </div>
             </div>
 
-            <!-- Instructions -->
-            <div class="text-left space-y-2 mb-6">
-                <p class="text-sm text-gray-600">1. สแกน QR Code หรือโอนเงินไปยัง PromptPay</p>
-                <p class="text-sm text-gray-600">2. ถ่ายรูปหลักฐานการโอนเงิน</p>
-                <p class="text-sm text-gray-600">3. ส่งหลักฐานมาที่ Line: @veevee.official</p>
-                <p class="text-sm text-gray-600">4. ระบุเลขที่คำสั่งซื้อ: <span class="font-semibold" x-text="orderNumber"></span></p>
-            </div>
+            <!-- Slip Upload Step -->
+            <div x-show="showSlipUpload">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <button @click="showSlipUpload = false" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-arrow-left text-gray-600"></i>
+                    </button>
+                    <h3 class="text-2xl font-bold text-secondary">อัปโหลดสลิป</h3>
+                    <button @click="closeQRModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-times text-gray-600"></i>
+                    </button>
+                </div>
 
-            <div class="space-y-3">
-                <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" 
-                   class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
-                    <i class="fab fa-line mr-2"></i>
-                    ส่งหลักฐานผ่าน Line
-                </a>
-                
-                <button @click="closeQRModal()" 
-                        class="w-full border border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors">
-                    ปิด
-                </button>
+                <!-- Order Summary -->
+                <div class="bg-gray-50 rounded-xl p-4 mb-6">
+                    <p class="text-sm text-gray-600">เลขที่คำสั่งซื้อ: <span class="font-semibold" x-text="orderNumber"></span></p>
+                    <p class="text-lg font-bold text-primary" x-text="'จำนวนเงิน: ฿' + qrAmount.toLocaleString()"></p>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">เลือกไฟล์สลิปการโอนเงิน</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary transition-colors">
+                        <input type="file" @change="handleSlipUpload" accept="image/*" class="hidden" id="slip-upload">
+                        <label for="slip-upload" class="cursor-pointer">
+                            <div x-show="!slipPreview">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3 block"></i>
+                                <p class="text-gray-600">คลิกเพื่อเลือกไฟล์สลิป</p>
+                                <p class="text-sm text-gray-500 mt-2">รองรับไฟล์ JPG, PNG</p>
+                            </div>
+                            <div x-show="slipPreview" class="space-y-3">
+                                <img x-bind:src="slipPreview" alt="Slip Preview" class="max-w-full h-48 object-contain mx-auto rounded-lg">
+                                <p class="text-sm text-green-600">✅ เลือกไฟล์แล้ว</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="space-y-3">
+                    <button @click="submitSlip()" :disabled="!slipFile || slipUploading"
+                           class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center">
+                        <span x-show="!slipUploading">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            ส่งสลิปการโอนเงิน
+                        </span>
+                        <span x-show="slipUploading" class="flex items-center">
+                            <div class="loading mr-2"></div>
+                            กำลังส่งสลิป...
+                        </span>
+                    </button>
+                    
+                    <button @click="showSlipUpload = false" 
+                           class="w-full border border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors">
+                        กลับไปดู QR Code
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -951,17 +1033,21 @@
             return {
                 showOrderModal: false,
                 showQRModal: false,
+                showSlipUpload: false,
                 showSuccessModal: false,
                 orderSubmitting: false,
                 contactSubmitting: false,
+                slipUploading: false,
                 successMessage: '',
                 orderNumber: '',
                 qrCodeUrl: '',
                 qrAmount: 0,
+                slipFile: null,
+                slipPreview: null,
                 
                 // Configuration - Replace with your Apps Script Web App URL  
                 APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzv_UZ4f1LJpM2DCb6L0bNC3ypZydkndNv_gYwLxqtpxcuQSNGgRjnG2sKCYou9qVu0/exec', // Will be set after Apps Script deployment
-                                  
+                
                 // Order form data
                 orderForm: {
                     name: '',
@@ -1020,6 +1106,9 @@
                 
                 closeQRModal() {
                     this.showQRModal = false;
+                    this.showSlipUpload = false;
+                    this.slipFile = null;
+                    this.slipPreview = null;
                     document.body.style.overflow = 'auto';
                 },
                 
@@ -1048,7 +1137,184 @@
                 
                 generatePromptPayQR(amount) {
                     const promptPayId = '0979965556';
-                    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020101021129370016A000000677010111${promptPayId}5802TH5303764540${amount.toFixed(2).length.toString().padStart(2, '0')}${amount.toFixed(2)}6304`;
+                    
+                    // PromptPay QR Code format specification
+                    const payload = this.generatePromptPayPayload(promptPayId, amount);
+                    
+                    // Generate QR Code URL using Google Charts API
+                    const qrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(payload)}`;
+                    
+                    return qrUrl;
+                },
+                
+                generatePromptPayPayload(mobileNumber, amount) {
+                    // PromptPay QR Code payload generation
+                    const formatMobileNumber = (mobile) => {
+                        // Remove leading 0 and add country code
+                        return '66' + mobile.substring(1);
+                    };
+                    
+                    const formatAmount = (amt) => {
+                        return amt.toFixed(2);
+                    };
+                    
+                    const formattedMobile = formatMobileNumber(mobileNumber);
+                    const formattedAmount = formatAmount(amount);
+                    
+                    // Build PromptPay payload according to EMV QR Code specification
+                    let payload = '';
+                    
+                    // Payload Format Indicator
+                    payload += '000201';
+                    
+                    // Point of Initiation Method
+                    payload += '010212';
+                    
+                    // Merchant Account Information
+                    const aid = 'A000000677010111';
+                    const mobileTag = '01' + String(formattedMobile.length).padStart(2, '0') + formattedMobile;
+                    const merchantInfo = '29' + String((aid.length + mobileTag.length).toString().length === 1 ? '0' + (aid.length + mobileTag.length) : (aid.length + mobileTag.length)) + '0016' + aid + mobileTag;
+                    payload += merchantInfo;
+                    
+                    // Country Code
+                    payload += '5802TH';
+                    
+                    // Transaction Currency (THB = 764)
+                    payload += '5303764';
+                    
+                    // Transaction Amount
+                    if (amount > 0) {
+                        const amountStr = formattedAmount;
+                        payload += '54' + String(amountStr.length).padStart(2, '0') + amountStr;
+                    }
+                    
+                    // Calculate CRC
+                    const crc = this.calculateCRC16(payload + '6304');
+                    payload += '6304' + crc.toString(16).toUpperCase().padStart(4, '0');
+                    
+                    return payload;
+                },
+                
+                calculateCRC16(data) {
+                    let crc = 0xFFFF;
+                    const polynomial = 0x1021;
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        crc ^= (data.charCodeAt(i) << 8);
+                        for (let j = 0; j < 8; j++) {
+                            if (crc & 0x8000) {
+                                crc = (crc << 1) ^ polynomial;
+                            } else {
+                                crc <<= 1;
+                            }
+                            crc &= 0xFFFF;
+                        }
+                    }
+                    
+                    return crc;
+                },
+                
+                handleSlipUpload(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        // Validate file type
+                        if (!file.type.startsWith('image/')) {
+                            alert('กรุณาเลือกไฟล์รูปภาพ (JPG, PNG)');
+                            return;
+                        }
+                        
+                        // Validate file size (max 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('ไฟล์รูปภาพต้องมีขนาดไม่เกิน 5MB');
+                            return;
+                        }
+                        
+                        this.slipFile = file;
+                        
+                        // Create preview
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.slipPreview = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                },
+                
+                async submitSlip() {
+                    if (!this.slipFile) {
+                        alert('กรุณาเลือกไฟล์สลิปการโอนเงิน');
+                        return;
+                    }
+                    
+                    this.slipUploading = true;
+                    
+                    try {
+                        // Convert file to base64
+                        const base64 = await this.fileToBase64(this.slipFile);
+                        
+                        const slipData = {
+                            order_number: this.orderNumber,
+                            amount: this.qrAmount,
+                            file_name: this.slipFile.name,
+                            file_type: this.slipFile.type,
+                            file_size: this.slipFile.size,
+                            file_data: base64,
+                            uploaded_at: new Date().toISOString()
+                        };
+                        
+                        // Save to Firebase
+                        if (window.firebaseDb) {
+                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'payment_slips'), {
+                                ...slipData,
+                                timestamp: window.firebaseServerTimestamp()
+                            });
+                            console.log('✅ Slip saved to Firebase');
+                        }
+                        
+                        // Send to Apps Script (if configured)
+                        if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
+                            try {
+                                await fetch(this.APPS_SCRIPT_URL, {
+                                    method: 'POST',
+                                    mode: 'no-cors',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        action: 'upload_slip',
+                                        ...slipData
+                                    })
+                                });
+                                console.log('✅ Slip sent to Apps Script');
+                            } catch (error) {
+                                console.error('Apps Script upload failed:', error);
+                            }
+                        }
+                        
+                        // Success
+                        this.successMessage = `สลิปการโอนเงินของคุณได้รับการส่งแล้ว ทีมงานจะตรวจสอบและติดต่อกลับภายใน 2 ชั่วโมง`;
+                        this.closeQRModal();
+                        this.showSuccessModal = true;
+                        
+                    } catch (error) {
+                        console.error('Error uploading slip:', error);
+                        alert('เกิดข้อผิดพลาดในการอัปโหลดสลิป กรุณาลองใหม่อีกครั้ง');
+                    } finally {
+                        this.slipUploading = false;
+                    }
+                },
+                
+                fileToBase64(file) {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => {
+                            // Remove data:image/jpeg;base64, prefix
+                            const base64 = reader.result.split(',')[1];
+                            resolve(base64);
+                        };
+                        reader.onerror = error => reject(error);
+                    });
                 },
                 
                 async submitOrder() {
