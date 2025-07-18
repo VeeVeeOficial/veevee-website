@@ -903,11 +903,16 @@
 
                 <!-- QR Code -->
                 <div class="bg-gray-50 rounded-2xl p-6 mb-6">
-                    <img x-bind:src="qrCodeUrl" alt="PromptPay QR Code" class="w-64 h-64 mx-auto mb-4">
+                    <div class="text-center mb-4">
+                        <img x-bind:src="qrCodeUrl" alt="PromptPay QR Code" 
+                             class="w-64 h-64 mx-auto border-2 border-gray-200 rounded-lg"
+                             @error="$event.target.src='https://via.placeholder.com/300x300/f0f0f0/666666?text=QR+Code+Loading'"
+                             @load="console.log('QR Code loaded:', $event.target.src)">
+                    </div>
                     <div class="text-center">
                         <p class="text-lg font-semibold text-secondary mb-2">PromptPay: 097-996-5556</p>
-                        <p class="text-2xl font-bold text-primary" x-text="'฿' + qrAmount.toLocaleString()"></p>
-                        <p class="text-sm text-gray-500 mt-2">เลขที่คำสั่งซื้อ: <span x-text="orderNumber"></span></p>
+                        <p class="text-3xl font-bold text-primary mb-2" x-text="'฿' + qrAmount.toLocaleString()"></p>
+                        <p class="text-sm text-gray-500">เลขที่คำสั่งซื้อ: <span class="font-medium" x-text="orderNumber"></span></p>
                     </div>
                 </div>
 
@@ -1045,8 +1050,18 @@
                 slipFile: null,
                 slipPreview: null,
                 
-                // Configuration - Replace with your Apps Script Web App URL  
-                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzv_UZ4f1LJpM2DCb6L0bNC3ypZydkndNv_gYwLxqtpxcuQSNGgRjnG2sKCYou9qVu0/exec', // Will be set after Apps Script deployment
+                // Configuration - ใส่ URL ของ Google Apps Script ตรงนี้
+                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyrHzlGXA33yT3s70F6iSD7UmKriNu-XdWZmfd4S70FPWe2nYGfoWMF6jC_coDb5xQf/exec',
+                
+                // ⚠️ IMPORTANT: แทนที่ URL ด้านบนด้วย URL จริงจาก Google Apps Script
+                // วิธี Deploy Apps Script:
+                // 1. ไปที่ Google Apps Script
+                // 2. คลิก Deploy → New deployment  
+                // 3. Type: Web app
+                // 4. Execute as: Me
+                // 5. Who has access: Anyone
+                // 6. คลิก Deploy
+                // 7. คัดลอก URL มาใส่ที่นี่
                 
                 // Order form data
                 orderForm: {
@@ -1068,6 +1083,10 @@
                 },
 
                 init() {
+                    console.log('🚀 VeeVee App initialized');
+                    console.log('🔗 Apps Script URL:', this.APPS_SCRIPT_URL);
+                    console.log('🔥 Firebase Ready:', !!window.firebaseDb);
+                    
                     // Intersection Observer for fade-in animations
                     const observerOptions = {
                         threshold: 0.1,
@@ -1136,8 +1155,9 @@
                 },
                 
                 generatePromptPayQR(amount) {
-                    // ใช้รูป QR Code จาก Google Drive
-                    return 'https://drive.google.com/uc?export=view&id=1dTqJH507vSVOVfHy2cNxrJiVtOQGG1Ef';
+                    // ใช้ QR Code ที่แน่นอน - ถ้า Google Drive ไม่ทำงาน ให้ใช้รูป base64 
+                    // หรือใส่ URL จาก Imgur/Postimage
+                    return 'https://i.postimg.cc/QCtZpLYX/Vee-Vee-QR-Code-png.jpg';
                 },
                 
                 handleSlipUpload(event) {
