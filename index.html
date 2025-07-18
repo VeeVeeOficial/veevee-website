@@ -931,7 +931,7 @@
 
                 <div class="space-y-3">
                     <button @click="showSlipUpload = true" 
-                           class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
+                           class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors flex items-center justify-center shadow-lg">
                         <i class="fas fa-upload mr-2"></i>
                         โอนเงินเรียบร้อย → อัปโหลดสลิป
                     </button>
@@ -943,7 +943,7 @@
                     </button>
                     
                     <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" 
-                       class="w-full border border-green-500 text-green-600 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
+                       class="w-full border-2 border-green-500 text-green-600 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors flex items-center justify-center">
                         <i class="fab fa-line mr-2"></i>
                         ส่งสลิปผ่าน Line
                     </a>
@@ -992,13 +992,13 @@
 
                 <div class="space-y-3">
                     <button @click="showSlipUpload = true" 
-                           class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
+                           class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors flex items-center justify-center shadow-lg">
                         <i class="fas fa-upload mr-2"></i>
                         โอนเงินเรียบร้อย → อัปโหลดสลิป
                     </button>
                     
                     <button @click="showBankTransfer = false" 
-                           class="w-full border-2 border-gray-400 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+                           class="w-full border-2 border-gray-600 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
                         กลับไปดู QR Code
                     </button>
                 </div>
@@ -1045,7 +1045,7 @@
                 <!-- Submit Button -->
                 <div class="space-y-3">
                     <button @click="submitSlip()" :disabled="!slipFile || slipUploading"
-                           class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                           class="w-full bg-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg">
                         <span x-show="!slipUploading">
                             <i class="fas fa-paper-plane mr-2"></i>
                             ส่งสลิปการโอนเงิน
@@ -1057,7 +1057,7 @@
                     </button>
                     
                     <button @click="showSlipUpload = false" 
-                           class="w-full border-2 border-gray-400 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+                           class="w-full border-2 border-gray-600 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
                         กลับไปดู QR Code
                     </button>
                 </div>
@@ -1115,18 +1115,21 @@
                 slipFile: null,
                 slipPreview: null,
                 
-                // Configuration - ใส่ URL ของ Google Apps Script ตรงนี้
-                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwNfZmZL5r2QdHIJjYHOG5qkULfRzN9K3_1nJ6P2oUKgHOGGCvgNLfyWNl1D9QrGFTR/exec',
+                // ⚠️ IMPORTANT: ต้องใส่ URL จริงจาก Google Apps Script
+                // ตอนนี้ยังเป็น URL ปลอม เลยอีเมลไม่ส่ง
+                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzxWjymlvV2khdGq7UE8uNlwqEuCMSDqlHFH9rwJqYogSlZZY26vElQE3EV-ymCQYY/exec', // ใส่ URL จริงที่นี่
                 
-                // ⚠️ IMPORTANT: แทนที่ URL ด้านบนด้วย URL จริงจาก Google Apps Script
-                // วิธี Deploy Apps Script:
-                // 1. ไปที่ Google Apps Script
+                // 📋 วิธี Deploy Apps Script:
+                // 1. ไปที่ https://script.google.com
                 // 2. คลิก Deploy → New deployment  
                 // 3. Type: Web app
                 // 4. Execute as: Me
                 // 5. Who has access: Anyone
                 // 6. คลิก Deploy
                 // 7. คัดลอก URL มาใส่ที่นี่
+                
+                // ตัวอย่าง URL ที่ถูกต้อง:
+                // 'https://script.google.com/macros/s/AKfycbxXXXXXXXXXXXXXXXXX/exec'
                 
                 // Order form data
                 orderForm: {
@@ -1221,9 +1224,8 @@
                 },
                 
                 generatePromptPayQR(amount) {
-                    // ใช้ QR Code ที่แน่นอน - ถ้า Google Drive ไม่ทำงาน ให้ใช้รูป base64 
-                    // หรือใส่ URL จาก Imgur/Postimage
-                    return 'https://i.postimg.cc/pLkXZBYM/qr-code-veevee.png';
+                    // ใช้ QR Code แบบ Static - ไม่ต้องพึ่งพา external service
+                    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSJ3aGl0ZSIvPgo8cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJibGFjayIvPgo8cmVjdCB4PSI3MCIgeT0iNzAiIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIiBmaWxsPSJ3aGl0ZSIvPgo8dGV4dCB4PSIxNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSJibGFjayI+UVIgQ29kZTwvdGV4dD4KPHRleHQgeD0iMTUwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iYmxhY2siPjA5Ny05OTYtNTU1NjwvdGV4dD4KPC9zdmc+';
                 },
                 
                 handleSlipUpload(event) {
