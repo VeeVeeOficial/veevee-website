@@ -976,7 +976,7 @@
                 <!-- Submit Button -->
                 <div class="space-y-3">
                     <button @click="submitSlip()" :disabled="!slipFile || slipUploading"
-                           class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center">
+                           class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <span x-show="!slipUploading">
                             <i class="fas fa-paper-plane mr-2"></i>
                             ส่งสลิปการโอนเงิน
@@ -988,7 +988,7 @@
                     </button>
                     
                     <button @click="showSlipUpload = false" 
-                           class="w-full border border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors">
+                           class="w-full border-2 border-gray-400 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
                         กลับไปดู QR Code
                     </button>
                 </div>
@@ -1136,82 +1136,8 @@
                 },
                 
                 generatePromptPayQR(amount) {
-                    const promptPayId = '0979965556';
-                    
-                    // PromptPay QR Code format specification
-                    const payload = this.generatePromptPayPayload(promptPayId, amount);
-                    
-                    // Generate QR Code URL using Google Charts API
-                    const qrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(payload)}`;
-                    
-                    return qrUrl;
-                },
-                
-                generatePromptPayPayload(mobileNumber, amount) {
-                    // PromptPay QR Code payload generation
-                    const formatMobileNumber = (mobile) => {
-                        // Remove leading 0 and add country code
-                        return '66' + mobile.substring(1);
-                    };
-                    
-                    const formatAmount = (amt) => {
-                        return amt.toFixed(2);
-                    };
-                    
-                    const formattedMobile = formatMobileNumber(mobileNumber);
-                    const formattedAmount = formatAmount(amount);
-                    
-                    // Build PromptPay payload according to EMV QR Code specification
-                    let payload = '';
-                    
-                    // Payload Format Indicator
-                    payload += '000201';
-                    
-                    // Point of Initiation Method
-                    payload += '010212';
-                    
-                    // Merchant Account Information
-                    const aid = 'A000000677010111';
-                    const mobileTag = '01' + String(formattedMobile.length).padStart(2, '0') + formattedMobile;
-                    const merchantInfo = '29' + String((aid.length + mobileTag.length).toString().length === 1 ? '0' + (aid.length + mobileTag.length) : (aid.length + mobileTag.length)) + '0016' + aid + mobileTag;
-                    payload += merchantInfo;
-                    
-                    // Country Code
-                    payload += '5802TH';
-                    
-                    // Transaction Currency (THB = 764)
-                    payload += '5303764';
-                    
-                    // Transaction Amount
-                    if (amount > 0) {
-                        const amountStr = formattedAmount;
-                        payload += '54' + String(amountStr.length).padStart(2, '0') + amountStr;
-                    }
-                    
-                    // Calculate CRC
-                    const crc = this.calculateCRC16(payload + '6304');
-                    payload += '6304' + crc.toString(16).toUpperCase().padStart(4, '0');
-                    
-                    return payload;
-                },
-                
-                calculateCRC16(data) {
-                    let crc = 0xFFFF;
-                    const polynomial = 0x1021;
-                    
-                    for (let i = 0; i < data.length; i++) {
-                        crc ^= (data.charCodeAt(i) << 8);
-                        for (let j = 0; j < 8; j++) {
-                            if (crc & 0x8000) {
-                                crc = (crc << 1) ^ polynomial;
-                            } else {
-                                crc <<= 1;
-                            }
-                            crc &= 0xFFFF;
-                        }
-                    }
-                    
-                    return crc;
+                    // ใช้รูป QR Code จาก Google Drive
+                    return 'https://drive.google.com/uc?export=view&id=1dTqJH507vSVOVfHy2cNxrJiVtOQGG1Ef';
                 },
                 
                 handleSlipUpload(event) {
@@ -1262,16 +1188,8 @@
                             uploaded_at: new Date().toISOString()
                         };
                         
-                        // Save to Firebase
-                        if (window.firebaseDb) {
-                            await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'payment_slips'), {
-                                ...slipData,
-                                timestamp: window.firebaseServerTimestamp()
-                            });
-                            console.log('✅ Slip saved to Firebase');
-                        }
-                        
-                        // Send to Apps Script (if configured)
+                        // Send to Apps Script (primary)
+                        let success = false;
                         if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
                             try {
                                 await fetch(this.APPS_SCRIPT_URL, {
@@ -1285,13 +1203,27 @@
                                         ...slipData
                                     })
                                 });
-                                console.log('✅ Slip sent to Apps Script');
+                                success = true;
+                                console.log('✅ Slip sent to Apps Script (Google Sheets)');
                             } catch (error) {
                                 console.error('Apps Script upload failed:', error);
                             }
                         }
                         
-                        // Success
+                        // Backup to Firebase (secondary)
+                        if (window.firebaseDb) {
+                            try {
+                                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'payment_slips'), {
+                                    ...slipData,
+                                    timestamp: window.firebaseServerTimestamp()
+                                });
+                                console.log('✅ Slip backup saved to Firebase');
+                            } catch (fbError) {
+                                console.error('Firebase backup failed:', fbError);
+                            }
+                        }
+                        
+                        // Success message
                         this.successMessage = `สลิปการโอนเงินของคุณได้รับการส่งแล้ว ทีมงานจะตรวจสอบและติดต่อกลับภายใน 2 ชั่วโมง`;
                         this.closeQRModal();
                         this.showSuccessModal = true;
@@ -1465,7 +1397,7 @@
                             }
                         }
 
-                        // Try to send to Apps Script (if configured)
+                        // Send to Apps Script (if configured)
                         if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
                             try {
                                 await fetch(this.APPS_SCRIPT_URL, {
@@ -1475,20 +1407,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        action: 'send_email',
-                                        to: 'veeveeofficialthailand@gmail.com',
-                                        subject: `[VeeVee] ข้อความติดต่อใหม่จาก ${contactData.name}`,
-                                        body: `
-ข้อความติดต่อใหม่จากเว็บไซต์ VeeVee
-
-ชื่อ: ${contactData.name}
-อีเมล: ${contactData.email}
-เบอร์โทร: ${contactData.phone}
-วันที่: ${new Date().toLocaleString('th-TH')}
-
-ข้อความ:
-${contactData.message}
-                                        `
+                                        action: 'contact_form',
+                                        ...contactData
                                     })
                                 });
                                 console.log('✅ Contact form sent to Apps Script');
