@@ -162,7 +162,20 @@
                 <div class="flex items-center space-x-3">
                     <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" alt="VeeVee Logo" class="h-10 w-auto">
                     <span class="text-2xl font-bold text-secondary">VeeVee</span>
-                </div>
+                    <!-- Debug Panel (แสดงเฉพาะใน development) -->
+            <div x-show="window.location.hostname === 'localhost' || window.location.hostname.includes('vercel.app')" 
+                 class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg text-xs z-50 max-w-sm">
+                <div class="font-bold mb-2">🔧 Debug Panel</div>
+                <div>Apps Script: <span x-text="APPS_SCRIPT_URL ? '✅ Set' : '❌ Not Set'" 
+                     :class="APPS_SCRIPT_URL ? 'text-green-400' : 'text-red-400'"></span></div>
+                <div>Firebase: <span x-text="window.firebaseDb ? '✅ Ready' : '❌ Not Ready'" 
+                     :class="window.firebaseDb ? 'text-green-400' : 'text-red-400'"></span></div>
+                <button @click="console.log('🔗 Apps Script URL:', APPS_SCRIPT_URL)" 
+                        class="mt-2 bg-blue-500 text-white px-2 py-1 rounded text-xs">
+                    Show URL in Console
+                </button>
+            </div>
+        </div>
                 
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="text-gray-700 hover:text-primary transition-colors">หน้าแรก</a>
@@ -1117,7 +1130,7 @@
                 
                 // ⚠️ IMPORTANT: ต้องใส่ URL จริงจาก Google Apps Script
                 // ตอนนี้ยังเป็น URL ปลอม เลยอีเมลไม่ส่ง
-                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzxWjymlvV2khdGq7UE8uNlwqEuCMSDqlHFH9rwJqYogSlZZY26vElQE3EV-ymCQYY/exec', // ใส่ URL จริงที่นี่
+                APPS_SCRIPT_URL: '', // ใส่ URL จริงที่นี่
                 
                 // 📋 วิธี Deploy Apps Script:
                 // 1. ไปที่ https://script.google.com
@@ -1154,6 +1167,35 @@
                     console.log('🚀 VeeVee App initialized');
                     console.log('🔗 Apps Script URL:', this.APPS_SCRIPT_URL);
                     console.log('🔥 Firebase Ready:', !!window.firebaseDb);
+                    
+                    // ⚠️ เตือนผู้ดูแลระบบถ้า Apps Script URL ไม่ได้ตั้งค่า
+                    if (!this.APPS_SCRIPT_URL || this.APPS_SCRIPT_URL === '') {
+                        console.warn('⚠️ ADMIN WARNING: Apps Script URL not configured!');
+                        console.warn('📋 To fix this:');
+                        console.warn('1. Go to https://script.google.com');
+                        console.warn('2. Deploy → New deployment → Web app');
+                        console.warn('3. Execute as: Me, Access: Anyone');
+                        console.warn('4. Copy URL and update APPS_SCRIPT_URL in website');
+                        console.warn('5. Emails will not be sent until this is fixed!');
+                        
+                        // แสดง alert เฉพาะใน development
+                        if (window.location.hostname === 'localhost' || window.location.hostname.includes('vercel.app')) {
+                            setTimeout(() => {
+                                if (confirm('⚠️ ADMIN: Apps Script URL ไม่ได้ตั้งค่า\n\nอีเมลจะไม่ส่ง จนกว่าจะ Deploy Apps Script\n\nต้องการดูวิธีแก้ไขใน Console?')) {
+                                    console.group('🔧 วิธีแก้ไข Apps Script URL:');
+                                    console.log('1. ไปที่ https://script.google.com');
+                                    console.log('2. เปิดโปรเจ็ค VeeVee Apps Script');
+                                    console.log('3. คลิก Deploy → New deployment');
+                                    console.log('4. Type: Web app');
+                                    console.log('5. Execute as: Me');
+                                    console.log('6. Who has access: Anyone');
+                                    console.log('7. คลิก Deploy');
+                                    console.log('8. คัดลอก URL มาใส่ใน APPS_SCRIPT_URL');
+                                    console.groupEnd();
+                                }
+                            }, 2000);
+                        }
+                    }
                     
                     // Intersection Observer for fade-in animations
                     const observerOptions = {
@@ -1224,8 +1266,11 @@
                 },
                 
                 generatePromptPayQR(amount) {
-                    // ใช้ QR Code แบบ Static - ไม่ต้องพึ่งพา external service
-                    return 'https://i.postimg.cc/QCtZpLYX/Vee-Vee-QR-Code-png.jpg'
+                    // ใช้รูป QR Code จริงจาก postimg หรือ Google Drive
+                    return 'https://i.postimg.cc/QCtZpLYX/Vee-Vee-QR-Code-png.jpg';
+                    // หรือใช้จาก Google Drive: 
+                    // return 'https://drive.google.com/uc?export=view&id=1dTqJH507vSVOVfHy2cNxrJiVtOQGG1Ef';
+                },
                 
                 handleSlipUpload(event) {
                     const file = event.target.files[0];
@@ -1469,15 +1514,24 @@
                             type: 'contact'
                         };
 
-                        // Save to Firebase
-                        let success = false;
+                        console.log('📞 Contact Data:', contactData);
+                        console.log('🔗 Apps Script URL:', this.APPS_SCRIPT_URL);
+                        
+                        // ตรวจสอบว่า Apps Script URL ถูกต้องหรือไม่
+                        if (!this.APPS_SCRIPT_URL || this.APPS_SCRIPT_URL === '') {
+                            console.error('❌ Apps Script URL ไม่ได้ตั้งค่า - ฟอร์มติดต่อจะไม่ส่งอีเมล!');
+                            alert('⚠️ ระบบยังไม่พร้อมส่งอีเมล กรุณาติดต่อผู้ดูแลระบบ\n\n(Apps Script URL ไม่ได้ตั้งค่า)\n\nแต่ข้อมูลของคุณได้รับการบันทึกแล้ว');
+                        }
+
+                        // Save to Firebase (backup)
+                        let firebaseSuccess = false;
                         if (window.firebaseDb) {
                             try {
                                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'contacts'), {
                                     ...contactData,
                                     timestamp: window.firebaseServerTimestamp()
                                 });
-                                success = true;
+                                firebaseSuccess = true;
                                 console.log('✅ Contact form saved to Firebase');
                             } catch (fbError) {
                                 console.error('Firebase save failed:', fbError);
@@ -1485,11 +1539,13 @@
                         }
 
                         // Send to Apps Script (if configured)
+                        let appsScriptSuccess = false;
                         if (this.APPS_SCRIPT_URL && this.APPS_SCRIPT_URL.includes('script.google.com')) {
                             try {
-                                await fetch(this.APPS_SCRIPT_URL, {
+                                console.log('📤 Sending contact form to Apps Script...');
+                                
+                                const response = await fetch(this.APPS_SCRIPT_URL, {
                                     method: 'POST',
-                                    mode: 'no-cors',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
@@ -1498,13 +1554,24 @@
                                         ...contactData
                                     })
                                 });
-                                console.log('✅ Contact form sent to Apps Script');
+
+                                console.log('📥 Contact Apps Script Response Status:', response.status);
+                                
+                                if (response.ok) {
+                                    const result = await response.text();
+                                    console.log('📥 Contact Apps Script Response:', result);
+                                    appsScriptSuccess = true;
+                                } else {
+                                    console.error('❌ Contact Apps Script HTTP Error:', response.status, response.statusText);
+                                }
                             } catch (asError) {
-                                console.error('Apps Script send failed:', asError);
+                                console.error('❌ Contact Apps Script Network Error:', asError);
                             }
+                        } else {
+                            console.warn('⚠️ Apps Script URL not configured for contact form');
                         }
 
-                        if (success || window.firebaseDb) {
+                        if (firebaseSuccess || appsScriptSuccess) {
                             this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
                             this.showSuccessModal = true;
                             
@@ -1521,7 +1588,7 @@
                         
                     } catch (error) {
                         console.error('Error submitting contact form:', error);
-                        alert('เกิดข้อผิดพลาดในการส่งข้อความ กรุณาลองใหม่อีกครั้ง');
+                        alert('เกิดข้อผิดพลาดในการส่งข้อความ กรุณาลองใหม่อีกครั้ง\n\nError: ' + error.message);
                     } finally {
                         this.contactSubmitting = false;
                     }
