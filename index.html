@@ -1130,8 +1130,8 @@
                 
                 // ⚠️ IMPORTANT: ต้องใส่ URL จริงจาก Google Apps Script
                 // ตอนนี้ยังเป็น URL ปลอม เลยอีเมลไม่ส่ง
-                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzxWjymlvV2khdGq7UE8uNlwqEuCMSDqlHFH9rwJqYogSlZZY26vElQE3EV-ymCQYY/exec', // ใส่ URL จริงที่นี่
-                
+                APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxOGZI9uqrT-0bJn4tub3lMQivrQhUBJEsvCfQz-osqPdSds-6paVFcLVFENSEg5PTn/exec', // ใส่ URL จริงที่นี่
+                                  
                 // 📋 วิธี Deploy Apps Script:
                 // 1. ไปที่ https://script.google.com
                 // 2. คลิก Deploy → New deployment  
@@ -1165,32 +1165,29 @@
 
                 init() {
                     console.log('🚀 VeeVee App initialized');
-                    console.log('🔗 Apps Script URL:', this.APPS_SCRIPT_URL);
-                    console.log('🔥 Firebase Ready:', !!window.firebaseDb);
+                    // ❌ ไม่แสดง API Keys ใน production
+                    if (window.location.hostname === 'localhost') {
+                        console.log('🔗 Frontend Script URL:', this.FRONTEND_SCRIPT_URL);
+                        console.log('🔗 Admin Script URL:', this.ADMIN_SCRIPT_URL);
+                        console.log('📊 Google Sheets URL:', this.SHEETS_URL);
+                        console.log('🔥 Firebase Ready:', !!window.firebaseDb);
+                    }
                     
-                    // ⚠️ เตือนผู้ดูแลระบบถ้า Apps Script URL ไม่ได้ตั้งค่า
-                    if (!this.APPS_SCRIPT_URL || this.APPS_SCRIPT_URL === '') {
-                        console.warn('⚠️ ADMIN WARNING: Apps Script URL not configured!');
-                        console.warn('📋 To fix this:');
-                        console.warn('1. Go to https://script.google.com');
-                        console.warn('2. Deploy → New deployment → Web app');
-                        console.warn('3. Execute as: Me, Access: Anyone');
-                        console.warn('4. Copy URL and update APPS_SCRIPT_URL in website');
-                        console.warn('5. Emails will not be sent until this is fixed!');
-                        
-                        // แสดง alert เฉพาะใน development
-                        if (window.location.hostname === 'localhost' || window.location.hostname.includes('vercel.app')) {
+                    // ⚠️ เตือนผู้ดูแลระบบถ้า Frontend Script URL ไม่ได้ตั้งค่า (localhost only)
+                    if (!this.FRONTEND_SCRIPT_URL || this.FRONTEND_SCRIPT_URL === '') {
+                        if (window.location.hostname === 'localhost') {
+                            console.warn('⚠️ ADMIN WARNING: Frontend Apps Script URL not configured!');
                             setTimeout(() => {
-                                if (confirm('⚠️ ADMIN: Apps Script URL ไม่ได้ตั้งค่า\n\nอีเมลจะไม่ส่ง จนกว่าจะ Deploy Apps Script\n\nต้องการดูวิธีแก้ไขใน Console?')) {
+                                if (confirm('⚠️ ADMIN: Frontend Apps Script URL ไม่ได้ตั้งค่า\n\nต้องการดูวิธีแก้ไข?')) {
                                     console.group('🔧 วิธีแก้ไข Apps Script URL:');
                                     console.log('1. ไปที่ https://script.google.com');
-                                    console.log('2. เปิดโปรเจ็ค VeeVee Apps Script');
-                                    console.log('3. คลิก Deploy → New deployment');
-                                    console.log('4. Type: Web app');
-                                    console.log('5. Execute as: Me');
-                                    console.log('6. Who has access: Anyone');
-                                    console.log('7. คลิก Deploy');
-                                    console.log('8. คัดลอก URL มาใส่ใน APPS_SCRIPT_URL');
+                                    console.log('2. สร้างโปรเจ็ค "VeeVee_Frontend"');
+                                    console.log('3. วางโค้ด Frontend Apps Script');
+                                    console.log('4. อัปเดต SPREADSHEET_ID = "19jd3hyPBVrwvbqv28uUv47GjoPYcfVv-_1XcZH548I4"');
+                                    console.log('5. Deploy → New deployment → Web app');
+                                    console.log('6. Execute as: Me, Access: Anyone');
+                                    console.log('7. คัดลอก URL มาใส่ใน FRONTEND_SCRIPT_URL');
+                                    console.log('📊 Google Sheets: ' + this.SHEETS_URL);
                                     console.groupEnd();
                                 }
                             }, 2000);
@@ -1582,7 +1579,13 @@
                         }
 
                         if (firebaseSuccess || appsScriptSuccess) {
-                            this.successMessage = `ข้อความของคุณได้รับการส่งแล้ว เราจะติดต่อกลับโดยเร็วที่สุด`;
+                            this.successMessage = `
+                                ข้อความของคุณได้รับการส่งแล้ว! 📧
+                                <br><br>
+                                เราจะตอบกลับโดยเร็วที่สุดทางอีเมล: <strong>${this.contactForm.email}</strong>
+                                <br><br>
+                                <small>📊 ข้อความจะถูกบันทึกใน Google Sheets โดยอัตโนมัติ</small>
+                            `;
                             this.showSuccessModal = true;
                             
                             // Reset form
@@ -1592,8 +1595,10 @@
                                 phone: '',
                                 message: ''
                             };
+                            
+                            console.log('✅ Contact form submitted successfully!');
                         } else {
-                            throw new Error('ไม่สามารถส่งข้อความได้');
+                            throw new Error('ไม่สามารถส่งข้อความได้ - ทั้ง Firebase และ Apps Script ล้มเหลว');
                         }
                         
                     } catch (error) {
