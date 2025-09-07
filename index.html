@@ -203,58 +203,67 @@
             <div class="absolute bottom-40 left-1/4 w-12 h-12 bg-white/10 rounded-full float-animation" style="animation-delay: 2s;"></div>
         </div>
         
-        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div class="text-white space-y-8 fade-in">
+        <div class="container mx-auto px-6 relative z-10">
+            <!-- Text Content -->
+            <div class="text-center text-white space-y-8 mb-12 fade-in">
                 <div class="space-y-4">
-                    <h1 class="text-5xl lg:text-6xl font-bold leading-tight">
-                        แผ่นแปะ<br>
-                        <span class="text-accent">กันยุง</span>
+                    <h1 class="text-5xl lg:text-7xl font-bold leading-tight">
+                        แผ่นแปะ<span class="text-accent">กันยุง</span>
                     </h1>
-                    <p class="text-xl lg:text-2xl font-light">VeeVee Anti-Mosquito Patch</p>
+                    <p class="text-2xl lg:text-3xl font-light">VeeVee Anti-Mosquito Patch</p>
                 </div>
                 
-                <p class="text-lg lg:text-xl text-white/90 leading-relaxed">
+                <p class="text-xl lg:text-2xl text-white/90 leading-relaxed max-w-4xl mx-auto">
                     น้ำมันหอมระเหยคุณภาพดี ปกป้องคุณจากยุงร้าย<br>
                     แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยสำหรับทุกคนในครอบครัว
                 </p>
                 
-                <div class="flex flex-col sm:flex-row gap-4 pt-6">
-                    <button @click="scrollToWhy()" class="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-info-circle mr-2"></i>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+                    <button @click="scrollToWhy()" class="bg-white text-primary px-10 py-5 rounded-full font-semibold text-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-info-circle mr-3"></i>
                         เรียนรู้เพิ่มเติม
                     </button>
-                    <button @click="openOrderModal()" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
-                        <i class="fas fa-shopping-cart mr-2"></i>
+                    <button @click="openOrderModal()" class="border-2 border-white text-white px-10 py-5 rounded-full font-semibold text-xl hover:bg-white hover:text-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart mr-3"></i>
                         สั่งซื้อทันที
                     </button>
                 </div>
                 
-                <div class="flex items-center space-x-8 pt-8">
+                <div class="flex items-center justify-center space-x-12 pt-8">
                     <div class="text-center">
-                        <div class="text-3xl font-bold">24</div>
-                        <div class="text-sm text-white/80">ชั่วโมง</div>
+                        <div class="text-4xl lg:text-5xl font-bold">24</div>
+                        <div class="text-lg text-white/80">ชั่วโมง</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold">100%</div>
-                        <div class="text-sm text-white/80">ธรรมชาติ</div>
+                        <div class="text-4xl lg:text-5xl font-bold">100%</div>
+                        <div class="text-lg text-white/80">ธรรมชาติ</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold">12</div>
-                        <div class="text-sm text-white/80">ชิ้น/ซอง</div>
+                        <div class="text-4xl lg:text-5xl font-bold">12</div>
+                        <div class="text-lg text-white/80">ชิ้น/ซอง</div>
                     </div>
                 </div>
             </div>
             
-            <div class="relative flex justify-center items-center fade-in">
-                <div class="relative max-w-lg w-full">
-                    <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+            <!-- Product Image - Full Width 16:9 -->
+            <div class="fade-in">
+                <div class="relative w-full max-w-6xl mx-auto">
+                    <div class="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
                         <img src="https://i.postimg.cc/yNJXpqq8/Vee-Vee-Slide-Regional.png" 
                              alt="VeeVee Package" 
-                             class="w-full h-auto transform hover:scale-105 transition-all duration-500 float-animation">
+                             class="w-full h-full object-cover transform hover:scale-105 transition-all duration-500 float-animation">
                         
                         <!-- Package Badge -->
-                        <div class="absolute -top-4 -right-4 bg-accent text-primary px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+                        <div class="absolute top-8 right-8 bg-accent text-primary px-8 py-4 rounded-full font-bold text-2xl shadow-lg">
                             12 PCS
+                        </div>
+                        
+                        <!-- Price Badge -->
+                        <div class="absolute bottom-8 left-8 bg-white/95 text-primary px-8 py-6 rounded-2xl shadow-lg">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold">฿119</div>
+                                <div class="text-lg text-gray-600">ต่อซอง</div>
+                            </div>
                         </div>
                     </div>
                 </div>
