@@ -1,73 +1,50 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VeeVee - แผ่นแปะกันยุงจากธรรมชาติ</title>
 
   <!-- Tailwind / Alpine / Icons / Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <!-- Tailwind config (brand colors – UPDATED) -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary:   '#D78B30', // ส้ม
-            secondary: '#17242A', // น้ำเงินเข้ม
-            accent:    '#F5E6C5', // ครีมอ่อน
-            green:     '#75914C', // เขียวอ่อน
-            brown:     '#9E886F', // น้ำตาลอ่อน
-            darkgreen: '#3E422E', // สีแบรนด์หลัก
+            primary: '#D78B30',
+            secondary: '#17242A',
+            accent: '#F5E6C5',
+            green: '#75914C',
+            brown: '#9E886F',
+            darkgreen: '#3E422E'
           },
-          fontFamily: { thai: ['Kanit', 'sans-serif'] }
+          fontFamily: { thai: ['Kanit','sans-serif'] },
+          boxShadow: { card: '0 20px 45px rgba(0,0,0,.12)' }
         }
       }
     }
   </script>
 
   <style>
-    body { font-family: 'Kanit', sans-serif; }
-    .section-padding { padding: 80px 0; }
-    .float-animation { animation: float 6s ease-in-out infinite; }
-    @keyframes float { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-12px) } }
-    .fade-in { opacity: 0; transform: translateY(24px); transition: all .8s ease; }
-    .fade-in.visible { opacity: 1; transform: translateY(0) }
-    .text-glow { text-shadow: 0 6px 22px rgba(0,0,0,.45); }
-
-    /* Success animation (UPDATED to primary color) */
-    .success-checkmark { width:80px;height:80px;border-radius:50%;display:block;stroke-width:2;stroke:#D78B30;stroke-miterlimit:10;margin:10% auto;box-shadow:inset 0 0 0 #D78B30;animation:fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both }
-    .success-checkmark__circle { stroke-dasharray:166;stroke-dashoffset:166;stroke-width:2;stroke-miterlimit:10;stroke:#D78B30;fill:none;animation:stroke .6s cubic-bezier(.65,0,.45,1) forwards }
-    .success-checkmark__check { transform-origin:50% 50%;stroke-dasharray:48;stroke-dashoffset:48;animation:stroke .3s cubic-bezier(.65,0,.45,1) .8s forwards }
-    @keyframes stroke { to { stroke-dashoffset:0 } }
-    @keyframes scale { 50% { transform:scale3d(1.1,1.1,1) } }
-    @keyframes fill { to { box-shadow: inset 0 0 0 30px #D78B30 } }
-
-    .qr-modal { backdrop-filter: blur(8px) }
-
-    /* HERO (kept for reference – not used directly) */
-    .hero{
-      min-height:92vh;
-      background-image:url('https://i.postimg.cc/BQvJ8GRb/image.png');
-      background-size:cover;background-position:center;background-repeat:no-repeat;
-    }
-
-    /* images never overflow */
-    img { max-width:100%; height:auto }
+    html,body{font-family:'Kanit',sans-serif}
+    .section{padding:80px 0}
+    .section-padding{padding:80px 0} /* เพิ่มให้เท่ากับ .section */
+    .fade-in{opacity:0;transform:translateY(20px);transition:all .6s ease}
+    .fade-in.visible{opacity:1;transform:none}
   </style>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase (สำรองข้อมูลออเดอร์/คอนแทค) -->
   <script type="module">
     try {
       const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js');
       const { getFirestore, collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js');
-
       const firebaseConfig = {
         apiKey: "AIzaSyAlUUr6ATEfDQohr5Zvdk5_C7xKJFBLem0",
         authDomain: "veeveeweb.firebaseapp.com",
@@ -77,45 +54,40 @@
         appId: "1:1054738271826:web:c8d3ede74df35b87cc998b",
         measurementId: "G-JNJW30SKK9"
       };
-
       const app = initializeApp(firebaseConfig);
       const db  = getFirestore(app);
-
-      // expose
       window.firebaseDb = db;
       window.firebaseAddDoc = addDoc;
       window.firebaseCollection = collection;
       window.firebaseServerTimestamp = serverTimestamp;
       window.firebaseReady = true;
-    } catch (e) {
-      console.error('Firebase init failed:', e);
-      window.firebaseReady = false;
-    }
+    } catch(e){ console.warn('Firebase init failed', e); window.firebaseReady = false }
   </script>
 </head>
 
-<body class="overflow-x-hidden" x-data="veeVeeApp()" x-init="init()">
+<body class="bg-gradient-to-b from-accent/60 to-white text-secondary"
+      x-data="veeVeeApp()" x-init="init()">
 
   <!-- NAV -->
-  <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50">
-    <div class="container mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
-        <a href="#" class="flex items-center space-x-3">
-          <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" class="h-10 w-auto" alt="VeeVee Logo">
-          <span class="text-2xl font-bold text-darkgreen">VeeVee</span>
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-black/5">
+    <div class="max-w-[1280px] mx-auto px-4">
+      <div class="h-16 flex items-center justify-between">
+        <a href="#home" class="flex items-center gap-3">
+          <img src="https://i.postimg.cc/h4YCb73G/AR-13.png" alt="VeeVee" class="h-8 w-auto">
+          <span class="font-bold text-xl">VeeVee</span>
         </a>
 
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="#home" class="text-gray-700 hover:text-primary">หน้าแรก</a>
-          <a href="#why" class="text-gray-700 hover:text-primary">ทำไมต้อง VeeVee</a>
-          <a href="#ingredients" class="text-gray-700 hover:text-primary">สารสกัด</a>
-          <a href="#features" class="text-gray-700 hover:text-primary">คุณสมบัติ</a>
-          <a href="#howto" class="text-gray-700 hover:text-primary">วิธีใช้</a>
-          <a href="#contact" class="text-gray-700 hover:text-primary">ติดต่อ</a>
+        <div class="hidden md:flex items-center gap-8 text-sm">
+          <a href="#home" class="hover:text-primary">หน้าแรก</a>
+          <a href="#why" class="hover:text-primary">ทำไมต้อง VeeVee</a>
+          <a href="#features" class="hover:text-primary">คุณสมบัติ</a>
+          <a href="#howto" class="hover:text-primary">ติดไว้ที่ไหน</a>
+          <a href="#ingredients" class="hover:text-primary">สารสกัด</a>
+          <a href="#contact" class="hover:text-primary">ติดต่อ</a>
         </div>
 
         <button @click="openOrderModal()"
-                class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/90 transition-all duration-300">
+                class="bg-primary text-white px-5 py-2 rounded-full font-semibold hover:opacity-90">
           สั่งซื้อเลย
         </button>
       </div>
@@ -123,111 +95,234 @@
   </nav>
 
   <!-- HERO -->
-  <section id="home" class="relative overflow-hidden pt-28 pb-12 min-h-[72vh] md:min-h-[80vh]">
-    <picture class="absolute inset-0 -z-10">
-      <img src="https://i.postimg.cc/BQvJ8GRb/image.png" alt="VeeVee Hero"
-           class="w-full h-full object-contain md:object-contain" loading="eager" decoding="async"/>
-    </picture>
+  <section id="home" class="pt-28">
+    <div class="max-w-[1400px] mx-auto px-4">
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+        <div class="relative w-full aspect-[3/1] md:aspect-[2.4/1] sm:aspect-[16/9]">
+          <img src="https://i.postimg.cc/KY8DWbc6/Untitled-1.png"
+               alt="VeeVee Hero"
+               class="absolute inset-0 w-full h-full object-cover object-center" loading="eager" decoding="async" />
+          <!-- overlay เบาลง -->
+          <div class="absolute inset-0 bg-gradient-to-r from-[#17242A]/30 via-[#17242A]/10 to-transparent"></div>
 
-    <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
-      <div class="text-white drop-shadow-[0_2px_20px_rgba(0,0,0,0.35)]">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">แผ่นแปะกันยุง</h1>
-        <p class="mt-3 text-xl lg:text-2xl">VeeVee Anti-Mosquito Patch</p>
-        <p class="mt-6 text-base lg:text-lg leading-relaxed">
-          น้ำมันหอมระเหยคุณภาพดี ปกป้องคุณจากยุงร้าย<br>
-          แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยสำหรับทุกคนในครอบครัว
-        </p>
+          <div class="absolute left-6 sm:left-10 top-6 sm:top-10 max-w-xl text-white">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight drop-shadow">แผ่นแปะกันยุง</h1>
+            <p class="mt-2 text-lg sm:text-xl">VeeVee Anti-Mosquito Patch</p>
+            <p class="mt-4 text-base sm:text-lg leading-relaxed">
+              น้ำมันหอมระเหยคุณภาพดี ปกป้องคุณจากยุงร้าย<br>แผ่นแปะกันยุงสูตรใหม่ ปลอดภัยสำหรับทุกคนในครอบครัว
+            </p>
 
-        <div class="mt-6 flex flex-col sm:flex-row gap-4">
-          <button @click="scrollToWhy()" class="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all">
-            <i class="fas fa-info-circle mr-2"></i> เรียนรู้เพิ่มเติม
-          </button>
-          <button @click="openOrderModal()" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-primary transition-all">
-            <i class="fas fa-shopping-cart mr-2"></i> สั่งซื้อทันที
-          </button>
-        </div>
-
-        <div class="mt-8 flex items-center gap-8 text-white/95">
-          <div class="text-center">
-            <div class="text-2xl sm:text-3xl font-bold">24</div>
-            <div class="text-xs sm:text-sm">ชั่วโมง</div>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl sm:text-3xl font-bold">100%</div>
-            <div class="text-xs sm:text-sm">ธรรมชาติ</div>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl sm:text-3xl font-bold">12</div>
-            <div class="text-xs sm:text-sm">ชิ้น/ซอง</div>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+              <button onclick="document.getElementById('why')?.scrollIntoView({behavior:'smooth'})"
+                      class="bg-white text-[#D78B30] px-6 py-3 rounded-full font-semibold hover:bg-white/90 transition">
+                <i class="fa-solid fa-circle-info mr-2"></i> เรียนรู้เพิ่มเติม
+              </button>
+              <button @click="openOrderModal()"
+                      class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-[#D78B30] transition">
+                <i class="fa-solid fa-cart-shopping mr-2"></i> สั่งซื้อทันที
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="hidden lg:block"></div>
+
+      <!-- ปุ่มสั่งซื้อ (มือถือ) -->
+      <div class="mt-4 md:hidden">
+        <button @click="openOrderModal()"
+                class="w-full border-2 border-[#D78B30] text-[#D78B30] px-8 py-3 rounded-full font-semibold">
+          <i class="fas fa-shopping-cart mr-2"></i> สั่งซื้อทันที
+        </button>
+      </div>
     </div>
   </section>
 
-  <!-- WHY -->
-  <section id="why" class="section-padding bg-gradient-to-br from-accent to-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center space-y-6 mb-16 fade-in">
-        <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ทำไมต้อง VeeVee?</h2>
-        <p class="text-xl text-gray-700 max-w-3xl mx-auto">
+<!-- WHY (การ์ดเหลี่ยมมน) -->
+<section id="why" class="section">
+  <div class="max-w-[1280px] mx-auto px-4">
+    <div class="rounded-3xl bg-white shadow-card ring-1 ring-black/5 p-8 lg:p-12">
+      <div class="text-center space-y-2 mb-10">
+        <h2 class="text-4xl md:text-5xl font-bold">ทำไมต้อง VeeVee?</h2>
+        <p class="text-lg text-secondary/80">
           น้ำมันหอมระเหยคุณภาพดี ป้องกันคุณจากยุงร้าย กลิ่นหอมพิเศษที่ทำให้ยุงไม่กล้าเข้าใกล้ ปลอดภัยสำหรับทุกคน
         </p>
       </div>
 
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div class="space-y-8 fade-in">
-          <div class="flex items-start space-x-4">
-            <div class="w-12 h-12 bg-green/20 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-leaf text-green text-xl"></i>
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <!-- จุดเด่น -->
+        <div class="space-y-7 fade-in">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-green/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-leaf text-green text-xl"></i>
             </div>
             <div>
-              <h3 class="text-xl font-semibold text-secondary mb-2">น้ำมันหอมระเหยคุณภาพดี</h3>
-              <p class="text-gray-700">ตะไคร้หอม ยูคาลิปตัส เปปเปอร์มินต์ เจอเรเนียม และลาเวนเดอร์ ผสานกันเพื่อการไล่ยุงที่มีประสิทธิภาพ</p>
+              <h3 class="font-semibold text-xl">น้ำมันหอมระเหยคุณภาพดี</h3>
+              <p class="text-secondary/80">ตะไคร้หอม ยูคาลิปตัส เปปเปอร์มินต์ เจอเรเนียม และลาเวนเดอร์ เพื่อการไล่ยุงที่มีประสิทธิภาพ</p>
             </div>
           </div>
 
-          <div class="flex items-start space-x-4">
-            <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-clock text-primary text-xl"></i>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-clock text-primary text-xl"></i>
             </div>
             <div>
-              <h3 class="text-xl font-semibold text-secondary mb-2">ป้องกันยาวนาน 24 ชั่วโมง</h3>
-              <p class="text-gray-700">เทคโนโลยี Microencapsulation ปล่อยกลิ่นแบบ Slow Release มีประสิทธิภาพตลอดวัน</p>
+              <h3 class="font-semibold text-xl">ป้องกันยาวนาน 24 ชั่วโมง</h3>
+              <p class="text-secondary/80">เทคโนโลยี Microencapsulation ปล่อยกลิ่นแบบ Slow Release</p>
             </div>
           </div>
 
-          <div class="flex items-start space-x-4">
-            <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-shield-halved text-secondary text-xl"></i>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-shield-halved text-secondary text-xl"></i>
             </div>
             <div>
-              <h3 class="text-xl font-semibold text-secondary mb-2">ปลอดภัยสำหรับทุกคน</h3>
-              <p class="text-gray-700">ไม่มีสารเคมีอันตราย เหมาะสำหรับเด็ก ผู้ใหญ่ และผู้สูงอายุ</p>
+              <h3 class="font-semibold text-xl">ปลอดภัยสำหรับทุกคน</h3>
+              <p class="text-secondary/80">ไม่มีสารเคมีอันตราย เหมาะสำหรับเด็ก ผู้ใหญ่ และผู้สูงอายุ</p>
             </div>
           </div>
 
-          <div class="flex items-start space-x-4">
-            <div class="w-12 h-12 bg-accent/60 rounded-full flex items-center justify-center shrink-0">
-              <i class="fas fa-hand text-primary text-xl"></i>
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-accent/80 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-hand text-primary text-xl"></i>
             </div>
             <div>
-              <h3 class="text-xl font-semibold text-secondary mb-2">ใช้งานง่าย พกพาสะดวก</h3>
-              <p class="text-gray-700">แค่กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
+              <h3 class="font-semibold text-xl">ใช้งานง่าย พกพาสะดวก</h3>
+              <p class="text-secondary/80">กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่ น้ำหนักเบา ไม่ทิ้งคราบกาว</p>
             </div>
           </div>
         </div>
 
-        <!-- รูป “ทำไมต้อง VeeVee?” แบบไม่มีกรอบ/ไม่มีเงา -->
-        <div class="relative fade-in">
-          <img src="https://i.postimg.cc/Y94jBVNY/S-18800654-0.jpg"
-               alt="Natural Protection"
-               class="w-full h-auto max-h-[520px] object-contain mx-auto rounded-2xl"/>
-          <div class="absolute top-8 right-8 bg-white rounded-2xl p-4 shadow-lg">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green">100%</div>
-              <div class="text-sm text-gray-600">ธรรมชาติ</div>
+        <!-- รูป: กรอบไล่เฉด + มุมมน + ลดขนาด ~15% บนจอใหญ่ -->
+        <div class="fade-in flex justify-center">
+          <div class="relative w-full sm:w-[95%] lg:w-[85%]">
+            <!-- กลอสไลต์เบลอด้านหลังให้รูปดูลอย -->
+            <div class="pointer-events-none absolute -z-10 -top-6 -left-6 w-32 h-32 rounded-full bg-primary/25 blur-3xl"></div>
+            <div class="pointer-events-none absolute -z-10 -bottom-8 -right-8 w-36 h-36 rounded-full bg-green/25 blur-3xl"></div>
+
+            <!-- กรอบรูป -->
+            <div class="relative rounded-[28px] p-[10px] bg-gradient-to-br from-white to-accent/60 shadow-2xl ring-1 ring-black/5">
+              <img
+                src="https://i.postimg.cc/Y94jBVNY/S-18800654-0.jpg"
+                alt="Natural Protection"
+                class="block w-full h-auto object-contain rounded-[22px] shadow-lg" />
+
+              <!-- ป้าย 100% ธรรมชาติ -->
+              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-xl p-4 shadow-card">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-green">100%</div>
+                  <div class="text-sm text-secondary/70">ธรรมชาติ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /รูป -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- FEATURES -->
+  <section id="features" class="section bg-gradient-to-br from-gray-50 to-white">
+    <div class="max-w-[1280px] mx-auto px-4">
+      <div class="text-center space-y-2 mb-10">
+        <h2 class="text-4xl md:text-5xl font-bold">คุณสมบัติเด่น</h2>
+        <p class="text-secondary/70">สารระเหยมากกว่า 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <div class="space-y-6">
+          <div class="text-center p-6 rounded-2xl shadow-card">
+            <div class="w-16 h-16 bg-green/20 rounded-full grid place-items-center mx-auto mb-3">
+              <i class="fa-solid fa-leaf text-green text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl">จากธรรมชาติ 100%</h3>
+            <p class="text-secondary/70">ผสานพลังสารสกัดธรรมชาติ 5 ชนิด ปลอดภัยสำหรับทุกคน</p>
+          </div>
+          <div class="text-center p-6 rounded-2xl shadow-card">
+            <div class="w-16 h-16 bg-primary/20 rounded-full grid place-items-center mx-auto mb-3">
+              <i class="fa-solid fa-clock text-primary text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl">ป้องกันนาน 24 ชั่วโมง</h3>
+            <p class="text-secondary/70">เทคโนโลยี Slow Release ให้การปกป้องยาวนาน</p>
+          </div>
+          <div class="text-center p-6 rounded-2xl shadow-card">
+            <div class="w-16 h-16 bg-secondary/10 rounded-full grid place-items-center mx-auto mb-3">
+              <i class="fa-solid fa-hand text-secondary text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl">ใช้งานง่าย</h3>
+            <p class="text-secondary/70">กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่</p>
+          </div>
+          <div class="text-center p-6 rounded-2xl shadow-card">
+            <div class="w-16 h-16 bg-accent rounded-full grid place-items-center mx-auto mb-3">
+              <i class="fa-solid fa-chart-line text-primary text-xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl">สารระเหยมากกว่า 40 เท่า</h3>
+            <p class="text-secondary/70">เหนือกว่าแผ่นแปะทั่วไปอย่างชัดเจน</p>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <img src="https://i.postimg.cc/1zjgY6nW/S-18800647-0.jpg"
+               class="max-w-md mx-auto rounded-3xl shadow-card" alt="">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO -->
+  <section id="howto" class="section">
+    <div class="max-w-[1280px] mx-auto px-4">
+      <div class="text-center space-y-2 mb-10">
+        <h2 class="text-4xl md:text-5xl font-bold">ติดไว้ได้ทุกที่ที่ต้องการ</h2>
+        <p class="text-brown">ป้องกันคุณจากยุงรบกวน</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <article class="bg-white rounded-3xl shadow-card ring-1 ring-black/5 overflow-hidden">
+          <div class="relative w-full aspect-[16/10]">
+            <img src="https://i.postimg.cc/DZ56RSg8/2-1.png" class="absolute inset-0 w-full h-full object-cover" alt="">
+            <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-semibold bg-primary shadow">บนเสื้อ</span>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-semibold">แปะบนเสื้อผ้า</h3>
+            <p class="text-secondary/70">เสื้อเชิ้ต/เสื้อประจำวัน ป้องกันยุงได้ตลอดวัน</p>
+          </div>
+        </article>
+
+        <article class="bg-white rounded-3xl shadow-card ring-1 ring-black/5 overflow-hidden">
+          <div class="relative w-full aspect-[16/10]">
+            <img src="https://i.postimg.cc/KYDDg1CJ/3.png" class="absolute inset-0 w-full h-full object-cover" alt="">
+            <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-semibold bg-green shadow">บนกางเกง</span>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-semibold">แปะบนกางเกง</h3>
+            <p class="text-secondary/70">กางเกง กระโปรง หรือขาสั้น ป้องกันบริเวณขา</p>
+          </div>
+        </article>
+
+        <article class="bg-white rounded-3xl shadow-card ring-1 ring-black/5 overflow-hidden">
+          <div class="relative w-full aspect-[16/10]">
+            <img src="https://i.postimg.cc/MKf0mPhc/4.png" class="absolute inset-0 w-full h-full object-cover" alt="">
+            <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-sm font-semibold bg-secondary shadow">บนกระเป๋า</span>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-semibold">แปะบนกระเป๋า</h3>
+            <p class="text-secondary/70">กระเป๋าเป้/สะพาย ป้องกันรอบตัวขณะเดินทาง</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-16 bg-white rounded-3xl p-8 shadow-card">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <img src="https://i.postimg.cc/N0F1CQMx/AR-6.png" class="w-full rounded-2xl shadow" alt="">
+          <div class="space-y-5">
+            <h3 class="text-3xl font-bold">แบบกดปุ่ม 4 เม็ด</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">1</span>กดปุ่มกลางให้แน่น</div>
+              <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">2</span>สารระเหยออกมา 4 เม็ด</div>
+              <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">3</span>แปะในตำแหน่งที่ต้องการ</div>
+              <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center font-bold">4</span>ป้องกันยุงได้นาน 24 ชั่วโมง</div>
             </div>
           </div>
         </div>
@@ -236,167 +331,42 @@
   </section>
 
   <!-- INGREDIENTS -->
-  <section id="ingredients" class="section-padding bg-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center space-y-6 mb-16 fade-in">
-        <h2 class="text-4xl lg:text-5xl font-bold text-secondary">สารสกัดธรรมชาติ</h2>
-        <p class="text-xl text-gray-700">ผสมผสานพลังธรรมชาติ 5 ชนิด เพื่อการป้องกันยุงที่มีประสิทธิภาพ</p>
+  <section id="ingredients" class="section bg-white">
+    <div class="max-w-[1280px] mx-auto px-4">
+      <div class="text-center space-y-2 mb-10">
+        <h2 class="text-4xl md:text-5xl font-bold">สารสกัดธรรมชาติ</h2>
+        <p class="text-secondary/70">ผสมผสานพลังธรรมชาติ 5 ชนิด เพื่อการป้องกันยุงที่มีประสิทธิภาพ</p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="text-center space-y-4 p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-xl transition-all fade-in">
-          <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
-            <i class="fas fa-seedling text-primary text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-secondary">น้ำมันตะไคร้หอม</h3>
-          <p class="text-gray-700">กลิ่นหอมสดชื่นที่ยุงไม่ชอบ ไล่ยุงได้ดี</p>
-        </div>
-
-        <div class="text-center space-y-4 p-6 rounded-2xl bg-gradient-to-br from-green/10 to-green/5 hover:shadow-xl transition-all fade-in">
-          <div class="w-16 h-16 bg-green/20 rounded-full flex items-center justify-center mx-auto">
-            <i class="fas fa-tree text-green text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-secondary">น้ำมันยูคาลิปตัส</h3>
-          <p class="text-gray-700">ช่วยไล่ยุงและให้ความรู้สึกสดชื่น</p>
-        </div>
-
-        <div class="text-center space-y-4 p-6 rounded-2xl bg-gradient-to-br from-secondary/10 to-secondary/5 hover:shadow-xl transition-all fade-in">
-          <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto">
-            <i class="fas fa-leaf text-secondary text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-secondary">เปปเปอร์มินต์</h3>
-          <p class="text-gray-700">กลิ่นเย็นสดชื่น ผ่อนคลายและไล่ยุง</p>
-        </div>
-
-        <div class="text-center space-y-4 p-6 rounded-2xl bg-gradient-to-br from-pink-100 to-pink-50 hover:shadow-xl transition-all fade-in">
-          <div class="w-16 h-16 bg-pink-200 rounded-full flex items-center justify-center mx-auto">
-            <i class="fas fa-fan text-pink-600 text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-secondary">ดอกเจอเรเนียม</h3>
-          <p class="text-gray-700">คุณสมบัติไล่ยุงตามธรรมชาติ</p>
-        </div>
-
-        <div class="text-center space-y-4 p-6 rounded-2xl bg-gradient-to-br from-purple-100 to-purple-50 hover:shadow-xl transition-all fade-in">
-          <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mx-auto">
-            <i class="fas fa-spa text-purple-600 text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-secondary">ลาเวนเดอร์</h3>
-          <p class="text-gray-700">กลิ่นหอมผ่อนคลายที่ยุงไม่ชอบ</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section id="features" class="section-padding bg-gradient-to-br from-gray-50 to-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center space-y-6 mb-16 fade-in">
-        <h2 class="text-4xl lg:text-5xl font-bold text-secondary">คุณสมบัติเด่น</h2>
-        <p class="text-xl text-gray-700">สารระเหยมากกว่า 40 เท่า ให้ประสิทธิภาพสูงสุด</p>
-      </div>
-
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div class="space-y-8 fade-in">
-          <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all">
-            <div class="w-16 h-16 bg-green/20 rounded-full flex items-center justify-center mx-auto">
-              <i class="fas fa-leaf text-green text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-secondary">จากธรรมชาติ 100%</h3>
-            <p class="text-gray-700">ผสานพลังสารสกัดธรรมชาติ 5 ชนิด ปลอดภัยสำหรับทุกคน</p>
-          </div>
-          <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all">
-            <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
-              <i class="fas fa-clock text-primary text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-secondary">ป้องกันนาน 24 ชั่วโมง</h3>
-            <p class="text-gray-700">เทคโนโลยี Slow Release ให้การปกป้องยาวนาน</p>
-          </div>
-          <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all">
-            <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto">
-              <i class="fas fa-hand text-secondary text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-secondary">ใช้งานง่าย</h3>
-            <p class="text-gray-700">กดปุ่ม 4 เม็ด แล้วแปะได้ทุกที่</p>
-          </div>
-          <div class="text-center space-y-4 p-6 rounded-2xl hover:shadow-xl transition-all">
-            <div class="w-16 h-16 bg-accent/60 rounded-full flex items-center justify-center mx-auto">
-              <i class="fas fa-chart-line text-primary text-xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-secondary">สารระเหยมากกว่า 40 เท่า</h3>
-            <p class="text-gray-700">เหนือกว่าแผ่นแปะทั่วไปอย่างชัดเจน</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div class="bg-white rounded-3xl p-6 shadow-card ring-1 ring-black/5">
+          <div class="flex items-center gap-5">
+            <img src="https://i.postimg.cc/HW4Y38nP/53.png" class="w-24 h-24 object-contain rounded-xl ring-1 ring-black/5" alt="">
+            <div><h3 class="text-xl font-semibold">น้ำมันตะไคร้หอม</h3><p class="text-secondary/70 text-sm">กลิ่นหอมสดชื่นที่ยุงไม่ชอบ ไล่ยุงได้ดี</p></div>
           </div>
         </div>
-
-        <div class="text-center fade-in">
-          <img src="https://i.postimg.cc/1zjgY6nW/S-18800647-0.jpg" alt="VeeVee Product Features" class="max-w-md mx-auto rounded-3xl shadow-2xl">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW TO USE -->
-  <section id="howto" class="section-padding bg-gradient-to-br from-gray-50 to-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center space-y-6 mb-16 fade-in">
-        <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ติดไว้ได้ทุกที่ที่ต้องการ</h2>
-        <h3 class="text-2xl font-semibold text-primary">ป้องกันคุณจากยุงรบกวน</h3>
-      </div>
-
-      <div class="grid lg:grid-cols-3 gap-8">
-        <div class="text-center space-y-6 fade-in">
-          <div class="relative">
-            <img src="https://i.postimg.cc/DZ56RSg8/2-1.png" alt="ติดบนเสื้อ" class="w-full h-64 object-cover rounded-2xl shadow-lg">
-            <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">บนเสื้อ</div>
+        <div class="bg-white rounded-3xl p-6 shadow-card ring-1 ring-black/5">
+          <div class="flex items-center gap-5">
+            <img src="https://i.postimg.cc/x87tLTwG/56.png" class="w-24 h-24 object-contain rounded-xl ring-1 ring-black/5" alt="">
+            <div><h3 class="text-xl font-semibold">น้ำมันยูคาลิปตัส</h3><p class="text-secondary/70 text-sm">ช่วยไล่ยุงและให้ความรู้สึกสดชื่น</p></div>
           </div>
-          <h3 class="text-xl font-semibold text-secondary">แปะบนเสื้อผ้า</h3>
-          <p class="text-gray-700">แปะบนเสื้อเชิ้ต หรือเสื้อประจำวัน ป้องกันยุงได้ตลอดวัน</p>
         </div>
-
-        <div class="text-center space-y-6 fade-in">
-          <div class="relative">
-            <img src="https://i.postimg.cc/KYDDg1CJ/3.png" alt="ติดบนกางเกง" class="w-full h-64 object-cover rounded-2xl shadow-lg">
-            <div class="absolute top-4 left-4 bg-green text-white px-3 py-1 rounded-full text-sm font-semibold">บนกางเกง</div>
+        <div class="bg-white rounded-3xl p-6 shadow-card ring-1 ring-black/5">
+          <div class="flex items-center gap-5">
+            <img src="https://i.postimg.cc/fTr6vMcr/55.png" class="w-24 h-24 object-contain rounded-xl ring-1 ring-black/5" alt="">
+            <div><h3 class="text-xl font-semibold">เปปเปอร์มินต์</h3><p class="text-secondary/70 text-sm">กลิ่นเย็นสดชื่น ผ่อนคลายและไล่ยุง</p></div>
           </div>
-          <h3 class="text-xl font-semibold text-secondary">แปะบนกางเกง</h3>
-          <p class="text-gray-700">แปะบนกางเกง กระโปรง หรือกางเกงขาสั้น ป้องกันบริเวณขา</p>
         </div>
-
-        <div class="text-center space-y-6 fade-in">
-          <div class="relative">
-            <img src="https://i.postimg.cc/MKf0mPhc/4.png" alt="ติดบนกระเป๋า" class="w-full h-64 object-cover rounded-2xl shadow-lg">
-            <div class="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">บนกระเป๋า</div>
+        <div class="bg-white rounded-3xl p-6 shadow-card ring-1 ring-black/5">
+          <div class="flex items-center gap-5">
+            <img src="https://i.postimg.cc/25zFbZqR/54.png" class="w-24 h-24 object-contain rounded-xl ring-1 ring-black/5" alt="">
+            <div><h3 class="text-xl font-semibold">ดอกเจอเรเนียม</h3><p class="text-secondary/70 text-sm">คุณสมบัติไล่ยุงตามธรรมชาติ</p></div>
           </div>
-          <h3 class="text-xl font-semibold text-secondary">แปะบนกระเป๋า</h3>
-          <p class="text-gray-700">แปะบนกระเป๋าเป้/สะพาย ป้องกันรอบตัวขณะเดินทาง</p>
         </div>
-      </div>
-
-      <!-- Product Demo -->
-      <div class="mt-16 bg-white rounded-3xl p-8 shadow-xl fade-in">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <img src="https://i.postimg.cc/N0F1CQMx/AR-6.png" alt="วิธีการใช้ VeeVee" class="w-full rounded-2xl shadow-lg">
-          </div>
-          <div class="space-y-6">
-            <h3 class="text-3xl font-bold text-secondary">แบบกดปุ่ม 4 เม็ด</h3>
-            <div class="space-y-4">
-              <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                <p class="text-gray-700">กดปุ่มกลางให้แน่น</p>
-              </div>
-              <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                <p class="text-gray-700">จะมีสารระเหยออกมา 4 เม็ด</p>
-              </div>
-              <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                <p class="text-gray-700">แปะในตำแหน่งที่ต้องการ</p>
-              </div>
-              <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
-                <p class="text-gray-700">ป้องกันยุงได้นาน 24 ชั่วโมง</p>
-              </div>
-            </div>
+        <div class="bg-white rounded-3xl p-6 shadow-card ring-1 ring-black/5">
+          <div class="flex items-center gap-5">
+            <img src="https://i.postimg.cc/cHPFnJyR/57.png" class="w-24 h-24 object-contain rounded-xl ring-1 ring-black/5" alt="">
+            <div><h3 class="text-xl font-semibold">ลาเวนเดอร์</h3><p class="text-secondary/70 text-sm">กลิ่นหอมผ่อนคลายที่ยุงไม่ชอบ</p></div>
           </div>
         </div>
       </div>
@@ -404,8 +374,8 @@
   </section>
 
   <!-- FAMILY PROTECTION -->
-  <section class="section-padding bg-accent/50">
-    <div class="container mx-auto px-6">
+  <section class="section bg-accent/50">
+    <div class="max-w-[1280px] mx-auto px-4">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div class="space-y-8 fade-in">
           <h2 class="text-4xl lg:text-5xl font-bold text-secondary">พกไปด้วยทุกที่<br>สบายใจได้ทุกเวลา</h2>
@@ -414,25 +384,16 @@
             VeeVee ป้องกันยุงแบบธรรมชาติ เหมาะสำหรับการเดินทาง แคมปิ้ง หรือกิจกรรมกลางแจ้ง
             ไม่ว่าจะเป็นเด็กเล็กหรือผู้ใหญ่ ใช้ได้อย่างปลอดภัย มั่นใจ
           </p>
-
           <div class="space-y-4">
-            <div class="flex items-center space-x-3">
-              <i class="fas fa-check-circle text-green text-xl"></i>
-              <span class="text-gray-800">เหมาะสำหรับเด็กและผู้ใหญ่</span>
-            </div>
-            <div class="flex items-center space-x-3">
-              <i class="fas fa-check-circle text-green text-xl"></i>
-              <span class="text-gray-800">ไม่มีสารเคมีที่เป็นอันตราย</span>
-            </div>
-            <div class="flex items-center space-x-3">
-              <i class="fas fa-check-circle text-green text-xl"></i>
-              <span class="text-gray-800">ใช้ได้ทุกกิจกรรม ทุกสถานที่</span>
-            </div>
+            <div class="flex items-center space-x-3"><i class="fas fa-check-circle text-green text-xl"></i><span class="text-gray-800">เหมาะสำหรับเด็กและผู้ใหญ่</span></div>
+            <div class="flex items-center space-x-3"><i class="fas fa-check-circle text-green text-xl"></i><span class="text-gray-800">ไม่มีสารเคมีที่เป็นอันตราย</span></div>
+            <div class="flex items-center space-x-3"><i class="fas fa-check-circle text-green text-xl"></i><span class="text-gray-800">ใช้ได้ทุกกิจกรรม ทุกสถานที่</span></div>
           </div>
         </div>
 
         <div class="relative fade-in">
-          <img src="https://i.postimg.cc/V6P2z0ng/S-18800655-0.jpg" alt="ครอบครัวปลอดภัย" class="w-full rounded-3xl shadow-2xl">
+          <img src="https://i.postimg.cc/V6P2z0ng/S-18800655-0.jpg" alt="ครอบครัวปลอดภัย"
+               class="w-full rounded-3xl shadow-2xl">
           <div class="absolute bottom-8 left-8 bg-white rounded-2xl p-6 shadow-lg max-w-xs">
             <div class="flex items-center space-x-3">
               <i class="fas fa-quote-left text-primary text-2xl"></i>
@@ -443,38 +404,51 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- OUTDOOR ADVENTURE -->
-  <section class="section-padding bg-white">
-    <div class="container mx-auto px-6">
+  <!-- OUTDOOR ADVENTURE | เปลี่ยนเป็น lg:aspect-[3/2] -->
+  <section id="outdoor" class="py-20 bg-white">
+    <div class="max-w-[1280px] mx-auto px-4">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div class="relative fade-in order-2 lg:order-1">
-          <img src="https://i.postimg.cc/yxLf3vr1/9.png" alt="การผจญภัยกลางแจ้ง" class="w-full rounded-3xl shadow-2xl">
-          <div class="absolute top-8 left-8 bg-primary text-white px-4 py-2 rounded-full font-semibold">🏕️ Perfect for Camping</div>
+        <!-- รูปด้านซ้าย -->
+        <div class="order-2 lg:order-1">
+          <div class="relative rounded-3xl shadow-2xl ring-1 ring-black/5 bg-white">
+            <!-- เดิม: aspect-[3/4] md:aspect-[4/3]  →  ใหม่: aspect-[3/4] lg:aspect-[3/2] -->
+            <div class="w-full aspect-[3/4] lg:aspect-[3/2]">
+              <img src="https://i.postimg.cc/yxLf3vr1/9.png" alt="การผจญภัยกลางแจ้ง"
+                   class="block w-full h-auto" />
+            </div>
+            <span class="absolute top-4 left-4 bg-[#D78B30] text-white px-4 py-2 rounded-full font-semibold shadow">
+              🏕️ Perfect for Camping
+            </span>
+          </div>
         </div>
 
-        <div class="space-y-8 fade-in order-1 lg:order-2">
-          <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ไม่ว่าจะไปที่ไหน<br>ก็ไม่ต้องกังวลเรื่องยุงกัด</h2>
+        <!-- ข้อความด้านขวา -->
+        <div class="order-1 lg:order-2 space-y-8">
+          <h2 class="text-4xl lg:text-5xl font-bold text-[#17242A] leading-tight">
+            ไม่ว่าจะไปที่ไหน<br>ก็ไม่ต้องกังวลเรื่องยุงกัด
+          </h2>
 
-          <div class="grid grid-cols-2 gap-6">
-            <div class="text-center p-4 bg-gray-50 rounded-2xl">
-              <i class="fas fa-mountain text-green text-3xl mb-2"></i>
-              <h4 class="font-semibold text-secondary">ท่องเที่ยว</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="text-center p-4 bg-[#F5E6C5] rounded-2xl shadow-sm">
+              <i class="fas fa-suitcase-rolling text-3xl mb-2 text-[#3E422E]"></i>
+              <h4 class="font-semibold text-[#17242A]">ท่องเที่ยว</h4>
             </div>
-            <div class="text-center p-4 bg-gray-50 rounded-2xl">
-              <i class="fas fa-campground text-brown text-3xl mb-2"></i>
-              <h4 class="font-semibold text-secondary">แคมปิ้ง</h4>
+            <div class="text-center p-4 bg-[#F5E6C5] rounded-2xl shadow-sm">
+              <i class="fas fa-campground text-3xl mb-2 text-[#9E886F]"></i>
+              <h4 class="font-semibold text-[#17242A]">แคมปิ้ง</h4>
             </div>
-            <div class="text-center p-4 bg-gray-50 rounded-2xl">
-              <i class="fas fa-tree text-green text-3xl mb-2"></i>
-              <h4 class="font-semibold text-secondary">เดินป่า</h4>
+            <div class="text-center p-4 bg-[#F5E6C5] rounded-2xl shadow-sm">
+              <i class="fas fa-tree text-3xl mb-2 text-[#75914C]"></i>
+              <h4 class="font-semibold text-[#17242A]">เดินป่า</h4>
             </div>
-            <div class="text-center p-4 bg-gray-50 rounded-2xl">
-              <i class="fas fa-water text-primary text-3xl mb-2"></i>
-              <h4 class="font-semibold text-secondary">ริมน้ำ</h4>
+            <div class="text-center p-4 bg-[#F5E6C5] rounded-2xl shadow-sm">
+              <i class="fas fa-water text-3xl mb-2 text-[#D78B30]"></i>
+              <h4 class="font-semibold text-[#17242A]">ริมน้ำ</h4>
             </div>
           </div>
 
@@ -487,117 +461,96 @@
     </div>
   </section>
 
-  <!-- PRODUCT SHOWCASE -->
-  <section class="section-padding bg-gradient-to-br from-primary/5 to-secondary/5">
-    <div class="container mx-auto px-6">
-      <div class="text-center space-y-6 mb-16 fade-in">
-        <h2 class="text-4xl lg:text-5xl font-bold text-secondary">ผลิตภัณฑ์ VeeVee</h2>
-        <p class="text-xl text-gray-700">แผ่นแปะกันยุงจากธรรมชาติ คุณภาพระดับพรีเมียม</p>
-      </div>
+  <!-- PRODUCT, WARNING, CTA (เหมือนเดิมของเวอร์ชันก่อนหน้า ถ้าคุณใช้อยู่ให้คงไว้) -->
+  <!-- ...คุณสามารถคงส่วนผลิตภัณฑ์/คำเตือน/CTA ตามไฟล์ล่าสุดของคุณ... -->
+<!-- PRODUCT SHOWCASE -->
+<section id="product" class="section bg-gradient-to-br from-primary/5 to-secondary/5">
+  <div class="max-w-[1280px] mx-auto px-4">
+    <div class="text-center space-y-2 mb-10">
+      <h2 class="text-4xl md:text-5xl font-bold">ผลิตภัณฑ์ VeeVee</h2>
+      <p class="text-secondary/70">แผ่นแปะกันยุงจากธรรมชาติ คุณภาพระดับพรีเมียม</p>
+    </div>
 
-      <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-3xl p-8 shadow-2xl fade-in">
-          <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div class="relative">
-              <img src="https://i.postimg.cc/7PSV7Q7K/2.png" alt="VeeVee Product" class="w-full rounded-2xl shadow-lg">
-              <div class="absolute -right-4 top-1/2 -translate-y-1/2 space-y-4">
-                <div class="bg-green text-white p-3 rounded-full shadow-lg"><i class="fas fa-leaf text-xl"></i></div>
-                <div class="bg-primary text-white p-3 rounded-full shadow-lg"><i class="fas fa-shield-halved text-xl"></i></div>
-                <div class="bg-darkgreen text-white p-3 rounded-full shadow-lg"><i class="fas fa-clock text-xl"></i></div>
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-3xl p-8 shadow-card">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <div class="relative">
+            <img src="https://i.postimg.cc/7PSV7Q7K/2.png" alt="VeeVee Product" class="w-full rounded-2xl shadow" />
+            <div class="absolute -right-4 top-1/2 -translate-y-1/2 space-y-3">
+              <div class="bg-green text-white p-3 rounded-full shadow"><i class="fa-solid fa-leaf"></i></div>
+              <div class="bg-primary text-white p-3 rounded-full shadow"><i class="fa-solid fa-shield-halved"></i></div>
+              <div class="bg-darkgreen text-white p-3 rounded-full shadow"><i class="fa-solid fa-clock"></i></div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <h3 class="text-3xl font-bold">VeeVee Anti-Mosquito Patch</h3>
+            <p class="text-secondary/80">12 ชิ้น/ซอง พร้อมเทคโนโลยี Slow Release ยาวนาน 24 ชม.</p>
+
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <span class="font-medium">จำนวนในซอง</span><span class="text-primary font-bold">12 ชิ้น</span>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <span class="font-medium">ระยะเวลาป้องกัน</span><span class="text-primary font-bold">24 ชั่วโมง</span>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                <span class="font-medium">ส่วนผสม</span><span class="text-primary font-bold">100% ธรรมชาติ</span>
               </div>
             </div>
 
-            <div class="space-y-8">
-              <div>
-                <h3 class="text-3xl font-bold text-secondary mb-4">VeeVee Anti-Mosquito Patch</h3>
-                <p class="text-gray-700 leading-relaxed">
-                  แผ่นแปะกันยุงขนาด 12 ชิ้นต่อซอง พร้อมเทคโนโลยี Slow Release ให้ประสิทธิภาพยาวนานถึง 24 ชั่วโมง
-                </p>
-              </div>
-
-              <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <span class="font-semibold text-secondary">จำนวนในซอง</span>
-                  <span class="text-primary font-bold">12 ชิ้น</span>
-                </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <span class="font-semibold text-secondary">ระยะเวลาป้องกัน</span>
-                  <span class="text-primary font-bold">24 ชั่วโมง</span>
-                </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <span class="font-semibold text-secondary">ส่วนผสม</span>
-                  <span class="text-primary font-bold">100% ธรรมชาติ</span>
-                </div>
-              </div>
-
-              <div class="text-center">
-                <div class="text-4xl font-bold text-primary mb-2">฿119</div>
-                <p class="text-gray-700">ราคาต่อซอง</p>
-                <button @click="openOrderModal()" class="mt-4 bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all">สั่งซื้อเลย</button>
-              </div>
+            <div class="text-center">
+              <div class="text-4xl font-extrabold text-primary mb-1">฿119</div>
+              <p class="text-secondary/70">ราคาต่อซอง</p>
+              <button @click="openOrderModal()" class="mt-4 bg-primary text-white px-8 py-3 rounded-full font-semibold hover:opacity-90">
+                สั่งซื้อเลย
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- WARNING -->
-  <section class="bg-red-50 py-8">
-    <div class="container mx-auto px-6 text-center">
-      <h3 class="text-2xl font-bold text-red-600 mb-3">⚠️ คำเตือนสำคัญ</h3>
-      <p class="text-gray-800 max-w-2xl mx-auto">
-        ผลิตภัณฑ์นี้เป็นแผ่นแปะกันยุงสำหรับใช้ภายนอกเท่านั้น
-        ควรเก็บให้พ้นมือเด็กเล็กและสัตว์เลี้ยง ห้ามรับประทาน
-        หากมีอาการแพ้หรือระคายเคือง ควรหยุดใช้ทันทีและปรึกษาแพทย์
-      </p>
+  </div>
+</section>
+
+<!-- WARNING -->
+<section id="warning" class="bg-red-50 py-8">
+  <div class="max-w-[1280px] mx-auto px-4 text-center">
+    <h3 class="text-2xl font-bold text-red-600 mb-2">⚠️ คำเตือนสำคัญ</h3>
+    <p class="text-secondary/80 max-w-2xl mx-auto">
+      ผลิตภัณฑ์นี้ใช้ภายนอกเท่านั้น ควรเก็บให้พ้นมือเด็กเล็กและสัตว์เลี้ยง ห้ามรับประทาน
+      หากมีอาการแพ้หรือระคายเคือง ให้หยุดใช้และปรึกษาแพทย์
+    </p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="section relative overflow-hidden"
+         style="background:linear-gradient(135deg,#17242A 0%,#3E422E 55%,#D78B30 100%)">
+  <div class="max-w-[1280px] mx-auto px-4 text-center text-white relative z-10">
+    <h2 class="text-4xl md:text-6xl font-bold">พร้อมปกป้องคุณและครอบครัว?</h2>
+    <p class="text-xl md:text-2xl text-white/90 mt-3">
+      สั่งซื้อ VeeVee แผ่นแปะกันยุงจากธรรมชาติ — ปลอดภัย มีประสิทธิภาพ ใช้งานง่าย
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+      <a href="tel:0979965556" class="bg-white text-primary px-7 py-3 rounded-full font-semibold hover:bg-gray-100">
+        <i class="fa-solid fa-phone mr-2"></i> โทรสั่งซื้อ 097-996-5556
+      </a>
+      <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank"
+         class="border-2 border-white text-white px-7 py-3 rounded-full font-semibold hover:bg-white hover:text-primary">
+        <i class="fa-brands fa-line mr-2"></i> สั่งผ่าน Line
+      </a>
+      <a href="https://s.shopee.co.th/10rxDH30cw?share_channel_code=6" target="_blank"
+         class="bg-secondary text-white px-7 py-3 rounded-full font-semibold hover:bg-secondary/90">
+        <i class="fa-solid fa-cart-shopping mr-2"></i> ซื้อใน Shopee
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CTA (UPDATED gradient) -->
-  <section class="section-padding hero-gradient relative overflow-hidden"
-           style="background: linear-gradient(135deg, #17242A 0%, #3E422E 55%, #D78B30 100%)">
-    <div class="container mx-auto px-6 text-center text-white relative z-10">
-      <div class="max-w-4xl mx-auto space-y-8 fade-in">
-        <h2 class="text-4xl lg:text-6xl font-bold">พร้อมปกป้องคุณและครอบครัว?</h2>
-        <p class="text-xl lg:text-2xl text-white/90">
-          สั่งซื้อ VeeVee แผ่นแปะกันยุงจากธรรมชาติ<br>ปลอดภัย มีประสิทธิภาพ ใช้งานง่าย
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-6 justify-center pt-8">
-          <a href="tel:0979965556" class="bg-white text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all">
-            <i class="fas fa-phone mr-3"></i> โทรสั่งซื้อ 097-996-5556
-          </a>
-          <a href="https://line.me/R/ti/p/@819rwbfr" target="_blank" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-primary transition-all">
-            <i class="fab fa-line mr-3"></i> สั่งผ่าน Line
-          </a>
-          <a href="https://s.shopee.co.th/10rxDH30cw?share_channel_code=6" target="_blank" class="bg-secondary text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-secondary/90 transition-all">
-            <i class="fas fa-shopping-cart mr-3"></i> ซื้อใน Shopee
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
-          <div class="text-center">
-            <i class="fas fa-shipping-fast text-4xl mb-4"></i>
-            <h4 class="font-semibold mb-2">จัดส่งฟรี</h4>
-            <p class="text-white/80">สั่งครบ 500 บาท</p>
-          </div>
-          <div class="text-center">
-            <i class="fas fa-undo text-4xl mb-4"></i>
-            <h4 class="font-semibold mb-2">รับประกันคุณภาพ</h4>
-            <p class="text-white/80">ไม่พอใจ คืนเงิน 100%</p>
-          </div>
-          <div class="text-center">
-            <i class="fas fa-headset text-4xl mb-4"></i>
-            <h4 class="font-semibold mb-2">บริการหลังการขาย</h4>
-            <p class="text-white/80">ดูแลลูกค้าตลอดไป</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
+  <!-- CONTACT (ตามที่คุณให้มา) -->
   <section id="contact" class="section-padding bg-secondary text-white">
     <div class="container mx-auto px-6">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -741,7 +694,7 @@
           <textarea x-model="orderForm.note" rows="2" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
         </div>
 
-        <!-- Order Summary -->
+        <!-- สรุป -->
         <div class="bg-gray-50 rounded-2xl p-6">
           <h4 class="font-semibold text-gray-800 mb-4">สรุปคำสั่งซื้อ</h4>
           <div class="space-y-2">
@@ -936,7 +889,7 @@
     </div>
   </footer>
 
-  <!-- APP SCRIPT -->
+  <!-- APP SCRIPT (ของคุณ) -->
   <script>
     function veeVeeApp () {
       return {
@@ -965,8 +918,6 @@
           this.setupSmoothScroll();
         },
 
-        scrollToWhy(){ document.getElementById('why')?.scrollIntoView({ behavior: 'smooth' }) },
-
         openOrderModal(){ this.showOrderModal = true; document.body.style.overflow = 'hidden' },
         closeOrderModal(){ this.showOrderModal = false; document.body.style.overflow = 'auto' },
         closeQRModal(){ this.showQRModal = false; this.showSlipUpload=false; this.showBankTransfer=false; this.slipFile=null; this.slipPreview=null; document.body.style.overflow='auto' },
@@ -983,7 +934,7 @@
         },
 
         generatePromptPayQR(amount){
-          // ใช้ภาพ QR คงที่ (สามารถเปลี่ยนเป็นไดนามิกภายหลัง)
+          // ใช้ภาพคงที่ (สามารถเปลี่ยนเป็นไดนามิกภายหลังได้)
           return 'https://i.postimg.cc/QCtZpLYX/Vee-Vee-QR-Code-png.jpg';
         },
 
