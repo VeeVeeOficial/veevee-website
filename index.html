@@ -38,6 +38,82 @@
     .section-padding{padding:80px 0} /* เพิ่มให้เท่ากับ .section */
     .fade-in{opacity:0;transform:translateY(20px);transition:all .6s ease}
     .fade-in.visible{opacity:1;transform:none}
+
+    /* ====== เพิ่มอนิเมชั่นแบบ Drop-in (ไม่แตะโครง HTML เดิม) ====== */
+
+    /* 1) Hero Ken Burns */
+    @keyframes kenburns{
+      0%{transform:scale(1) translate(0,0)}
+      100%{transform:scale(1.08) translate(2%,-2%)}
+    }
+    #home img[alt="VeeVee Hero"]{
+      will-change:transform;
+      animation:kenburns 18s ease-in-out infinite alternate;
+    }
+
+    /* 2) Floating icons */
+    @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .anim-float{animation:floatY 4s ease-in-out infinite}
+
+    /* 3) Button shine + 4) Ripple */
+    .btn-shine{position:relative;overflow:hidden}
+    .btn-shine::after{
+      content:"";position:absolute;inset:0;left:-150%;
+      background:linear-gradient(120deg,transparent,rgba(255,255,255,.55),transparent);
+      transform:skewX(-20deg);
+    }
+    .btn-shine:hover::after{transition:transform .7s;transform:translateX(250%) skewX(-20deg)}
+    .btn-ripple{position:relative;overflow:hidden}
+    .btn-ripple .r{
+      position:absolute;border-radius:50%;transform:translate(-50%,-50%);
+      pointer-events:none;background:rgba(255,255,255,.35);
+      animation:ripple .6s ease-out forwards;
+    }
+    @keyframes ripple{from{width:0;height:0;opacity:.7}to{width:400px;height:400px;opacity:0}}
+
+    /* 5) Card hover lift */
+    [data-lift]{transition:transform .35s ease, box-shadow .35s ease}
+    [data-lift]:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(0,0,0,.12)}
+
+    /* 6) Reveal variants (ใช้คู่กับ .fade-in เดิม) */
+    .fade-in[data-anim="left"]{transform:translateX(-24px);opacity:0}
+    .fade-in[data-anim="right"]{transform:translateX(24px);opacity:0}
+    .fade-in[data-anim="up"]{transform:translateY(24px);opacity:0}
+    .fade-in[data-anim="down"]{transform:translateY(-24px);opacity:0}
+    .fade-in[data-anim="zoom"]{transform:scale(.95);opacity:0}
+    .fade-in[data-anim="blur"]{filter:blur(6px);opacity:0}
+    .fade-in.visible{opacity:1;transform:none;filter:none}
+
+    /* 7) Parallax */
+    [data-parallax]{will-change:transform;transition:transform .2s linear}
+
+    /* 8) CTA gradient breathing */
+    #cta{background-size:200% 200%!important;animation:gradientShift 12s ease-in-out infinite alternate}
+    @keyframes gradientShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+
+    /* 9) Success checkmark draw */
+    .success-checkmark{width:80px;height:80px;margin:0 auto 12px}
+    .success-checkmark__circle{
+      stroke:#22c55e;stroke-width:4;fill:none;
+      stroke-dasharray:166;stroke-dashoffset:166;animation:dash 1s ease-out forwards .2s
+    }
+    .success-checkmark__check{
+      stroke:#22c55e;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;fill:none;
+      stroke-dasharray:48;stroke-dashoffset:48;animation:dash .6s ease-out forwards 1s
+    }
+    @keyframes dash{to{stroke-dashoffset:0}}
+
+    /* 10) Subtle tilt on hover */
+    .tilt-on-hover{transform-style:preserve-3d;perspective:800px}
+    .tilt-on-hover:hover img{transform:rotateX(2deg) rotateY(-2deg) scale(1.01);transition:transform .35s ease}
+
+    /* 11) Thin scroll progress */
+    #scrollProgress{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,#D78B30,#75914C);z-index:999}
+
+    /* 12) เคารพ reduced motion */
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
   </style>
 
   <!-- Firebase (สำรองข้อมูลออเดอร์/คอนแทค) -->
@@ -117,8 +193,7 @@
                       class="bg-white text-[#D78B30] px-6 py-3 rounded-full font-semibold hover:bg-white/90 transition">
                 <i class="fa-solid fa-circle-info mr-2"></i> เรียนรู้เพิ่มเติม
               </button>
-              <button @click="openOrderModal()"
-                      class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-[#D78B30] transition">
+              <button @click="openOrderModal()" class="border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white hover:text-[#D78B30] transition">
                 <i class="fa-solid fa-cart-shopping mr-2"></i> สั่งซื้อทันที
               </button>
             </div>
@@ -461,9 +536,7 @@
     </div>
   </section>
 
-  <!-- PRODUCT, WARNING, CTA (เหมือนเดิมของเวอร์ชันก่อนหน้า ถ้าคุณใช้อยู่ให้คงไว้) -->
-  <!-- ...คุณสามารถคงส่วนผลิตภัณฑ์/คำเตือน/CTA ตามไฟล์ล่าสุดของคุณ... -->
-<!-- PRODUCT SHOWCASE -->
+  <!-- PRODUCT, WARNING, CTA -->
 <section id="product" class="section bg-gradient-to-br from-primary/5 to-secondary/5">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="text-center space-y-2 mb-10">
@@ -550,7 +623,7 @@
   </div>
 </section>
 
-  <!-- CONTACT (ตามที่คุณให้มา) -->
+  <!-- CONTACT -->
   <section id="contact" class="section-padding bg-secondary text-white">
     <div class="container mx-auto px-6">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -934,7 +1007,6 @@
         },
 
         generatePromptPayQR(amount){
-          // ใช้ภาพคงที่ (สามารถเปลี่ยนเป็นไดนามิกภายหลังได้)
           return 'https://i.postimg.cc/QCtZpLYX/Vee-Vee-QR-Code-png.jpg';
         },
 
@@ -1057,6 +1129,92 @@
         }
       }
     }
+  </script>
+
+  <!-- ===== Effects Booster (เสียบเพิ่มท้าย body) ===== -->
+  <script>
+  (function(){
+    // 0) Scroll progress bar
+    const bar=document.createElement('div'); bar.id='scrollProgress'; document.body.appendChild(bar);
+    const updateBar=()=>{ const h=document.documentElement; const sc=h.scrollTop; const max=h.scrollHeight-h.clientHeight; bar.style.width=(Math.max(0, sc/max)*100)+'%'; };
+    window.addEventListener('scroll', updateBar, {passive:true}); updateBar();
+
+    // 1) ตั้งค่า reveal variants ให้ element สำคัญ (ใช้ .fade-in เดิม)
+    const pairs = [
+      ['#why .space-y-7','left'],
+      ['#why .fade-in.flex.justify-center','right'],
+      ['#features .text-center','up'],
+      ['#howto .grid','up'],
+      ['#howto .mt-16','zoom'],
+      ['#outdoor .order-1','right'],
+      ['#outdoor .order-2','left'],
+      ['section.bg-accent\\/50 .space-y-8','left'],
+      ['section.bg-accent\\/50 .relative','right'],
+      ['#contact .space-y-8','left'],
+      ['#contact .bg-white','right']
+    ];
+    pairs.forEach(([sel,anim])=>{
+      document.querySelectorAll(sel).forEach(el=>{
+        el.classList.add('fade-in'); el.dataset.anim = el.dataset.anim || anim;
+      });
+    });
+
+    // 2) ลอยไอคอนวงกลมข้างรูปสินค้า
+    document.querySelectorAll('#product .absolute .rounded-full').forEach((el,i)=>{
+      el.classList.add('anim-float'); el.style.animationDelay = (i*0.25)+'s';
+    });
+
+    // 3) การ์ดยกนุ่ม ๆ เวลา hover
+    ['#features .text-center.p-6',
+     '#howto article',
+     '#ingredients .bg-white',
+     '#product .bg-white',
+     'section.bg-accent\\/50 .relative',
+     '#why .bg-white',
+     '#contact .bg-white'
+    ].forEach(sel=>{
+      document.querySelectorAll(sel).forEach(el=> el.setAttribute('data-lift',''));
+    });
+
+    // 4) ปุ่ม: shine + ripple (ทุกปุ่ม/ลิงก์แบบปุ่ม)
+    document.querySelectorAll('button, a[class*="px-"], a[class*="rounded-full"]').forEach(el=>{
+      el.classList.add('btn-shine','btn-ripple');
+      el.addEventListener('click', (e)=>{
+        const r=document.createElement('span'); r.className='r';
+        const rect=el.getBoundingClientRect();
+        r.style.left=(e.clientX-rect.left)+'px';
+        r.style.top=(e.clientY-rect.top)+'px';
+        el.appendChild(r); setTimeout(()=>r.remove(), 650);
+      });
+    });
+
+    // 5) Tilt เบา ๆ ให้กรอบรูป/คอนเทนเนอร์หลัก
+    document.querySelectorAll('#features img.max-w-md').forEach(img=> img.parentElement && img.parentElement.classList.add('tilt-on-hover'));
+    document.querySelectorAll('#product .relative, #outdoor .rounded-3xl, section.bg-accent\\/50 .relative')
+            .forEach(el=> el.classList.add('tilt-on-hover'));
+
+    // 6) Parallax (เบา ๆ)
+    function addParallax(sel, speed){
+      document.querySelectorAll(sel).forEach(el=> el.dataset.parallax = String(speed));
+    }
+    addParallax('#why .pointer-events-none', 20);
+    addParallax('section.bg-accent\\/50 .absolute', 14);
+    addParallax('#product .absolute', 10);
+
+    const doParallax = ()=>{
+      const winH = window.innerHeight;
+      document.querySelectorAll('[data-parallax]').forEach(el=>{
+        const rect = el.getBoundingClientRect();
+        const pct  = (rect.top + rect.height/2 - winH/2)/winH; // -1..1
+        const speed = parseFloat(el.dataset.parallax)||10;
+        el.style.transform = `translate3d(0, ${-pct*speed}px, 0)`;
+      });
+    };
+    let ticking=false;
+    const onScroll=()=>{ if(!ticking){ ticking=true; requestAnimationFrame(()=>{ doParallax(); ticking=false; }); } };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    doParallax();
+  })();
   </script>
 </body>
 </html>
